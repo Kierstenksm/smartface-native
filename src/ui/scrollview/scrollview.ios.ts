@@ -5,7 +5,6 @@ import copyObjectPropertiesWithDescriptors from '../../util/copyObjectProperties
 import TypeUtil from '../../util/type';
 import Color from '../color';
 import FlexLayoutIOS from '../flexlayout/flexlayout.ios';
-import OverScrollMode from '../shared/android/overscrollmode';
 import ViewGroupIOS from '../viewgroup/viewgroup.ios';
 import { ScrollViewEvents } from './scrollview-events';
 import type FlexLayout from '../flexlayout';
@@ -17,7 +16,6 @@ enum ScrollType {
 
 export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> extends ViewGroupIOS<TEvent | ScrollViewEvents, any, IScrollView> implements IScrollView {
   onScroll: (params: { translation: Point2D; contentOffset: Point2D }) => void;
-  overScrollMode: OverScrollMode;
   contentLayout: FlexLayoutIOS;
   protected _frame: { x?: number; y?: number };
   private _align: ScrollType;
