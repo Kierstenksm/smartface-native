@@ -18,6 +18,8 @@ export default class IconAndroid extends LabelAndroid implements IIcon {
     } else {
       this.font = FontAndroid.create('FontAwesome5FreeRegular', 16, FontStyle.NORMAL);
     }
+    // Set includeFontPadding to false for better icon placement
+    this.android.includeFontPadding = false;
   }
   protected preConstruct(params: Partial<IIcon> = {}) {
     super.preConstruct(params);
