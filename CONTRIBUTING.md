@@ -42,8 +42,8 @@ Before anything, please read our [Architecture Documentation](./ARCHITECTURE.md)
 
 Current version semantics:
 
-- Alpha(develop) -> Bleeding-Edge content should be published as Alpha. This also serves for test purposes. Do not use this version for your real applications.
-- Beta(prerelease) -> Unstable but tested content should be published as Beta.
+- Alpha(release/alpha) -> Bleeding-Edge content should be published as Alpha. This also serves for test purposes. Do not use this version for your real applications.
+- Beta(release/beta) -> Unstable but tested content should be published as Beta.
 - Latest(master) -> Production
 
 # Release Process
@@ -79,6 +79,13 @@ Sometimes, there will be a need to change something on old versions. In that cas
 3. Push your changes into that branch and use one of the commands above depending on which version needs a hotfix
 
 > Don't forget to merge the changes into other branches, otherwise it is likely that you will be conflicting while versioning.
+
+## How to Manually Trigger
+
+If you find yourself in a situation where you need action to trigger again, do the following:
+
+1. It's likely that version in package.json is not what you desire. Manually change it to 1 version below your desired version. E.g. if you want `5.0.4-alpha.15` to be published, manually change version to `5.0.4-alpha.14`. The action will automatically upgrade to `5.0.4-alpha.15` and publish for you
+2. Also, the actions **will only** trigger when **a Typescript file(.ts)** is changed on the commit. E.g. just change something like internal documentation(add a comma etc.) and push.
 
 # Generate API Documentation
 
