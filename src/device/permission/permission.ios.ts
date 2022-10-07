@@ -36,13 +36,38 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
         return permissionResult ?? PermissionIOSAuthorizationStatus.NOT_DETERMINED;
       },
       requestAuthorization(permission: Permissions.IOS): Promise<void> {
-        return new Promise((resolve, reject) => {
-          const argCallback = new Invocation.Argument({
-            type: 'NSIntegerBlock',
-            value: (status: any) => (status ? resolve() : reject())
+        if (permission === Permissions.IOS.CAMERA) {
+          return new Promise((resolve, reject) => {
+
+            const argType = new Invocation.Argument({
+              type: 'NSString',
+              value: 'vide'
+            });
+            const argCallback = new Invocation.Argument({
+              type: 'BoolBlock',
+              value: (status: number) => {
+                __SF_Dispatch.mainAsync(() => {
+                  status ? resolve() : reject();
+                });
+              }
+            });
+            Invocation.invokeClassMethod(permission, 'requestAccessForMediaType:completionHandler:', [argType, argCallback]);
+            
           });
-          Invocation.invokeClassMethod(permission, 'requestAuthorization:', [argCallback]);
-        });
+        }
+        else {
+          return new Promise((resolve, reject) => {
+            const argCallback = new Invocation.Argument({
+              type: 'NSIntegerBlock',
+              value: (status: any) => {
+                __SF_Dispatch.mainAsync(() => {
+                  status ? resolve() : reject();
+                });
+              }
+            });
+            Invocation.invokeClassMethod(permission, 'requestAuthorization:', [argCallback]);
+          });
+        }
       }
     };
   }

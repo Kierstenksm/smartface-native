@@ -121,7 +121,7 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @ios
    * @since 0.1
    */
-  font: IFont;
+  font: IFont | null;
   /**
    * Gets/sets the text of the TextBox.
    * @property {String} [text = ""]

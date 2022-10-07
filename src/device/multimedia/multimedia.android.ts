@@ -393,7 +393,7 @@ class MultimediaAndroid implements MultimediaBase {
       onFailure,
       onSuccess,
       onCancel,
-      type,
+      type = this.Type.IMAGE,
       allowsEditing,
       page,
       aspectRatio = {},

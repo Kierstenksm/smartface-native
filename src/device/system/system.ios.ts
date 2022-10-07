@@ -1,4 +1,4 @@
-import { AbstractSystem, BiometryType, OSType } from './system';
+import { AbstractSystem, BiometryType, ClipboardData, OSType } from './system';
 import Application from '../../application';
 import Invocation from '../../util/iOS/invocation';
 
@@ -89,6 +89,14 @@ class SystemIOS implements AbstractSystem {
     } else {
       return false;
     }
+  }
+  getClipboard(): ClipboardData {
+    return {
+      text: __SF_UIPasteboard.generalPasteboard().string,
+    }
+  }
+  setClipboard(clipboardData: ClipboardData) {
+    __SF_UIPasteboard.generalPasteboard().string = clipboardData.text;
   }
 }
 

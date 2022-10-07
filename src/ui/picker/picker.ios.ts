@@ -55,7 +55,7 @@ export default class PickerIOS<TEvent extends PickerEvents> extends ViewIOS<TEve
   show(ok?: (param?: { index: number }) => void, cancel?: () => void): void {
     const okFunc = function (e) {
       ok?.({
-        index: e.index
+        index: e?.index || 0
       });
     };
     const cancelFunc = function (e) {

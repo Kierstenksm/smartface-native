@@ -33,10 +33,12 @@ export abstract class NativeMobileComponent<TNative = any, TProps extends WithMo
   protected preConstruct(params?: Partial<Record<string, any>>): void {
     this._android = {};
     this._ios = {};
-    super.preConstruct(params);
     const { android = {}, ios = {} } = params || { ios: {}, android: {} };
     this.addAndroidProps(android);
     this.addIOSProps(ios);
+    super.preConstruct(params);
+    Object.assign(this.android, android);
+    Object.assign(this.ios, ios);
   }
   protected addAndroidProps(props: TProps['android']) {
     this._android && props && copyObjectPropertiesWithDescriptors(this._android, props);

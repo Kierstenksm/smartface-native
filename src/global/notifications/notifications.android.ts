@@ -24,6 +24,15 @@ const NativeIntent = requireClass('android.content.Intent');
 const NativePendingIntent = requireClass('android.app.PendingIntent');
 const nativeNotificationReceiverClass = requireClass('io.smartface.android.notifications.LocalNotificationReceiver');
 
+const NativeBuild = requireClass('android.os.Build');
+const NativeNotificationManager = requireClass('android.app.NotificationManager');
+const NativeNotificationChannel = requireClass('android.app.NotificationChannel');
+const NativeContext = requireClass('android.content.Context');
+
+const DEFAULT_NOTIFICATION_CHANNEL_ID = "654321";
+const DEFAULT_NOTIFICATION_CHANNEL_NAME = "Default Channel";
+const DEFAULT_NOTIFICATION_CHANNEL_DESCRIPTION = "Default Channel";
+
 const selectedNotificationIds: any[] = [];
 // Generate unique random number
 function getNewNotificationId() {
@@ -77,7 +86,8 @@ function cancelNotificationIntent(self) {
 
 class LocalNotification extends NativeMobileComponent {
   protected createNativeObject() {
-    const nativeObject = new NativeNotificationCompat.Builder(AndroidConfig.activity);
+    this.createDefaultNotificationChannel();
+    const nativeObject = new NativeNotificationCompat.Builder(AndroidConfig.activity, DEFAULT_NOTIFICATION_CHANNEL_ID);
     return nativeObject.setSmallIcon(NativeR.drawable.icon);
   }
   private _id: number;
@@ -204,6 +214,22 @@ class LocalNotification extends NativeMobileComponent {
       }
     };
   }
+
+  private createDefaultNotificationChannel() {
+    this.createNotificationChannel(DEFAULT_NOTIFICATION_CHANNEL_ID, DEFAULT_NOTIFICATION_CHANNEL_NAME, DEFAULT_NOTIFICATION_CHANNEL_DESCRIPTION, NativeNotificationManager.IMPORTANCE_DEFAULT);
+  }
+
+  private createNotificationChannel(channelId: string, name: string, description: string, importance: number) {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (NativeBuild.VERSION.SDK_INT >= NativeBuild.VERSION_CODES.O) {
+      const channel = new NativeNotificationChannel(channelId, name, importance);
+      channel.setDescription(description);
+      const notificationManager = AndroidConfig.activity.getSystemService(NativeContext.NOTIFICATION_SERVICE);
+      notificationManager.createNotificationChannel(channel);
+    }
+  }
+
   get alertBody() {
     return this._alertBody;
   }
@@ -299,7 +325,7 @@ class NotificationsAndroidClass extends NativeEventEmitterComponent<Notification
     return null;
   }
   get ios() {
-    return { authorizationStatus: {}, getAuthorizationStatus() {} };
+    return { authorizationStatus: {}, getAuthorizationStatus() { } };
   }
   iOS = {
     AuthorizationStatus,

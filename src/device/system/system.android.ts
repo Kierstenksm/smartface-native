@@ -1,4 +1,4 @@
-import { AbstractSystem, OSType } from './system';
+import { AbstractSystem, ClipboardData, OSType } from './system';
 import { NativeMobileComponent } from '../../core/native-mobile-component';
 import AndroidConfig from '../../util/Android/androidconfig';
 import TypeUtil from '../../util/type';
@@ -14,6 +14,8 @@ const ACTION_BATTERY_CHANGED = 'android.intent.action.BATTERY_CHANGED';
 const SFBiometricPrompt = requireClass('io.smartface.android.sfcore.device.system.SFBiometricPrompt');
 const NativeFingerprintAuthenticationDialogFragment = requireClass('com.android.fingerprintdialog.FingerprintAuthenticationDialogFragment');
 const NativeFingerPrintListener = requireClass('com.android.fingerprintdialog.FingerPrintListener');
+const NativePersistableBundle = requireClass("android.os.PersistableBundle");
+const NativeClipDescription = requireClass("android.content.ClipDescription");
 
 // Context.CLIPBOARD_SERVICE
 const CLIPBOARD_SERVICE = 'clipboard';
@@ -214,6 +216,29 @@ class SystemAndroid extends NativeMobileComponent implements AbstractSystem {
   }
   get isEmulator() {
     return AndroidConfig.isEmulator;
+  }
+  getClipboard(): ClipboardData {
+    const clipboardManager = AndroidConfig.getSystemService(CLIPBOARD_SERVICE, CLIPBOARD_MANAGER);
+    const clip = clipboardManager.getPrimaryClip();
+    const clipDescription = clip.getDescription();
+    const persistableBundle = clipDescription.getExtras();
+    const isSensitive = persistableBundle ? persistableBundle.getBoolean(NativeClipDescription.EXTRA_IS_SENSITIVE, false) : false;
+    return {
+      text: clip ? clip.getItemAt(0).getText()?.toString() : undefined,
+      android: {
+        isSensitive
+      }
+    }
+  }
+  setClipboard(clipboardData: ClipboardData) {
+    const clipData = NativeClipData.newPlainText('sf-core', clipboardData.text);
+    if (clipboardData.android?.isSensitive) {
+      const persistableBundle = new NativePersistableBundle();
+      persistableBundle.putBoolean(NativeClipDescription.EXTRA_IS_SENSITIVE, true);
+      clipData.getDescription().setExtras(persistableBundle);
+    }
+    const clipboard = AndroidConfig.getSystemService(CLIPBOARD_SERVICE, CLIPBOARD_MANAGER);
+    clipboard.setPrimaryClip(clipData);
   }
 }
 

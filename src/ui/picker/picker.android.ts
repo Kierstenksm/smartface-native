@@ -152,7 +152,7 @@ export default class PickerAndroid<TEvent extends PickerEvents> extends ViewAndr
     const doneListener = NativeDialogInterface.OnClickListener.implement({
       onClick: (dialogInterface: any, i: number) => {
         ok?.({
-          index: this.currentIndex
+          index: this.currentIndex || 0
         });
       }
     });

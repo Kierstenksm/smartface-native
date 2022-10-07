@@ -10,6 +10,13 @@ import { IViewGroup } from '../viewgroup/viewgroup';
 import { IColor } from '../color/color';
 export interface ViewAndroidProps {
   readonly yogaNode: any;
+  /**
+   * Gets/sets over-scroll mode for this view.
+   *
+   * @property {UI.Android.OverScrollMode} [overScrollMode = UI.Android.OverScrollMode.ALWAYS]
+   * @android
+   * @since 3.0.2
+   */
   overScrollMode: number;
   /**
    * Gets/sets foreground of the view for ripple effect. This property should be set before rippleColor.

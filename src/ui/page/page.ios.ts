@@ -11,6 +11,7 @@ import FlexLayoutIOS from '../flexlayout/flexlayout.ios';
 import { IFlexLayout } from '../flexlayout/flexlayout';
 import StatusBar from '../../application/statusbar';
 import { YGUnit } from '../shared/ios/yogaenums';
+import ScreenIOS from '../../device/screen/screen.ios';
 
 const NativeOrientation = {
   PORTRAIT: [PageOrientation.PORTRAIT],
@@ -32,6 +33,8 @@ const NativeOrientationMapping = {
   [PageOrientation.AUTOLANDSCAPE]: NativeOrientation.AUTOLANDSCAPE
 };
 
+const NAVIGATIONBAR_WIDTH_OFFSET = 32
+
 export default class PageIOS<TEvent extends string = PageEvents, TNative extends { [key: string]: any } = __SF_UIViewController, TProps extends IPage = IPage>
   extends AbstractPage<TEvent | PageEvents, TNative, TProps>
   implements IPage<TEvent | PageEvents>
@@ -43,6 +46,7 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
   private _safeAreaPaddingObject: { top: number; bottom: number; left: number; right: number };
   private _transitionViews: IPage['transitionViews'];
   private _titleView: HeaderBar['titleLayout'];
+  private _layout: HeaderBar['layout'];
   private _presentationStyle: number;
   private _largeTitleDisplayMode: number;
   private _leftItem: any;
@@ -89,8 +93,8 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
     super.preConstruct(params);
     this.headerBarProperties();
   }
-  onLoad(): void {}
-  onShow(): void {}
+  onLoad(): void { }
+  onShow(): void { }
   onHide: () => void;
   onOrientationChange: (e: { orientation: PageOrientation }) => void;
 
@@ -313,6 +317,16 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
       this.emit('orientationChange', callbackParam);
       this.onOrientationChange?.(callbackParam);
     };
+    this.nativeObject.viewWillTransitionCompletion = () => {
+      if (this._layout && this.headerBar) {
+        this._layout.width = this.nativeObject.navigationController.navigationBar.frame.width - NAVIGATIONBAR_WIDTH_OFFSET;
+        this._layout.height = this.nativeObject.navigationController.navigationBar.frame.height;
+        this.headerBar.layout = this._layout;
+
+      }
+
+    }
+
     this.nativeObject.onLoad = () => {
       this.onLoad?.();
       this.emit('load');
@@ -368,12 +382,38 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
    */
   private headerBarProperties() {
     const self = this;
+
     const headerBar = {
       get title(): HeaderBar['title'] {
         return self.nativeObject.navigationItem.title;
       },
       set title(value: HeaderBar['title']) {
         self.nativeObject.navigationItem.title = value;
+      },
+      get layout(): HeaderBar['layout'] {
+        return self._layout;
+      },
+      set layout(value: HeaderBar['layout']) {
+        if (value) {
+          value.width = ScreenIOS.width - 32;
+          value.height = self.parentController.headerBar?.height ?? 0;
+        }
+
+        if (typeof value === 'object') {
+          self._layout = value;
+          self._layout.applyLayout();
+
+          // These calls may need for different cases.
+          if (self.checkIfSearchviewIsSubview(self._layout.nativeObject)) {
+            //Workaround Bug : IOS-2707
+            self._layout.nativeObject.layoutIfNeeded();
+          }
+          // _titleView.nativeObject.translatesAutoresizingMaskIntoConstraints = true;
+          self._layout.nativeObject.sizeToFit();
+          self.nativeObject.navigationItem.titleView = self._layout.nativeObject;
+        } else {
+          self.nativeObject.navigationItem.titleView = undefined;
+        }
       },
       get titleLayout(): HeaderBar['titleLayout'] {
         return self._titleView;

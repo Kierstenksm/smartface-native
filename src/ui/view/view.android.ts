@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { Rectangle } from '../../primitive/rectangle';
 import { ViewEvents } from './view-events';
-import { IView, IViewProps, ViewBase } from './view';
+import { Border, IView, IViewProps, ViewBase } from './view';
 import OverScrollMode from '../shared/android/overscrollmode';
 import { ScrollViewAlign } from '../scrollview/scrollview';
 import { getRippleMask } from '../../helper/getrippleeffect';
@@ -523,12 +523,24 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this.android.updateRippleEffectIfNeeded?.();
   }
 
+  private adjustBorderEnumForAndroid(borders: number[]): number[] {
+    return borders.map(border => {
+      if (border === Border.BOTTOM_LEFT) {
+        return Border.BOTTOM_RIGHT;
+      }
+      if (border === Border.BOTTOM_RIGHT) {
+        return Border.BOTTOM_LEFT;
+      }
+      return border;
+    });
+  }
+
   get maskedBorders() {
     return this._maskedBorders;
   }
   set maskedBorders(value) {
-    this._maskedBorders = value;
-    this._bitwiseBorders = value.reduce((acc, cValue) => acc | cValue, 0);
+    this._maskedBorders = this.adjustBorderEnumForAndroid(value);
+    this._bitwiseBorders = this._maskedBorders.reduce((acc, cValue) => acc | cValue, 0);
 
     this._resetBackground();
     this.android.updateRippleEffectIfNeeded?.();

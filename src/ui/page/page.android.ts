@@ -31,6 +31,8 @@ import LayoutParams from '../../util/Android/layoutparams';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
 import copyObjectPropertiesWithDescriptors from '../../util/copyObjectPropertiesWithDescriptors';
 import SystemServices from '../../util/Android/systemservices';
+import ViewAndroid from '../view/view.android';
+
 
 const PorterDuff = requireClass('android.graphics.PorterDuff');
 const NativeView = requireClass('android.view.View');
@@ -44,6 +46,8 @@ const ToolbarLayoutParams = requireClass('androidx.appcompat.widget.Toolbar$Layo
 const NativeImageButton = requireClass('android.widget.ImageButton');
 const NativeTextButton = requireClass('android.widget.Button');
 const NativeRelativeLayout = requireClass('android.widget.RelativeLayout');
+const NativeYogaLayout = requireClass('com.facebook.yoga.android.YogaLayout');
+
 
 enum PageOrientationAndroid {
   PORTRAIT = 1,
@@ -106,6 +110,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
   private _headerBarColor: IColor;
   private _headerBarImage: IImage;
   private _titleLayout?: HeaderBar['titleLayout'];
+  private _layout?: HeaderBar['layout'];
   private _onBackButtonPressed: IPage['android']['onBackButtonPressed'];
   private _transitionViewsCallback: IPage['android']['transitionViewsCallback'];
   private _borderVisibility: HeaderBar['borderVisibility'];
@@ -460,6 +465,19 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           self._titleLayout = value;
         }
       },
+      get layout(): HeaderBar['layout']{
+        return self._layout;
+      },
+      set layout(view: HeaderBar['layout']) {
+        if (self._layout) {
+            self.toolbar.removeView(self._layout.nativeObject);
+        }
+        self._layout = view;
+        if(self._layout){
+            self.headerBar.android.padding = {left: 0, right: 16 };
+            self.toolbar.addView(self._layout.nativeObject, new NativeYogaLayout.LayoutParams(-1, -1));
+        }
+      },
       get borderVisibility(): HeaderBar['borderVisibility'] {
         return self._borderVisibility;
       },
@@ -499,7 +517,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
         if (TypeUtil.isBoolean(value)) {
           self._leftItemEnabled = value;
           self.actionBar.setDisplayHomeAsUpEnabled(self._leftItemEnabled);
-        }
+        } 
       },
       get height(): number {
         const resources = AndroidConfig.activityResources;
@@ -597,7 +615,10 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
             itemView = item.searchView.nativeObject;
           } else {
             const badgeButtonLayoutParams = new NativeRelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            const nativeBadgeContainer = new NativeRelativeLayout(AndroidConfig.activity);
+            const nativeBadgeContainer = item.nativeBadgeContainer || new NativeRelativeLayout(AndroidConfig.activity);
+            if(nativeBadgeContainer) {
+              nativeBadgeContainer.removeAllViews();
+            }
             nativeBadgeContainer.setLayoutParams(badgeButtonLayoutParams);
             if (item.customView) {
               const customViewContainer = new FlexLayoutAndroid();
@@ -607,9 +628,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
               }
               customViewContainer.addChild(item.customView as FlexLayoutAndroid);
               item.nativeObject = customViewContainer.nativeObject;
-            } else if (item.image instanceof ImageAndroid && (item.image?.nativeObject || (item.android as any).systemIcon)) {
-              item.nativeObject = new NativeImageButton(AndroidConfig.activity);
-            } else {
+            } else if(!item.nativeObject){ //create text button as default.
               item.nativeObject = new NativeTextButton(AndroidConfig.activity);
             }
 

@@ -47,7 +47,7 @@ export declare interface ILabel<TEvent extends string = ViewEvents, TMobile exte
    * @ios
    * @since 0.1
    */
-  font: IFont;
+  font: IFont | null;
   /**
    * Enables/disables multiple line property of a Label. If set to true
    * and the text is long enough, text will be shown in multiline. Setting multiline will override the {@link UI.Label#ellipsizeMode ellipsizeMode} prop.

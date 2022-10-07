@@ -19,18 +19,26 @@ class LocationIOS extends NativeEventEmitterComponent<LocationEvents, any, ILoca
   }
   getCurrentLocation(): ReturnType<ILocation['getCurrentLocation']> {
     return new Promise((resolve, reject) => {
-      PermissionIOS.ios
-        .requestAuthorization?.(Permissions.IOS.LOCATION)
-        .then(() => {
-          this.start();
-          this.once('locationChanged', (location) => {
-            this.stop();
-            resolve({ ...location, type: 'precise', result: PermissionResult.GRANTED }); // For iOS, location type doesn't matter at all.
-          });
-        })
-        .catch(() => {
-          reject({ type: 'precise', result: PermissionResult.DENIED });
+      const locationStatus = PermissionIOS.ios?.getAuthorizationStatus?.(Permissions.IOS['LOCATION']);
+      if (locationStatus === PermissionIOSAuthorizationStatus.NOT_DETERMINED) {
+        this.start();
+        this.once('locationChanged', (location) => {
+          this.stop();
+          resolve({ ...location, type: 'precise', result: PermissionResult.GRANTED }); // For iOS, location type doesn't matter at all.
         });
+      } else {
+        PermissionIOS.requestPermission('LOCATION')
+          .then(() => {
+            this.start();
+            this.once('locationChanged', (location) => {
+              this.stop();
+              resolve({ ...location, type: 'precise', result: PermissionResult.GRANTED }); // For iOS, location type doesn't matter at all.
+            });
+          })
+          .catch(() => {
+            reject({ type: 'precise', result: PermissionResult.DENIED });
+          });
+      }
     });
   }
   preConstruct() {

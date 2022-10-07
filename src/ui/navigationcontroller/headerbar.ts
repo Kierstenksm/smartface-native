@@ -8,6 +8,8 @@ import NavigationControllerIOS from './navigationcontroller.ios';
 import { IColor } from '../color/color';
 import { IFont } from '../font/font';
 import { IView } from '../view/view';
+import { IFlexLayout } from '../flexlayout/flexlayout';
+
 
 export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHeaderBar> implements IHeaderBar {
   appearance?: __SF_UINavigationBarAppearance;
@@ -15,6 +17,7 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
   leftItemEnabled: boolean;
   titleLayout?: IView;
   title: string;
+  layout?: IFlexLayout;
   private _transparent: boolean;
   private _transparentEmptyImage: __SF_UIImage;
   private _titleColor: IColor;

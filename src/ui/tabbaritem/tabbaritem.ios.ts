@@ -76,6 +76,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
         value: 'view'
       });
       const view = Invocation.invokeInstanceMethod(this.nativeObject, 'valueForKey:', [key], 'id');
+      if (!view) return
       this._nativeView = new FlexLayoutIOS({
         nativeObject: view
       });
@@ -120,7 +121,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
       if (typeof value.selected === 'string') {
         const image = ImageIOS.createFromFile(value.selected);
         if (image) {
-          this.nativeObject.image = image.nativeObject;
+          this.nativeObject.selectedImage = image.nativeObject;
         }
       } else {
         this.nativeObject.image = value.selected?.nativeObject || undefined;

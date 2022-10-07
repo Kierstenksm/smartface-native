@@ -145,8 +145,8 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
   set font(value: ILabel['font']) {
     this.fontInitial = value;
     this.dirty();
-    this.nativeObject.setTypeface(value.nativeObject);
-    if (value.size && typeof value.size === 'number') {
+    this.nativeObject.setTypeface(value?.nativeObject);
+    if (value?.size && typeof value.size === 'number') {
       this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
     }
   }

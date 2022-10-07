@@ -1,6 +1,5 @@
 import { IPage } from '../page/page';
-import { AbstractView, IView } from '../view/view';
-import OverScrollMode from '../shared/android/overscrollmode';
+import { IView } from '../view/view';
 import { SwipeViewEvents } from './swipeview-events';
 import { MobileOSProps } from '../../core/native-mobile-component';
 import { Point2D } from '../../primitive/point2d';
@@ -186,14 +185,6 @@ export interface ISwipeView<TEvent extends string = SwipeViewEvents, TMobile ext
    * @since 1.1.10
    */
   swipeToIndex(index: number, animated: boolean): void;
-  /**
-   * Gets/sets over-scroll mode for this view.
-   *
-   * @property {UI.Android.OverScrollMode} [overScrollMode = UI.Android.OverScrollMode.ALWAYS]
-   * @android
-   * @since 3.0.2
-   */
-  overScrollMode: OverScrollMode;
   /**
    * Gets/sets the callback which is responsible to create pages. Please note that the positions go from 0 to whatever page count is.
    * @example

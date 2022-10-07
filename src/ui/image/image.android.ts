@@ -29,7 +29,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
       throw new Error('Constructor parameters needed for Image!');
     }
 
-    if(params.android?.systemIcon) {
+    if (params.android?.systemIcon) {
       this.android.systemIcon = params.android?.systemIcon;
     }
   }
@@ -78,7 +78,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
     let newBitmap: any;
     try {
       const originalBitmap = this.nativeObject.getBitmap();
-      newBitmap = NativeBitmap.createScaledBitmap(originalBitmap, width, height, false);
+      newBitmap = NativeBitmap.createScaledBitmap(originalBitmap, Math.round(width), Math.round(height), false);
     } catch (err) {
       success = false;
       if (onFailure)
@@ -107,7 +107,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
     let newBitmap: any;
     try {
       const originalBitmap = this.nativeObject.getBitmap();
-      newBitmap = NativeBitmap.createBitmap(originalBitmap, x, y, width, height);
+      newBitmap = NativeBitmap.createBitmap(originalBitmap, Math.round(x), Math.round(y), Math.round(width), Math.round(height));
     } catch (err) {
       success = false;
       if (onFailure)
@@ -172,7 +172,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
     try {
       const out = new NativeByteArrayOutputStream();
       const bitmap = this.nativeObject.getBitmap();
-      bitmap.compress(CompressFormat[format], quality, out);
+      bitmap.compress(CompressFormat[format], Math.round(quality), out);
       byteArray = out.toByteArray();
     } catch (err) {
       success = false;
@@ -272,7 +272,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
         bitmap = imageFile.nativeObject;
       } else {
         if (width && height) {
-          bitmap = ImageAndroid.decodeSampledBitmapFromResource(imageFile.fullPath, width, height);
+          bitmap = ImageAndroid.decodeSampledBitmapFromResource(imageFile.fullPath, Math.round(width), Math.round(height));
         } else {
           bitmap = NativeBitmapFactory.decodeFile(imageFile.fullPath);
         }

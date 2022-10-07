@@ -2,7 +2,7 @@ import { GridViewSnapAlignment, IGridView, ScrollEventHandler } from './gridview
 import { Point2D } from '../../primitive/point2d';
 import UIControlEvents from '../../util/iOS/uicontrolevents';
 import GridViewItemIOS from '../gridviewitem/gridviewitem.ios';
-import LayoutManagerIOS from '../layoutmanager/layoutmanager.ios';
+import LayoutManagerIOS, { ScrollDirectionMapping } from '../layoutmanager/layoutmanager.ios';
 import ViewIOS from '../view/view.ios';
 import { GridViewEvents } from './gridview-events';
 import { IColor } from '../color/color';
@@ -55,8 +55,8 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
   }
   private getAndroidProps() {
     return {
-      saveInstanceState: () => {},
-      restoreInstanceState: () => {}
+      saveInstanceState: () => { },
+      restoreInstanceState: () => { }
     };
   }
   private getIOSProps() {
@@ -212,7 +212,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     if (!this._layoutManager) {
       return;
     }
-    const direction = this._layoutManager.scrollDirection === LayoutManagerIOS.ScrollDirection.VERTICAL ? 0 : 3; // 1 << 0 means UICollectionViewScrollPositionTop
+    const direction = this._layoutManager.scrollDirection === ScrollDirectionMapping[LayoutManagerIOS.ScrollDirection.VERTICAL] ? 0 : 3; // 1 << 0 means UICollectionViewScrollPositionTop
     this.nativeObject.scrollToItemAtIndexPathAtScrollPositionAnimated(indexPath, 1 << direction, animated !== false);
   }
   stopRefresh(): void {

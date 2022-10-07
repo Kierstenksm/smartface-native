@@ -123,7 +123,8 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     this._letterSpacing = value;
     if (NativeBuild.VERSION.SDK_INT >= 21) {
       this.dirty();
-      this.nativeObject.setLetterSpacing(value);
+      // Convert dp to em to achieve the same result as on iOS
+      this.nativeObject.setLetterSpacing(value / AndroidUnitConverter.pixelToDp(this.nativeObject.getTextSize()));
     }
   }
   get lineSpacing(): ITextView['lineSpacing'] {

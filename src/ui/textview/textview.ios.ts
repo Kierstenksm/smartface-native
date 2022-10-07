@@ -28,7 +28,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     return new __SF_UITextView();
   }
   constructor(params: Partial<ITextView> = {}) {
-    super();
+    super(params as any);
 
     //TODO: Look at it after Cenk is done with Scrollable stuff
     // UIScrollViewInheritance.addPropertiesAndMethods.call(this);
@@ -192,7 +192,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     const paragraphStyle = Invocation.invokeInstanceMethod(paragraphAlloc!, 'init', [], 'NSObject') as __SF_NSOBject;
     const argLineSpacing = new Invocation.Argument({
       type: 'CGFloat',
-      value: this.lineSpacing
+      value: this.lineSpacing || 0
     });
     Invocation.invokeInstanceMethod(paragraphStyle, 'setLineSpacing:', [argLineSpacing]);
 

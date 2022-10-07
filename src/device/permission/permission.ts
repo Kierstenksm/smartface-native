@@ -33,7 +33,8 @@ export enum PermissionResult {
 export namespace Permissions {
   export enum IOS {
     LOCATION = 'CLLocationManager',
-    CAMERA = 'PHPhotoLibrary'
+    CAMERA = 'AVCaptureDevice',
+    GALLERY = 'PHPhotoLibrary'
   }
   export enum ANDROID {
     /**
@@ -224,6 +225,7 @@ export namespace Permissions {
      * Allows to read from external storage.
      * If you granted {@link Application.Android.Permissions#WRITE_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE} permission,
      * you don't need this to granted this permission.
+     * Available on API Level 32 (Android 12) and below. You can use granular media permissions (READ_MEDIA_AUDIO, READ_MEDIA_IMAGE, READ_MEDIA_VIDEO) on API Level 33 (Android 13) and above.
      *
      * @property READ_EXTERNAL_STORAGE
      * @readonly
@@ -269,10 +271,43 @@ export namespace Permissions {
     BLUETOOTH = 'android.permission.BLUETOOTH',
     /**
      * Required to be able to connect to paired Bluetooth devices.
+     * 
      * @property BLUETOOTH_CONNECT
      * @readonly
      */
-    BLUETOOTH_CONNECT = 'android.permission.BLUETOOTH_CONNECT'
+    BLUETOOTH_CONNECT = 'android.permission.BLUETOOTH_CONNECT',
+    /**
+     * Allows the app to post notifications.
+     * Available on API Level 33 (Android 13) and above
+     * 
+     * @property POST_NOTIFICATIONS
+     * @readonly
+     */
+    POST_NOTIFICATIONS = 'android.permission.POST_NOTIFICATIONS',
+    /**
+     * Allows the app to read media audio.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_AUDIO
+     * @readonly
+     */
+    READ_MEDIA_AUDIO = 'android.permission.READ_MEDIA_AUDIO',
+    /**
+     * Allows the app to read media images.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_IMAGES
+     * @readonly
+     */
+    READ_MEDIA_IMAGES = 'android.permission.READ_MEDIA_IMAGES',
+    /**
+     * Allows the app to read media video.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_VIDEO
+     * @readonly
+     */
+    READ_MEDIA_VIDEO = 'android.permission.READ_MEDIA_VIDEO'
   }
   export const LOCATION = 'LOCATION';
   export const CAMERA = 'CAMERA';

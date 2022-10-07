@@ -85,15 +85,9 @@ export declare interface ITextView<
    *
    *     const textView = new TextView({
    *         flexGrow: 1,
-   *         lineSpacing : 20
+   *         lineSpacing: 20,
+   *         letterSpacing: 10,
    *     });
-   *
-   *     if (System.OS === System.OSType.IOS) {
-   *         textView.letterSpacing = 5;
-   *     } else{
-   *         // letterSpacing working on ANDROID Lollipop (API-21) AND UPPER
-   *         textView.letterSpacing = 0.3;
-   *     }
    *
    *     textView.onClick = function(string){
    *         console.log("String " + string);
@@ -171,19 +165,9 @@ export declare interface ITextView<
   prependOnceListener(eventName: 'linkClick', callback: (link: string) => void): void;
   prependOnceListener(eventName: TextViewEvents, callback: (...args: any[]) => void): void;
   /**
-   * Gets/sets letterSpacing on TextView. letterSpacing just work with attributedText.
+   * Gets/sets letterSpacing on TextView. letterSpacing just work with attributedText and depends on font.
    *
-   * For iOS,
-   * This value specifies the number of points by which to adjust kern-pair characters.
-   * Kerning prevents unwanted space from occurring between specific characters and depends on the font.
-   * The value 0 means kerning is disabled. The default value for this attribute is 0.
-   *
-   * For Android,
-   * Sets text letterSpacing in em units. Typical values for slight expansion will be around 0.05. Negative values tighten text.
-   * The em is simply the font size. In an element with a 2in font, 1em thus means 2in.
-   * Expressing sizes, such as margins and paddings, in em means they are related to the font size, and if the user has a big font (e.g., on a big screen) or a small font (e.g., on a handheld device), the sizes will be in proportion.
-   * Declarations such as 'text-indent: 1.5em' and 'margin: 1em' are extremely common in CSS.
-   *
+   * @property {Number} [letterSpacing = 0]
    * @android
    * @ios
    * @since 3.0.0

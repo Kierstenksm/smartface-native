@@ -39,7 +39,7 @@ export default class LabelIOS<TEvent extends string = ViewEvents, TNative = any,
   }
   set minimumFontSize(value: ILabel['minimumFontSize']) {
     this._minimumFontSize = value;
-    this.nativeObject.minimumScaleFactor = this._minimumFontSize / this.font.size;
+    this.nativeObject.minimumScaleFactor = this._minimumFontSize / (this.font as any).size;
   }
   get ellipsizeMode() {
     return NSLineBreakMode.nsLineBreakModeToEllipsizeMode(this.nativeObject.lineBreakMode);

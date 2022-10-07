@@ -11,6 +11,7 @@ import NavigationController from '../ui/navigationcontroller';
 import { IBottomTabBar } from '../ui/bottomtabbar/bottomtabbar';
 import NativeEventEmitterComponent from '../core/native-event-emitter-component';
 import SliderDrawer from '../ui/sliderdrawer';
+import { EventListenerCallback } from '../core/eventemitter';
 
 enum EmulatorResetState {
   scan,
@@ -32,16 +33,116 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
     super.preConstruct(params);
   }
 
-  onUnhandledError: IApplication['onUnhandledError'];
-  onExit: IApplication['onExit'];
-  onReceivedNotification: IApplication['onReceivedNotification'];
-  onApplicationCallReceived: IApplication['onApplicationCallReceived'];
-  onMaximize: IApplication['onMaximize'];
-  onMinimize: IApplication['onMinimize'];
-  onAppShortcutReceived: IApplication['onAppShortcutReceived'];
+  get onUnhandledError(): IApplication['onUnhandledError'] {
+    return this._onUnhandledError;
+  }
+  get onExit(): IApplication['onExit'] {
+    return this._onExit;
+  }
+  get onReceivedNotification(): IApplication['onReceivedNotification'] {
+    return this._onReceivedNotification;
+  }
+  get onApplicationCallReceived(): IApplication['onApplicationCallReceived'] {
+    return this._onApplicationCallReceived;
+  }
+  get onMaximize(): IApplication['onMaximize'] {
+    return this._onMaximize;
+  }
+  get onMinimize(): IApplication['onMinimize'] {
+    return this._onMinimize;
+  }
+  get onAppShortcutReceived(): IApplication['onAppShortcutReceived'] {
+    return this._onAppShortcutReceived;
+  }
+
+  set onUnhandledError(value: IApplication['onUnhandledError']) {
+    this._onUnhandledError = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onUnhandledError = (e) => {
+      this._onUnhandledError?.(e);
+      this.emit('unhandledError', e);
+    };
+  }
+  set onExit(value: IApplication['onExit']) {
+    this._onExit = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onExit = () => {
+      this.emit('exit');
+      this._onExit?.();
+    };
+  }
+  set onReceivedNotification(value: IApplication['onReceivedNotification']) {
+    this._onReceivedNotification = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onReceivedNotification = (e) => {
+      this._onReceivedNotification?.(e);
+      this.emit('receivedNotification', e);
+    };
+  }
+  set onApplicationCallReceived(value: IApplication['onApplicationCallReceived']) {
+    this._onApplicationCallReceived = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onUserActivityCallback = (e) => {
+      const url = Invocation.invokeInstanceMethod(e.userActivity, 'webpageURL', [], 'NSObject');
+      const type = Invocation.invokeInstanceMethod(e.userActivity, 'activityType', [], 'NSString');
+      if (url && type === 'NSUserActivityTypeBrowsingWeb') {
+        this.emit('applicationCallReceived', {
+          data: e,
+          url: url.absoluteString,
+          eventType: 'callback',
+          result: -1
+        });
+        return this.ios.onUserActivityWithBrowsingWeb?.(url.absoluteString) ?? true;
+      }
+      return false;
+    };
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onApplicationCallReceived = (e) => {
+      this._onApplicationCallReceived?.(e);
+      this.emit('applicationCallReceived', e);
+    };
+  }
+  set onMaximize(value: IApplication['onMaximize']) {
+    this._onMaximize = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onMaximize = () => {
+      console.info('onmaximize event native');
+      this._onMaximize?.();
+      this.emit('maximize');
+    };
+  }
+  set onMinimize(value: IApplication['onMinimize']) {
+    this._onMinimize = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onMinimize = () => {
+      this._onMinimize?.();
+      this.emit('minimize');
+    };
+  }
+  set onAppShortcutReceived(value: IApplication['onAppShortcutReceived']) {
+    this._onAppShortcutReceived = value;
+    //@ts-ignore TODO: global Application variable from framework. NTVE-697
+    Application.onAppShortcutReceive = (e) => {
+      //TODO: Check isEmulator
+      if (!SMFApplication.sharedInstance) {
+        return;
+      }
+      this.emit('appShortcutReceived', e);
+      this._onAppShortcutReceived?.(e);
+    };
+  }
+
   currentPage: Page;
   statusBar: typeof StatusBar;
   tabBar?: IBottomTabBar;
+
+  private _onUnhandledError: IApplication['onUnhandledError'];
+  private _onExit: IApplication['onExit'];
+  private _onReceivedNotification: IApplication['onReceivedNotification'];
+  private _onApplicationCallReceived: IApplication['onApplicationCallReceived'];
+  private _onMaximize: IApplication['onMaximize'];
+  private _onMinimize: IApplication['onMinimize'];
+  private _onAppShortcutReceived: IApplication['onAppShortcutReceived'];
   private _sliderDrawer: SliderDrawer;
   private _rootPage: NavigationController['controller'];
   private keyWindow: any;
@@ -70,72 +171,10 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
       SMFApplication.sharedInstance().performActionForShortcutItemShortcutItem = (shortcutItem: any) => {
         const params = { data: shortcutItem.userInfo };
         this.emit('appShortcutReceived', params);
-        const innerReturnValue = this.onAppShortcutReceived?.(params);
+        const innerReturnValue = this._onAppShortcutReceived?.(params);
         return typeof innerReturnValue === 'boolean' ? innerReturnValue : true;
       };
     }
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onUserActivityCallback = (e) => {
-      const url = Invocation.invokeInstanceMethod(e.userActivity, 'webpageURL', [], 'NSObject');
-      const type = Invocation.invokeInstanceMethod(e.userActivity, 'activityType', [], 'NSString');
-      if (url && type === 'NSUserActivityTypeBrowsingWeb') {
-        this.emit('applicationCallReceived', {
-          data: e,
-          url: url.absoluteString,
-          eventType: 'callback',
-          result: -1
-        });
-        return this.ios.onUserActivityWithBrowsingWeb?.(url.absoluteString) ?? true;
-      }
-      return false;
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onAppShortcutReceive = (e) => {
-      //TODO: Check isEmulator
-      if (!SMFApplication.sharedInstance) {
-        return;
-      }
-      this.emit('appShortcutReceived', e);
-      this.onAppShortcutReceived?.(e);
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onUnhandledError = (e) => {
-      this.onUnhandledError?.(e);
-      this.emit('unhandledError', e);
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onExit = () => {
-      this.emit('exit');
-      this.onExit?.();
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onReceivedNotification = (e) => {
-      this.onReceivedNotification?.(e);
-      this.emit('receivedNotification', e);
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onApplicationCallReceived = (e) => {
-      this.onApplicationCallReceived?.(e);
-      this.emit('applicationCallReceived', e);
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onMaximize = () => {
-      this.onMaximize?.();
-      this.emit('maximize');
-    };
-
-    //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onMinimize = () => {
-      this.onMinimize?.();
-      this.emit('minimize');
-    };
   }
   setAppTheme: (theme: string) => void;
   registOnItemSelectedListener(): void {
@@ -279,6 +318,73 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
     }
     Accelerometer.stop();
     Network?.cancelAll();
+  }
+
+  on(eventName: ApplicationEvents, callback: EventListenerCallback) {
+    if (eventName === 'applicationCallReceived') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onUserActivityCallback = (e) => {
+        const url = Invocation.invokeInstanceMethod(e.userActivity, 'webpageURL', [], 'NSObject');
+        const type = Invocation.invokeInstanceMethod(e.userActivity, 'activityType', [], 'NSString');
+        if (url && type === 'NSUserActivityTypeBrowsingWeb') {
+          this.emit('applicationCallReceived', {
+            data: e,
+            url: url.absoluteString,
+            eventType: 'callback',
+            result: -1
+          });
+          return this.ios.onUserActivityWithBrowsingWeb?.(url.absoluteString) ?? true;
+        }
+        return false;
+      };
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onApplicationCallReceived = (e) => {
+        this._onApplicationCallReceived?.(e);
+        this.emit('applicationCallReceived', e);
+      };
+    } else if (eventName === 'appShortcutReceived') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onAppShortcutReceive = (e) => {
+        //TODO: Check isEmulator
+        if (!SMFApplication.sharedInstance) {
+          return;
+        }
+        this.emit('appShortcutReceived', e);
+        this._onAppShortcutReceived?.(e);
+      };
+    } else if (eventName === 'unhandledError') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onUnhandledError = (e) => {
+        this._onUnhandledError?.(e);
+        this.emit('unhandledError', e);
+      };
+    } else if (eventName === 'exit') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onExit = () => {
+        this.emit('exit');
+        this._onExit?.();
+      };
+    } else if (eventName === 'receivedNotification') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onReceivedNotification = (e) => {
+        this._onReceivedNotification?.(e);
+        this.emit('receivedNotification', e);
+      };
+    } else if (eventName === 'maximize') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onMaximize = () => {
+        this._onMaximize?.();
+        this.emit('maximize');
+      };
+    } else if (eventName === 'minimize') {
+      //@ts-ignore TODO: global Application variable from framework. NTVE-697
+      Application.onMinimize = () => {
+        this._onMinimize?.();
+        this.emit('minimize');
+      };
+    }
+
+    return super.on(eventName, callback);
   }
 }
 

@@ -280,6 +280,16 @@ export interface IListViewAndroid extends ViewAndroidProps {
    * @since 3.0.2
    */
   overScrollMode: OverScrollMode;
+  /**
+   * Gets/sets the nested scrolling enable for this view.
+   * 
+   * This property should be set to false when this view is inside the bottomsheet for better scrolling experience.
+   *
+   * @property {boolean} [nestedScrollingEnabled = true]
+   * @android
+   * @since 5.0.4
+   */
+  nestedScrollingEnabled: boolean;
 }
 
 /**

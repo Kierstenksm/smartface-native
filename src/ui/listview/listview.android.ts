@@ -69,6 +69,7 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
 
     this.setNativeInner();
     this.setDataAdapter();
+
     super.preConstruct(params);
     this.addAndroidProps(this.getAndroidParams());
     this.addIOSProps(this.getIOSParams());
@@ -303,6 +304,7 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
         return self._overScrollMode;
       },
       set overScrollMode(mode: OverScrollMode) {
+        console.info('set overscrollmode: ', mode)
         self.nativeInner.setOverScrollMode(mode);
         self._overScrollMode = mode;
       },
@@ -338,6 +340,12 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
         } else {
           self.nativeInner.setJsCallbacks(null);
         }
+      },
+      get nestedScrollingEnabled() {
+        return self.nativeObject.isNestedScrollingEnabled();
+      },
+      set nestedScrollingEnabled(nestedScrollingEnabled: boolean) {
+        self.nativeObject.setNestedScrollingEnabled(nestedScrollingEnabled);
       }
     };
   }

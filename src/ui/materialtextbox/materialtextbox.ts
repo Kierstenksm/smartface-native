@@ -308,7 +308,7 @@ export interface IMaterialTextBox<
    * @ios
    * @since 3.1.3
    */
-  labelsFont: IFont;
+  labelsFont: IFont | null;
   /**
    * Gets/sets font of a Label.
    * In Android, to make hint text size as your given text size assign the font property in constructor.
@@ -327,5 +327,5 @@ export interface IMaterialTextBox<
    * @ios
    * @since 0.1
    */
-  font: IFont;
+  font: IFont | null;
 }

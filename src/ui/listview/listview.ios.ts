@@ -36,6 +36,7 @@ export default class ListViewIOS<TEvent extends string = ListViewEvents> extends
   private _refreshEnabled: IListView['refreshEnabled'];
   private _onPullRefresh: IListView['onPullRefresh'];
   private _listItemArray: ListViewItemIOS[];
+  private _onScroll: IListView['onScroll'];
   private _contentInset: IListView['contentInset'];
   constructor(params?: IListView) {
     super(params);
@@ -87,7 +88,18 @@ export default class ListViewIOS<TEvent extends string = ListViewEvents> extends
   indexByListViewItem(item: ListViewItemIOS): number {
     return this.nativeObject.indexPathForCell(item.__nativeCell).row;
   }
-  onScroll: (params?: { translation: Point2D; contentOffset: Point2D }) => void;
+
+  get onScroll(): IListView['onScroll'] {
+    return this._onScroll;
+  }
+
+  set onScroll(value: IListView['onScroll']) {
+    this._onScroll = value;
+    this.nativeObject.didScroll = (e) => {
+      this.emit('scroll', e);
+      this.onScroll?.(e);
+    };
+  }
   get onPullRefresh() {
     return this._onPullRefresh;
   }
