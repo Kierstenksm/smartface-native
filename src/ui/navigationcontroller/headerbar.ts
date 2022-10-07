@@ -44,7 +44,7 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
     if (params.navigationController) {
       nativeObject = params.navigationController.view.nativeObject.navigationBar;
       // Xcode 13.1 background bug fixes [NTVE-398]
-      if (Number(System.OSVersion) >= 15) {
+      if (parseInt(System.OSVersion) >= 15) {
         this.appearance = new __SF_UINavigationBarAppearance();
         this.appearance.configureWithOpaqueBackground();
         nativeObject.standardAppearance = this.appearance;
