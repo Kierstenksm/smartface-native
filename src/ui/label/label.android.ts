@@ -96,6 +96,12 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
         if (value) {
           self.setAutoSizeTextTypeUniformWithConfiguration();
         }
+      },
+      get includeFontPadding(): boolean {
+        return self.nativeObject.getIncludeFontPadding();
+      },
+      set includeFontPadding(value: boolean) {
+        self.nativeObject.setIncludeFontPadding(value);
       }
     });
   }

@@ -84,7 +84,7 @@ export interface WebViewAndroidProps extends ViewAndroidProps {
    */
   clearFormData(): void;
   /**
-   * Tells this WebView to clear its internal back/forward list.
+   * Tells this WebView to clear its internal back and forward list.
    *
    * @method clearHistory
    * @android
