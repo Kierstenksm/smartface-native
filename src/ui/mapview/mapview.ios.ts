@@ -88,7 +88,7 @@ export default class MapViewIOS<TEvent extends string = MapViewEvents> extends V
     if (pin instanceof Pin) {
       const uuid = pin.nativeObject.uuid;
       delete this._pinArray[uuid];
-      this.nativeObject.removeAnnotation(this.nativeObject);
+      this.nativeObject.removeAnnotation(pin.nativeObject);
     }
   }
   removeAllPins(): void {
