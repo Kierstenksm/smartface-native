@@ -5,9 +5,6 @@ import { PickerEvents } from './picker-events';
 import { IColor } from '../color/color';
 
 export default class PickerIOS<TEvent extends PickerEvents> extends ViewIOS<TEvent | PickerEvents, PickerIOSProperties> implements IPicker<TEvent | PickerEvents> {
-  protected createNativeObject() {
-    return new __SF_UIPickerView();
-  }
   protected _items: IPicker['items'] = [];
   protected _onSelected: IPicker['onSelected'];
   protected _okColor: IPicker['okColor'];
@@ -51,6 +48,13 @@ export default class PickerIOS<TEvent extends PickerEvents> extends ViewIOS<TEve
     //#endregion
 
     this.setIOSProperties();
+  }
+  protected createNativeObject() {
+    return new __SF_UIPickerView();
+  }
+  protected preConstruct(params: any) {
+    this._currentIndex = 0;
+    super.preConstruct(params);
   }
   show(ok?: (param?: { index: number }) => void, cancel?: () => void): void {
     const okFunc = function (e) {
