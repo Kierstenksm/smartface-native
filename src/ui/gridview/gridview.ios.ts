@@ -154,6 +154,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
         cell.contentView.addSubview(this.collectionViewItems[cell.uuid].nativeObject);
         this.onItemBind?.(this.collectionViewItems[cell.uuid], indexPath.row);
       }
+      this.collectionViewItems[cell.uuid].applyLayout();
       return cell;
     };
     this.nativeObject.didSelectItemAtIndexPathCallback = (collectionView, indexPath) => {
