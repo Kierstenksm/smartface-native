@@ -27,8 +27,10 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
   private _backIndicatorTransitionMaskImage: ImageIOS;
   private _titleFont?: IFont;
   private _borderVisibility: boolean;
-  setItems(items: IHeaderBarItem[]): void {}
-  setLeftItem(item: IHeaderBarItem): void {}
+  private _backgroundColor?: IColor
+
+  setItems(items: IHeaderBarItem[]): void { }
+  setLeftItem(item: IHeaderBarItem): void { }
   constructor(params: Partial<IHeaderBar> & { navigationController?: NavigationControllerIOS }) {
     super(params);
   }
@@ -72,14 +74,14 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
       }
       this.nativeObject.shadowImage = __SF_UIImage.getInstance();
       this.nativeObject.translucent = true;
-      this.nativeObject.backgroundColor = ColorIOS.TRANSPARENT.nativeObject;
+      this.backgroundColor = ColorIOS.TRANSPARENT
       this._borderVisibility = false;
     } else {
       if (this.nativeObject.backgroundImage === this._transparentEmptyImage) {
         this.nativeObject.backgroundImage = undefined;
       }
       this.nativeObject.shadowImage = undefined;
-      this.nativeObject.translucent = false;
+      this.nativeObject.translucent = this._backgroundColor?.alpha() === 0;
       this._borderVisibility = true;
     }
     this._transparent = value;
@@ -118,10 +120,12 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
   }
   get backgroundColor(): IHeaderBar['backgroundColor'] {
     return new ColorIOS({
-      color: this.nativeObject.barTintColor
+      color: this._backgroundColor?.nativeObject ?? this.nativeObject.barTintColor
     });
   }
   set backgroundColor(value: IHeaderBar['backgroundColor']) {
+    this._backgroundColor = value;
+
     if (value instanceof ColorIOS) {
       // Xcode 13.1 background bug fixes [NTVE-398]
       if (parseInt(System.OSVersion) >= 15) {
@@ -176,7 +180,7 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
     }
   }
   private __updateTitleTextAttributes() {
-    // Xcode 13.1 background bug fixes [NTVE-398]
+    // Xcode 13.1 background bug fixes [NTVE-398] 
     if (parseInt(System.OSVersion) >= 15) {
       if (this.appearance) {
         this.appearance.titleTextAttributes = {
@@ -201,7 +205,13 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
         return self.nativeObject.translucent;
       },
       set translucent(value: IHeaderBar['ios']['translucent']) {
-        self.nativeObject.translucent = value;
+        // Apple unhandle headerbar background color transparency by background color or transparent properties
+        // So we force translucent to true if the background color assigned as transparent
+        if (self._backgroundColor?.alpha() === 0 && parseInt(System.OSVersion) >= 15) {
+          self.nativeObject.translucent = true;
+        } else {
+          self.nativeObject.translucent = value;
+        }
       },
       get titleFont(): IHeaderBar['ios']['titleFont'] {
         return self._titleFont;
