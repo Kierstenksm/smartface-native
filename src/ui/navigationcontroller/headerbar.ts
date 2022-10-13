@@ -205,7 +205,7 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
         return self.nativeObject.translucent;
       },
       set translucent(value: IHeaderBar['ios']['translucent']) {
-        if (self._backgroundColor?.alpha() === 0) {
+        if (self._backgroundColor?.alpha() === 0 && parseInt(System.OSVersion) >= 15) {
           self.nativeObject.translucent = true;
         } else {
           self.nativeObject.translucent = value;
