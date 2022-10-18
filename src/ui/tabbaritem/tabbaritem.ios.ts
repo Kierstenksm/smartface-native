@@ -59,7 +59,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
       }
     };
   }
-  setProperties(params): void {}
+  setProperties(params): void { }
   get route(): string {
     return this._route;
   }
@@ -127,7 +127,21 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
         this.nativeObject.image = value.selected?.nativeObject || undefined;
       }
     }
+
+    this.resizeTabBarIconIfNeeded()
   }
+
+  // Resizing handled internally inside framework-ios based on
+  // the actually size of image and device scale factor (1x, 2x 3x)
+  private resizeTabBarIconIfNeeded() {
+    if (this.nativeObject.image) {
+      this.nativeObject.image = this.nativeObject.image.resize(25, 25)
+    }
+    if (this.nativeObject.selectedImage) {
+      this.nativeObject.selectedImage = this.nativeObject.selectedImage.resize(25, 25)
+    }
+  }
+
   get badge(): IBadge {
     // This is done this way because nativeObject is always changing. Always create another badge object.
     // This might reduce performance a bit, but this will stay like this until there's a better solution.
