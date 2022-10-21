@@ -100,7 +100,7 @@ export default class BottomTabBarAndroid extends NativeMobileComponent<any, IBot
       if (tabbarItem.android.attributedTitleBuilder !== undefined) {
         title = tabbarItem.android.attributedTitleBuilder;
       } else {
-        title = tabbarItem.title || `Title ${index}`;
+        title = tabbarItem.title;
       }
 
       tabbarItem.nativeObject = btbMenu.add(0, index, 0, title);
