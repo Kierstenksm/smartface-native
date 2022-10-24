@@ -124,6 +124,8 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
     });
   }
   set backgroundColor(value: IHeaderBar['backgroundColor']) {
+    if (this.transparent) { return }
+
     this._backgroundColor = value;
 
     if (value instanceof ColorIOS) {
