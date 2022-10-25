@@ -129,7 +129,14 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
     });
   }
   set unselectedItemColor(value: IColor) {
-    this.nativeObject.unselectedItemTintColor = value.nativeObject;
+    if (parseInt(SystemIOS.OSVersion) >= 15) {
+      this.appearance.normalStateColor = value.nativeObject;
+
+      this.nativeObject.standardAppearance = this.appearance;
+      this.nativeObject.scrollEdgeAppearance = this.appearance;
+    } else {
+      this.nativeObject.unselectedItemTintColor = value.nativeObject;
+    }
   }
   get backgroundImage() {
     return ImageIOS.createFromImage(this.nativeObject.backgroundImage);
