@@ -14,14 +14,22 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
   }
   async requestPermission(permission: Parameters<IPermission['requestPermission']>['0']): Promise<PermissionResult> {
     // const requestTexts = options?.requestTexts || {};
-    const status = this.ios?.getAuthorizationStatus?.(Permissions.IOS[permission]);
+    let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY' ;
+    if (permission === Permissions.camera) {
+      _permission = 'CAMERA';
+    } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise) {
+      _permission = 'LOCATION';
+    } else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio) {
+      _permission = 'GALLERY';
+    }
+    const status = this.ios?.getAuthorizationStatus?.(Permissions.IOS[_permission]);
     if (status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS || status === PermissionIOSAuthorizationStatus.AUTHORIZED_WHEN_IN_USE) {
       return PermissionResult.GRANTED; // Already granted, no need to request again
     } else if (status === PermissionIOSAuthorizationStatus.RESTRICTED) {
       throw PermissionResult.NEVER_ASK_AGAIN; // Restricted, cannot request again
     } else {
       try {
-        await this.ios?.requestAuthorization?.(Permissions.IOS[permission]);
+        await this.ios?.requestAuthorization?.(Permissions.IOS[_permission]);
         return PermissionResult.GRANTED;
       } catch (e) {
         throw PermissionResult.DENIED;
@@ -52,7 +60,7 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
               }
             });
             Invocation.invokeClassMethod(permission, 'requestAccessForMediaType:completionHandler:', [argType, argCallback]);
-            
+
           });
         }
         else {
@@ -76,7 +84,7 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
       checkPermission() {
         return true;
       },
-      onRequestPermissionsResult: () => {},
+      onRequestPermissionsResult: () => { },
       requestPermissions() {
         return Promise.resolve([]);
       },
