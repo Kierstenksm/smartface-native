@@ -181,7 +181,7 @@ export interface INetwork {
   get SMSEnabled(): boolean;
   /**
    *
-   * Returns the 'International Mobile Subscriber Identity' of the device. Requires the {@link Application.Android.Permissions#READ_PHONE_STATE}  
+   * Returns the 'International Mobile Subscriber Identity' of the device. Requires the {@link Permissions.android#phone}  
    * If your app runs on Android 10 (API level 29) or above, a SecurityException occurs.
    * @property {String} IMSI
    * @deprecated
@@ -193,8 +193,7 @@ export interface INetwork {
   /**
    *
    * Returns the MAC address of the bluetooth adaptor on the device.
-   * This requires the Permissions.ANDROID.BLUETOOTH_CONNECT permission on Android 12 and higher, 
-   * and the Permissions.ANDROID.BLUETOOTH permission for Android 11 and below.
+   * This requires the {@link Permissions.android#bluetoothConnect} permission.
    * @property {String} bluetoothMacAddress
    * @readonly
    * @static

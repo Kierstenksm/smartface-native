@@ -151,7 +151,7 @@ export interface ILocationIOSProps {
  * @class Device.Location
  * @since 0.1
  *
- * Device.Location allows capturing location change events on the device. In Android, ACCESS_FINE_LOCATION permission must be taken on run time for 23 api level and above.
+ * Device.Location allows capturing location change events on the device. In Android, Permissions#location permission must be taken on run time for 23 api level and above.
  *
  *     @example
  *     import Timer    from '@smartface/native/timer';

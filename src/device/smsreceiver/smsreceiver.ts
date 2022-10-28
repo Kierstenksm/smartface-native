@@ -10,7 +10,7 @@ export interface ISMSReceiver {
   unRegisterReceiver(): void;
   /**
    * Register a Sms-BroadcastReceiver to be run in the main activity thread.
-   * This needs RECEIVE_SMS permission.
+   * This needs Permissions.android#sms permission.
    */
   registerReceiver(): void;
 }
