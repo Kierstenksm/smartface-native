@@ -77,7 +77,7 @@ export const RecognizerError = <const>{
  */
 export interface ISpeechRecognizer {
   /**
-   * Starts speech recognition service. {@link Application.Android.Permissions#RECORD_AUDIO} is required for Android platform.
+   * Starts speech recognition service. {@link Permissions.android#microphone} is required for Android platform.
    *
    * @param {Object} params Object describing callbacks
    * @param {String} [params.locale] IETF language tag for example "en_US"

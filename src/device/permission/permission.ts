@@ -15,6 +15,32 @@ export enum PermissionResult {
   DENIED,
   NEVER_ASK_AGAIN
 }
+
+type BluetoothConnectPermissionGroup = "bluetoothConnect";
+type MicrophonePermissionGroup = "microphone";
+type NotificationPermissionGroup = "notification";
+type ContactPermissionGroup = "contact";
+type PhonePermissionGroup = "phone";
+type SMSPermissionGroup = "sms";
+type CameraPermissionGroup = "camera";
+type LocationPermissionGroupApproximate = "locationApproximate";
+type LocationPermissionGroupPrecise = "locationPrecise";
+type LocationPermissionGroup = {
+  approximate: LocationPermissionGroupApproximate;
+  precise: LocationPermissionGroupPrecise
+}
+type LocationPermissions = LocationPermissionGroup | LocationPermissionGroupApproximate | LocationPermissionGroupPrecise;
+type StoragePermissionGroupReadImageAndVideo = "storageReadImageAndVideo";
+type StoragePermissionGroupReadAudio = "storageReadAudio";
+type StoragePermissionGroup = {
+  readImageAndVideo: StoragePermissionGroupReadImageAndVideo,
+  readAudio: StoragePermissionGroupReadAudio,
+}
+type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
+export type AndroidPermissions = BluetoothConnectPermissionGroup | MicrophonePermissionGroup
+  | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
+export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions;
+
 /**
  * Holds values of available permissions. This is a union of Android and iOS permissions.
  *
@@ -31,11 +57,19 @@ export enum PermissionResult {
  * Permission.requestPermission(Permissions.CAMERA);
  */
 export namespace Permissions {
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#ios
+   */
   export enum IOS {
     LOCATION = 'CLLocationManager',
     CAMERA = 'AVCaptureDevice',
     GALLERY = 'PHPhotoLibrary'
   }
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#android
+   */
   export enum ANDROID {
     /**
      * Allows to read the calendar data.
@@ -309,8 +343,42 @@ export namespace Permissions {
      */
     READ_MEDIA_VIDEO = 'android.permission.READ_MEDIA_VIDEO'
   }
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#location
+   */
   export const LOCATION = 'LOCATION';
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#camera
+   */
   export const CAMERA = 'CAMERA';
+
+  export const android: {
+    bluetoothConnect: BluetoothConnectPermissionGroup,
+    microphone: MicrophonePermissionGroup,
+    notification: NotificationPermissionGroup,
+    phone: PhonePermissionGroup,
+    contact: ContactPermissionGroup,
+    sms: SMSPermissionGroup,
+  } = {
+    bluetoothConnect: 'bluetoothConnect',
+    microphone: 'microphone',
+    notification: 'notification',
+    phone: 'phone',
+    contact: 'contact',
+    sms: 'sms',
+  }
+  export type ios = {}
+  export const camera: CameraPermissionGroup = 'camera';
+  export const location: LocationPermissionGroup = {
+    approximate: 'locationApproximate',
+    precise: 'locationPrecise',
+  };
+  export const storage: StoragePermissionGroup = {
+    readImageAndVideo: 'storageReadImageAndVideo',
+    readAudio: 'storageReadAudio',
+  };
 }
 
 export interface PermissionIOSProps {
@@ -337,7 +405,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  shouldShowRequestPermissionRationale(permission: Permissions.ANDROID): boolean;
+  shouldShowRequestPermissionRationale(permission: Permissions.ANDROID | AndroidPermissions | CommonPermissions): boolean;
   /**
    * This event is called after Application.requestPermissions function. This event is fired in asynchronous way.
    *
@@ -357,7 +425,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  checkPermission(permission: Permissions.ANDROID): boolean;
+  checkPermission(permission: Permissions.ANDROID | AndroidPermissions | CommonPermissions): boolean;
   /**
    * With requestPermissions, the System Dialog will appear to ask for permission grant by user for dangerous(privacy) permissions.
    * {@link Application.android#onRequestPermissionsResult onRequestPermissionsResult} will be fired after user interact with permission dialog.
@@ -375,7 +443,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  requestPermissions(permissions: Permissions.ANDROID[] | Permissions.ANDROID, requestIdentifier?: number): Promise<PermissionResult[]>;
+  requestPermissions(permissions: Permissions.ANDROID[] | Permissions.ANDROID | AndroidPermissions | CommonPermissions, requestIdentifier?: number): Promise<PermissionResult[]>;
 }
 
 export interface IPermission extends IEventEmitter<PermissionEvents>, INativeMobileComponent<any, MobileOSProps<PermissionIOSProps, PermissionAndroidProps>> {
@@ -384,7 +452,7 @@ export interface IPermission extends IEventEmitter<PermissionEvents>, INativeMob
    * For Android, this will override onRequestPermissionsResult method, therefore if you want to handle another android specific permissions,
    * please override the method again.
    */
-  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'>): Promise<PermissionResult>;
+  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | CommonPermissions): Promise<PermissionResult>;
 
   on(eventName: 'requestPermissionsResult', callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;
   on(eventName: PermissionEvents, callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;

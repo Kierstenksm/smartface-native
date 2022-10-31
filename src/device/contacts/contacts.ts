@@ -32,7 +32,7 @@ export class ContactsBase extends NativeComponent {
   public readonly Contact: ConstructorOf<IContact, Partial<IContact>>;
   /**
    * This function adds a contact to contact list with specified properties. You need check
-   * {@link Application.Android.Permissions#WRITE_CONTACTS} before adding contact.
+   * {@link Permissions.android#contact} before adding contact.
    *
    *
    *     @example
@@ -66,7 +66,7 @@ export class ContactsBase extends NativeComponent {
   }
   /**
    * This function shows contact list. It allows user to pick a data from the list.You need check
-   * {@link Application.android.Permissions#READ_CONTACTS} before picking contact.
+   * {@link Permissions.android#contact} before picking contact.
    *
    *
    *     @example
@@ -96,7 +96,7 @@ export class ContactsBase extends NativeComponent {
   }
   /**
    * This function returns a contact array.You need check
-   * {@link Application.Android.Permissions#READ_CONTACTS} before using this function.
+   * {@link Permissions.android#contact} before using this function.
    *
    *
    *     @example
@@ -126,7 +126,7 @@ export class ContactsBase extends NativeComponent {
 
   /**
    * This function searches contacts by given phone number.You need check
-   * {@link Application.android.Permissions#READ_CONTACTS} permission.
+   * {@link Permissions.android#contact} permission.
    *
    *
    *     @example
