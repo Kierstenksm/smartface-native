@@ -64,7 +64,11 @@ class PermissionAndroidClass extends NativeEventEmitterComponent<PermissionEvent
     for (const permissonHandler of permissionHandlers) {
       const result = await permissonHandler.requestPermission(permission as AndroidAndCommonPermissions);
       if (result !== undefined) {
-        return result;
+        if (result === PermissionResult.GRANTED) {
+          return result;
+        } else {
+          return Promise.reject(PermissionResult.DENIED);
+        }
       }
     }
     return new Promise(async (resolve, reject) => {
@@ -298,7 +302,7 @@ class LocationPermissionHandler extends PermissionHandler {
 
   override checkPermission(permission: AndroidAndCommonPermissions): boolean | undefined {
     if (permission === Permissions.location) {
-      return this.checkPermissions(this.locationPermissions);
+      return nativeCheckPermission(this.locationPermissions[0]) || nativeCheckPermission(this.locationPermissions[1]);
     } else if (permission === Permissions.location.approximate) {
       return nativeCheckPermission(Permissions.ANDROID.ACCESS_COARSE_LOCATION);
     } else if (permission === Permissions.location.precise) {
@@ -309,7 +313,9 @@ class LocationPermissionHandler extends PermissionHandler {
 
   override async requestPermission(permission: AndroidAndCommonPermissions): Promise<PermissionResult | undefined> {
     if (permission === Permissions.location) {
-      return this.requestPermissions(this.locationPermissions);
+      const results = await nativeRequestPermissions(this.locationPermissions);
+      const result = results[0] === PermissionResult.GRANTED || results[1] === PermissionResult.GRANTED;
+      return result ? PermissionResult.GRANTED : PermissionResult.DENIED;
     } else if (permission === Permissions.location.approximate) {
       return (await nativeRequestPermissions(Permissions.ANDROID.ACCESS_COARSE_LOCATION))[0];
     } else if (permission === Permissions.location.precise) {
