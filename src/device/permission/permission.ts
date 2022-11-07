@@ -452,7 +452,7 @@ export interface IPermission extends IEventEmitter<PermissionEvents>, INativeMob
    * For Android, this will override onRequestPermissionsResult method, therefore if you want to handle another android specific permissions,
    * please override the method again.
    */
-  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | CommonPermissions): Promise<PermissionResult>;
+  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID' | 'location' | 'storage'> | CommonPermissions): Promise<PermissionResult>;
 
   on(eventName: 'requestPermissionsResult', callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;
   on(eventName: PermissionEvents, callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;
