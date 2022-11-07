@@ -26,14 +26,66 @@ type CameraPermissionGroup = "camera";
 type LocationPermissionGroupApproximate = "locationApproximate";
 type LocationPermissionGroupPrecise = "locationPrecise";
 type LocationPermissionGroup = {
+  /**
+    * Allows an app to access approximate location.
+    * 
+    * Following permission must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *
+    * @property approximate
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
   approximate: LocationPermissionGroupApproximate;
+
+  /**
+    * Allows an app to access precise location.
+    * 
+    * Following permissions must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_FINE_LOCATION
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *
+    * @property precise
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
   precise: LocationPermissionGroupPrecise
 }
 type LocationPermissions = LocationPermissionGroup | LocationPermissionGroupApproximate | LocationPermissionGroupPrecise;
 type StoragePermissionGroupReadImageAndVideo = "storageReadImageAndVideo";
 type StoragePermissionGroupReadAudio = "storageReadAudio";
 type StoragePermissionGroup = {
+  /**
+    * Allows to read and write images and videos.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_IMAGES
+    *   android.permission.READ_MEDIA_VIDEO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property readImageAndVideo
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
   readImageAndVideo: StoragePermissionGroupReadImageAndVideo,
+
+  /**
+    * Allows to read and write audio.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_AUDIO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property readAudio
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
   readAudio: StoragePermissionGroupReadAudio,
 }
 type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
@@ -355,11 +407,93 @@ export namespace Permissions {
   export const CAMERA = 'CAMERA';
 
   export const android: {
+    /**
+    * Allows to find and connect Bluetooth devices.
+    * Checks if android.permission.BLUETOOTH is defined in manifest file in Android 11 and below, shows permission dialog in Android 12 and above.
+    * 
+    * Following permissions must be added to AndroidManifest.xml.
+    *   android.permission.BLUETOOTH_CONNECT
+    *   android.permission.BLUETOOTH
+    *
+    * @property bluetoothConnect
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
     bluetoothConnect: BluetoothConnectPermissionGroup,
+
+    /**
+    * Allows to record audio.
+    * 
+    * Following permissions must be added to AndroidManifest.xml.
+    *   android.permission.RECORD_AUDIO
+    *
+    * @property microphone
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
     microphone: MicrophonePermissionGroup,
+
+    /**
+    * Allows to send notification.
+    * Always return true on Android 12L and below.
+    * 
+    * Following permission must be added to AndroidManifest.xml.
+    *   android.permission.POST_NOTIFICATIONS
+    *
+    * @property notification
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
     notification: NotificationPermissionGroup,
+
+    /**
+    * Allows to make and manage phone calls.
+    *
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_PHONE_STATE
+    *   android.permission.CALL_PHONE
+    *   android.permission.USE_SIP
+    * 
+    * @property phone
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
     phone: PhonePermissionGroup,
+
+    /**
+     * Allows to access the contacts.
+     * 
+     * Some or all of the following permissions must be added to AndroidManifest.xml.
+     *   android.permission.READ_CONTACTS
+     *   android.permission.WRITE_CONTACTS
+     *   android.permission.GET_ACCOUNTS
+     *
+     * @property contact
+     * @readonly
+     * @android
+     * @since 5.0.5
+     */
     contact: ContactPermissionGroup,
+
+    /**
+    * Allows to send and view sms messages.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.SEND_SMS
+    *   android.permission.READ_SMS
+    *   android.permission.RECEIVE_SMS
+    *   android.permission.RECEIVE_WAP_PUSH
+    *   android.permission.RECEIVE_MMS
+    *
+    * @property sms
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
     sms: SMSPermissionGroup,
   } = {
     bluetoothConnect: 'bluetoothConnect',
@@ -370,11 +504,55 @@ export namespace Permissions {
     sms: 'sms',
   }
   export type ios = {}
+
+  /**
+    * Required to be able to access the camera device.
+    *
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.CAMERA
+    * 
+    * @property camera
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
   export const camera: CameraPermissionGroup = 'camera';
+
+  /**
+    * Allows an app to access location.
+    *
+    * For Android, some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *   android.permission.ACCESS_FINE_LOCATION
+    * 
+    * @property location
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
   export const location: LocationPermissionGroup = {
     approximate: 'locationApproximate',
     precise: 'locationPrecise',
   };
+
+  /**
+    * Allows to read and write storage.
+    * 
+    * For Android, some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_IMAGES
+    *   android.permission.READ_MEDIA_AUDIO
+    *   android.permission.READ_MEDIA_VIDEO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property storage
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
   export const storage: StoragePermissionGroup = {
     readImageAndVideo: 'storageReadImageAndVideo',
     readAudio: 'storageReadAudio',
