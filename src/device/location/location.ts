@@ -284,5 +284,6 @@ export interface ILocation<TEvent extends string = LocationEvents, TMobile exten
   };
   Android: {
     Priority: typeof LocationAndroidPriority;
+    SettingsStatusCodes: typeof LocationAndroidSettingsStatusCodes;
   };
 }
