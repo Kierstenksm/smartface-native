@@ -564,12 +564,12 @@ export interface PermissionIOSProps {
    * Invokes iOS permission type in order to check the status of the permission
    * @param permission iOS Native permission type. E.g. 'PHPPhotoLibrary'. See IOSPermission value for all available permissions.
    */
-  getAuthorizationStatus(permission: Permissions.IOS): PermissionIOSAuthorizationStatus;
+  getAuthorizationStatus(permission: Permissions.IOS | CommonPermissions): PermissionIOSAuthorizationStatus;
   /**
    * Requests given permission.
    * @returns Promise that resolves when the permission is granted. If you want to get the status of the permission after the promise, please use getAuthorizationStatus again.
    */
-  requestAuthorization(permission: Permissions.IOS): Promise<void>;
+  requestAuthorization(permission: Permissions.IOS | CommonPermissions): Promise<void>;
 }
 
 export interface PermissionAndroidProps {
