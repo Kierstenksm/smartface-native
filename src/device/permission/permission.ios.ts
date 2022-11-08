@@ -61,7 +61,6 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
         return permissionResult ?? PermissionIOSAuthorizationStatus.NOT_DETERMINED;
       },
       requestAuthorization(permission: Permissions.IOS | CommonPermissions): Promise<void> {
-        console.info('permission:', permission)
         if (permission === Permissions.IOS.CAMERA) {
           return new Promise((resolve, reject) => {
 
