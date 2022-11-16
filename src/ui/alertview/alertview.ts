@@ -1,5 +1,6 @@
 import { INativeComponent } from '../../core/inative-component';
 import { MobileOSProps, NativeMobileComponent } from '../../core/native-mobile-component';
+import KeyboardType from '../shared/keyboardtype';
 
 export interface IAlertViewAndroidProps {
   /**
@@ -185,6 +186,7 @@ export interface IAlertView extends INativeComponent, MobileOSProps<{}, IAlertVi
     text: string;
     hint: string;
     isPassword: boolean;
+    keyboardType: KeyboardType;
     android: Partial<{
       width: number;
       height: number;
@@ -214,6 +216,7 @@ export declare class AbstractAlertView extends NativeMobileComponent<any, Mobile
     text: string;
     hint: string;
     isPassword: boolean;
+    keyboardType: KeyboardType;
     android: Partial<{ width: number; height: number; viewSpacings: { left: number; top: number; right: number; bottom: number } }>;
   }): void;
   static Android: {

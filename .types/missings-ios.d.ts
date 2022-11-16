@@ -538,7 +538,7 @@ declare class __SF_UIAlertController extends __SF_NSOBject {
   static createAlertController(style: number): __SF_UIAlertController;
   static present(view: __SF_UIAlertControllerView): any;
   static dismissAlert(view: __SF_UIAlertControllerView, delegate: any /* TODO: Add delegate type */): any;
-  static addTextFieldArea(view: __SF_UIAlertControllerView, text: string, hint: string, isPassword: boolean): any;
+  static addTextFieldArea(view: __SF_UIAlertControllerView, text: string, hint: string, isPassword: boolean, keyboardType: number): any;
   title: string;
   addAction(action: __SF_UIAlertAction): void;
 }
