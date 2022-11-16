@@ -161,7 +161,7 @@ export interface IVideoViewAndroidProps extends ViewAndroidProps {
 
   /**
    * Sets whether a loading indicator is displayed when the player is in the buffering state.
-   * The loading indicatorr is not displayed by default.
+   * The loading indicator is not displayed by default.
    *
    * @property {Boolean} [loadingIndicatorEnabled = false]
    * @android
@@ -170,8 +170,9 @@ export interface IVideoViewAndroidProps extends ViewAndroidProps {
   loadingIndicatorEnabled: boolean;
 
   /**
-   * Setting this event makes the fullscreen button appear. The event to be notified when the fullscreen button is clicked, or null to remove the current listener and hide the fullscreen button.
-   *
+   * Setting this event makes the fullscreen button appear. The event to be notified when the fullscreen button is clicked, or null to remove the current listener and hide the fullscreen button. 
+   * This is not the fullscreen implementation, so the fullscreen feature needs to implemented.
+   * 
    * @event onFullScreenModeChanged
    * @param {Function} callback
    * @param {Boolean} callback.isFullScreen true if the video rendering surface should be fullscreen false otherwise.
@@ -248,7 +249,8 @@ export interface IVideoViewAndroidProps extends ViewAndroidProps {
 
   /**
    * Sets the full screen button image to minimize/maximize manually. If the {@link UI.VideoView#onFullScreenModeChanged onFullScreenModeChanged} callback wasn't assign, there won't be any changes.
-   *
+   * This is not the fullscreen implementation, so the fullscreen feature needs to implemented.
+   * 
    * @method setFullScreenButtonImage
    * @param {Boolean} isInFullScreen  if true, full screen button image will be minimize.
    * @android
