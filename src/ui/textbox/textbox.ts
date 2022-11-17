@@ -13,6 +13,24 @@ import { MobileOSProps } from '../../core/native-mobile-component';
 import { TextViewAndroidPRoperties } from '../textview/textview';
 
 export interface TextBoxAndroidProps extends TextViewAndroidPRoperties {
+  /**
+   * Gets/sets the cursor position of TextBox.
+   *
+   * @property {Object} cursorPosition
+   * @property {Number} cursorPosition.start
+   * @property {Number} cursorPosition.end
+   * @android
+   * @deprecated
+   * @since 2.0.8
+   * @example
+   * ```
+   * import TextBox from '@smartface/native/ui/textbox';
+   *
+   * const textBox = new TextBox();
+   * 	console.info(textBox.cursorPosition);
+   *
+   * ```
+   */
   cursorPosition: {
     start: number;
     end: number;
@@ -164,7 +182,6 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @android
    * @ios
    * @since 2.0.8
-   * @deprecated
    * @example
    * ```
    * import TextBox from '@smartface/native/ui/textbox';

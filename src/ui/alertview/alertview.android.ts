@@ -97,7 +97,7 @@ export default class AlertViewAndroid extends NativeMobileComponent<any, IAlertV
     });
     if (isPassword) {
       mTextBox.isPassword = isPassword;
-      mTextBox.android.cursorPosition = {
+      mTextBox.cursorPosition = {
         start: text.length,
         end: text.length
       };
