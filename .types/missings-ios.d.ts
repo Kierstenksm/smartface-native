@@ -1162,6 +1162,7 @@ declare class __SF_CLLocationManager {
   stopUpdatingLocation(): void;
   lastKnownLocation(): any;
   requestWhenInUseAuthorization(): void;
+  static getAuthorizationPhotoLibrary(): number
 }
 
 declare class __SF_CLLocationManagerDelegate {

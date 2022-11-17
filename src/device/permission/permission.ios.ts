@@ -16,14 +16,13 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
 
   mapCommonPermissionArgumansToIosTypes(permission: Permissions.IOS | CommonPermissions | Parameters<IPermission['requestPermission']>['0']): Permissions.IOS {
     let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY';
-    if (permission === Permissions.camera) {
+    if (permission === Permissions.camera || permission === Permissions.IOS.CAMERA) {
       _permission = 'CAMERA';
-    } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise) {
+    } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise || permission ===  Permissions.IOS.LOCATION) {
       _permission = 'LOCATION';
-    } else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio) {
+    } else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio || Permissions.IOS.GALLERY) {
       _permission = 'GALLERY';
     }
-
     return Permissions.IOS[_permission]
   }
 
@@ -31,7 +30,8 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     // const requestTexts = options?.requestTexts || {};
     const mappedPermission = this.mapCommonPermissionArgumansToIosTypes(permission);
     const status = this.ios?.getAuthorizationStatus?.(mappedPermission);
-    if (status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS || status === PermissionIOSAuthorizationStatus.AUTHORIZED_WHEN_IN_USE) {
+    if (status === PermissionIOSAuthorizationStatus.DENIED) throw PermissionResult.DENIED;
+    else if (status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS || status === PermissionIOSAuthorizationStatus.AUTHORIZED_WHEN_IN_USE) {
       return PermissionResult.GRANTED; // Already granted, no need to request again
     } else if (status === PermissionIOSAuthorizationStatus.RESTRICTED) {
       throw PermissionResult.NEVER_ASK_AGAIN; // Restricted, cannot request again
@@ -50,14 +50,23 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     return {
       getAuthorizationStatus(permission: Permissions.IOS | CommonPermissions): PermissionIOSAuthorizationStatus {
         let _permission;
+        let permissionResult;
+
         const mappedPermission = self.mapCommonPermissionArgumansToIosTypes(permission);
         if (mappedPermission) {
           _permission = mappedPermission;
         } else {
           _permission = permission;
         }
+        /*
+          TODO: 
+        */
 
-        const permissionResult = Invocation.invokeClassMethod(_permission, 'authorizationStatus', [], 'int');
+        if (_permission === Permissions.IOS.GALLERY) {
+          permissionResult = __SF_CLLocationManager.getAuthorizationPhotoLibrary();
+        } else {
+          permissionResult = Invocation.invokeClassMethod(_permission, 'authorizationStatus', [], 'int');
+        }
         return permissionResult ?? PermissionIOSAuthorizationStatus.NOT_DETERMINED;
       },
       requestAuthorization(permission: Permissions.IOS | CommonPermissions): Promise<void> {
