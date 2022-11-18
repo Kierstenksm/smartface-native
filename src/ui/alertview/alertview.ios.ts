@@ -1,8 +1,28 @@
 import { NativeMobileComponent } from '../../core/native-mobile-component';
+import KeyboardType from '../shared/keyboardtype';
 import { ButtonType, IAlertView } from './alertview';
 
 enum MethodNames {
   onDismiss = 'onDismiss'
+}
+
+const IOSKeyboardTypes = {
+  default: 0, 
+  URL: 3,
+  numberPad: 4, 
+  phonePad: 5, 
+  namePhonePad: 6, 
+  emailAddress: 7, 
+  decimalPad: 8, 
+};
+
+const ContentKeyboardTypesMapping = {
+  [KeyboardType.DEFAULT] : IOSKeyboardTypes.default,
+  [KeyboardType.NUMBER] : IOSKeyboardTypes.numberPad,
+  [KeyboardType.URL] : IOSKeyboardTypes.URL,
+  [KeyboardType.PHONE] : IOSKeyboardTypes.phonePad,
+  [KeyboardType.EMAILADDRESS] : IOSKeyboardTypes.emailAddress,
+  [KeyboardType.DECIMAL] : IOSKeyboardTypes.decimalPad,
 }
 
 export default class AlertViewIOS extends NativeMobileComponent<any, IAlertView> implements IAlertView {
@@ -64,7 +84,7 @@ export default class AlertViewIOS extends NativeMobileComponent<any, IAlertView>
     }
   }
   addTextBox(params: Parameters<IAlertView['addTextBox']>['0']): void {
-    __SF_UIAlertController.addTextFieldArea(this.nativeObject, params.text, params.hint, params.isPassword);
+    __SF_UIAlertController.addTextFieldArea(this.nativeObject, params.text, params.hint, params.isPassword, ContentKeyboardTypesMapping[params.keyboardType ?? KeyboardType.DEFAULT]);
   }
 
   static Android = {
