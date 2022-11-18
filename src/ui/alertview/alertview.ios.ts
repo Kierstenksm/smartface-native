@@ -85,7 +85,7 @@ export default class AlertViewIOS extends NativeMobileComponent<any, IAlertView>
     }
   }
   addTextBox(params: Parameters<IAlertView['addTextBox']>['0']): void {
-    __SF_UIAlertController.addTextFieldArea(this.nativeObject, params.text, params.hint, params.isPassword, ContentKeyboardTypesMapping[params.keyboardType]);
+    __SF_UIAlertController.addTextFieldArea(this.nativeObject, params.text, params.hint, params.isPassword, ContentKeyboardTypesMapping[params.keyboardType ?? KeyboardType.DEFAULT]);
   }
 
   static Android = {

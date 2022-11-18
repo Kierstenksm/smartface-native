@@ -186,7 +186,7 @@ export interface IAlertView extends INativeComponent, MobileOSProps<{}, IAlertVi
     text: string;
     hint: string;
     isPassword: boolean;
-    keyboardType: KeyboardType;
+    keyboardType?: KeyboardType;
     android: Partial<{
       width: number;
       height: number;
@@ -216,7 +216,7 @@ export declare class AbstractAlertView extends NativeMobileComponent<any, Mobile
     text: string;
     hint: string;
     isPassword: boolean;
-    keyboardType: KeyboardType;
+    keyboardType?: KeyboardType;
     android: Partial<{ width: number; height: number; viewSpacings: { left: number; top: number; right: number; bottom: number } }>;
   }): void;
   static Android: {
