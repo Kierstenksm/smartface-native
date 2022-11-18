@@ -14,7 +14,6 @@ const IOSKeyboardTypes = {
   namePhonePad: 6, 
   emailAddress: 7, 
   decimalPad: 8, 
-  
 };
 
 const ContentKeyboardTypesMapping = {
