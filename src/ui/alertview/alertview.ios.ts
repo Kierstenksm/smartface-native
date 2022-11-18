@@ -18,8 +18,8 @@ const IOSKeyboardTypes = {
 
 const ContentKeyboardTypesMapping = {
   [KeyboardType.DEFAULT] : IOSKeyboardTypes.default,
-  [KeyboardType.URL] : IOSKeyboardTypes.URL,
   [KeyboardType.NUMBER] : IOSKeyboardTypes.numberPad,
+  [KeyboardType.URL] : IOSKeyboardTypes.URL,
   [KeyboardType.PHONE] : IOSKeyboardTypes.phonePad,
   [KeyboardType.EMAILADDRESS] : IOSKeyboardTypes.emailAddress,
   [KeyboardType.DECIMAL] : IOSKeyboardTypes.decimalPad,
