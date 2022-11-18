@@ -127,12 +127,7 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
         this.emit('clearButtonPress');
         return returnValue;
       } else if (method.name === 'shouldChangeCharactersIn:Range:ReplacementString') {
-        return{
-          get maxLength(): number{
-            return this.nativeObject._maxLength
-          },
-          set maxLength(value: number){
-            this.onTextChanged?.({
+        this.onTextChanged?.({
           location: method.range,
           insertedText: method.replacementString
         });
@@ -140,8 +135,7 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
           location: method.range,
           insertedText: method.replacementString
         });
-          }
-        }
+        return true;
       }
     };
 
