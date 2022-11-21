@@ -51,6 +51,7 @@ export default class HttpAndroid extends NativeMobileComponent<any, MobileOSProp
     this._client = this._clientBuilder.build();
 
     _instanceCollection.push(this);
+    super.preConstruct(params);
   }
 
   get timeout(): number {
