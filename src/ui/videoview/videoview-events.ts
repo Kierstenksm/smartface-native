@@ -80,7 +80,8 @@ export const VideoViewEvents = {
   DidStopPictureInPicture: 'didStopPictureInPicture',
   /**
    * Setting this event makes the fullscreen button appear. The event to be notified when the fullscreen button is clicked, or null to remove the current listener and hide the fullscreen button.
-   *
+   * This is not the fullscreen implementation, so the fullscreen feature needs to implemented.
+   * 
    * @event onFullScreenModeChanged
    * @param {Function} callback
    * @param {Boolean} callback.isFullScreen true if the video rendering surface should be fullscreen false otherwise.
