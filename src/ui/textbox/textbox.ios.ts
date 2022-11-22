@@ -286,7 +286,6 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
   }
 
   set maxLength(value: number){
-    console.log("value: ", value)
     this._maxLength = value
   }
 
