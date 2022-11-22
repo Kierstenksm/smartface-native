@@ -149,6 +149,14 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    */
   text: string;
   /**
+   * Gets/Sets maximum character lenght restrict of TextBox. 
+   * @property {number} [maxLength]
+   * @android
+   * @ios
+   * @since 5.0.5
+   */
+  maxLength?: number;
+  /**
    * Gets/sets automatically capitalization of the TextBox. {@link UI.TextBox#cursorPosition Cursor Position} might be necessary to re-set.
    * @property {UI.TextBox.AutoCapitalize} [autoCapitalize = UI.TextBox.AutoCapitalize.NONE]
    * @android
