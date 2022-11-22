@@ -42,6 +42,7 @@ export interface TextBoxAndroidProps extends TextViewAndroidPRoperties {
    * @param {Number} value
    * @android
    * @since 2.0.10
+   * @deprecated since 5.0.5 Use the {@link UI.TextBox#maxLength} instead.
    */
   maxLength: number;
 }
