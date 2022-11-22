@@ -292,30 +292,33 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
     };
   }
 
+  private updateSubscribedOrientationChange() {
+    let tempOrientation: PageOrientation;
+    switch (Screen.orientation) {
+      case OrientationType.PORTRAIT:
+        tempOrientation = PageOrientation.PORTRAIT;
+        break;
+      case OrientationType.UPSIDEDOWN:
+        tempOrientation = PageOrientation.PORTRAITUPSIDEDOWN;
+        break;
+      case OrientationType.LANDSCAPELEFT:
+        tempOrientation = PageOrientation.LANDSCAPELEFT;
+        break;
+      case OrientationType.LANDSCAPERIGHT:
+        tempOrientation = PageOrientation.LANDSCAPERIGHT;
+        break;
+      default:
+        tempOrientation = PageOrientation.UNKNOWN;
+    }
+    const callbackParam = {
+      orientation: tempOrientation
+    };
+    this.emit('orientationChange', callbackParam);
+    this.onOrientationChange?.(callbackParam);
+  }
+
   private initPageEvents() {
     this.nativeObject.viewWillTransition = () => {
-      let tempOrientation: PageOrientation;
-      switch (Screen.orientation) {
-        case OrientationType.PORTRAIT:
-          tempOrientation = PageOrientation.PORTRAIT;
-          break;
-        case OrientationType.UPSIDEDOWN:
-          tempOrientation = PageOrientation.PORTRAITUPSIDEDOWN;
-          break;
-        case OrientationType.LANDSCAPELEFT:
-          tempOrientation = PageOrientation.LANDSCAPELEFT;
-          break;
-        case OrientationType.LANDSCAPERIGHT:
-          tempOrientation = PageOrientation.LANDSCAPERIGHT;
-          break;
-        default:
-          tempOrientation = PageOrientation.UNKNOWN;
-      }
-      const callbackParam = {
-        orientation: tempOrientation
-      };
-      this.emit('orientationChange', callbackParam);
-      this.onOrientationChange?.(callbackParam);
     };
     this.nativeObject.viewWillTransitionCompletion = () => {
       if (this._layout && this.headerBar) {
@@ -324,7 +327,7 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
         this.headerBar.layout = this._layout;
 
       }
-
+      this.updateSubscribedOrientationChange()
     }
 
     this.nativeObject.onLoad = () => {

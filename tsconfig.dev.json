@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../InternalProjects/sf-playground/scripts/node_modules/@smartface/native"
+    "outDir": "../../sf-playground/scripts/node_modules/@smartface/native"
   }
 }
