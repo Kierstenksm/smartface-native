@@ -92,7 +92,7 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
   private _clearButtonEnabled: boolean;
   private _keyboardLayout: IFlexLayout | undefined;
   private keyboardanimationdelegate: KeyboardAnimationDelegate;
-  private _maxLength: number;
+  private _maxLength?: number;
   private _inputView: {
     height: number;
     view: ViewIOS;
@@ -281,12 +281,13 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
     };
   }
 
-  get maxLength(): number{
-    return this._maxLength
+  get maxLength(): number {
+    return this._maxLength || 0;
   }
 
   set maxLength(value: number){
     this._maxLength = value
+    this.nativeObject.maxLength = this._maxLength
   }
 
   get font(): IFont {
