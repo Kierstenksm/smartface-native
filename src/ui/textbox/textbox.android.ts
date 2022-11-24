@@ -82,7 +82,7 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
   private _isPassword: boolean;
   private _keyboardType: KeyboardType;
   private _actionKeyType: ActionKeyType;
-  private _maxLength: number | undefined;
+  private _maxLength: number;
   private _onTextChanged: (e?: { insertedText: string; location: number }) => void;
   private _cursorColor: IColor;
   private _hintTextColor: IColor;
@@ -324,10 +324,10 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
     this.nativeObject.setImeOptions(NativeActionKeyType[this._actionKeyType]);
   }
 
-  get maxLength(): number | undefined {
-    return this._maxLength || undefined;
+  get maxLength(): number {
+    return this._maxLength || 0;
   }
-  set maxLength(value: number | undefined) {
+  set maxLength(value: number) {
     const filterArray = toJSArray(this.nativeObject.getFilters()) || [];
     this.removeInputLengthFilter(filterArray);
     if (typeof value === 'number') {
