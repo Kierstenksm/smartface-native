@@ -136,7 +136,6 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
           location: method.range,
           insertedText: method.replacementString
         });
-        return this.maxLength;
       }
     };
 
