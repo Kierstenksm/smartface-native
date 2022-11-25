@@ -86,7 +86,7 @@ type UploadParams = RequestParamsType<
 
 export interface IHttp extends INativeMobileComponent<any, MobileOSProps<HttpIOSProps, {}>> {
   /**
-   * Toggles if the instance should keep the cookies from the server.
+   * Toggles if the instance should keep the cookies from the server. It is recommended to set this on constructor.
    */
   cookiePersistenceEnabled: boolean;
   /**
