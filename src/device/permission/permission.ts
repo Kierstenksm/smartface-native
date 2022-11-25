@@ -23,6 +23,7 @@ type ContactPermissionGroup = "contact";
 type PhonePermissionGroup = "phone";
 type SMSPermissionGroup = "sms";
 type CameraPermissionGroup = "camera";
+type MicrophoneGroup = "microphone";
 type LocationPermissionGroupApproximate = "locationApproximate";
 type LocationPermissionGroupPrecise = "locationPrecise";
 type LocationPermissionGroup = {
@@ -91,7 +92,7 @@ type StoragePermissionGroup = {
 type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
 export type AndroidPermissions = BluetoothConnectPermissionGroup | MicrophonePermissionGroup
   | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
-export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions;
+export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophoneGroup;
 
 /**
  * Holds values of available permissions. This is a union of Android and iOS permissions.
@@ -518,6 +519,19 @@ export namespace Permissions {
     * @since 5.0.5
     */
   export const camera: CameraPermissionGroup = 'camera';
+
+  /**
+    * Asks for microphone usage
+    *
+    * For ios, NSMicrophoneUsageDescription key must be added to config/iOS/info.plist
+    * 
+    * @property camera
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
+  export const microphone: MicrophoneGroup = 'microphone';
 
   /**
     * Allows an app to access location.
