@@ -1,5 +1,4 @@
 import NativeEventEmitterComponent from '../../core/native-event-emitter-component';
-import Invocation from '../../util/iOS/invocation';
 import { Permissions, IPermission, PermissionIOSAuthorizationStatus, PermissionResult, CommonPermissions } from './permission';
 
 import { PermissionEvents } from './permission-events';
@@ -77,7 +76,6 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     return new Promise((resolve, reject) => {
       if (parseInt(SystemIOS.OSVersion) >= 14) {
         __SF_Permission.requestAuthorizationPhotoLibraryFor(PhotoLibraryAccess.readWrite, (status) => {
-          console.info("requestAuthorizationPhotoLibraryFor > status: ", status)
           status === PermissionIOSAuthorizationStatus.DENIED ? reject() : resolve();
         })
       } else {
