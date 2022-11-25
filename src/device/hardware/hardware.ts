@@ -36,7 +36,7 @@ export interface HardwareIOSProps {
   /**
    *
    * Microphone related properties
-   *
+   * @deprecated
    * @ios
    * @readonly
    * @static
