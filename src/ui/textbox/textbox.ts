@@ -42,6 +42,7 @@ export interface TextBoxAndroidProps extends TextViewAndroidPRoperties {
    * @param {Number} value
    * @android
    * @since 2.0.10
+   * @deprecated since 5.0.5 Use the {@link UI.TextBox#maxLength} instead.
    */
   maxLength: number;
 }
@@ -148,6 +149,14 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @since 0.1
    */
   text: string;
+  /**
+   * Gets/Sets maximum character lenght restrict of TextBox. 
+   * @property {number} [maxLength]
+   * @android
+   * @ios
+   * @since 5.0.5
+   */
+  maxLength?: number;
   /**
    * Gets/sets automatically capitalization of the TextBox. {@link UI.TextBox#cursorPosition Cursor Position} might be necessary to re-set.
    * @property {UI.TextBox.AutoCapitalize} [autoCapitalize = UI.TextBox.AutoCapitalize.NONE]

@@ -45,7 +45,6 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     // const requestTexts = options?.requestTexts || {};
     const mappedPermission = this.mapCommonPermissionArgumansToIosTypes(permission);
     const status = this.ios?.getAuthorizationStatus?.(mappedPermission);
-
     /*
       Framework return different status codes depending on the object API. Record api status codes like below;
       undetermined = 0,
@@ -55,6 +54,7 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     if (permission === Permissions.microphone && status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS) {
       return PermissionResult.GRANTED;
     } else if (status === PermissionIOSAuthorizationStatus.DENIED) {
+    if (status === PermissionIOSAuthorizationStatus.DENIED) {
       throw PermissionResult.DENIED
     } else if (status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS || status === PermissionIOSAuthorizationStatus.AUTHORIZED_WHEN_IN_USE) {
       return PermissionResult.GRANTED
@@ -112,7 +112,6 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
       });
     })
   }
-
   getIOSProps(): IPermission['ios'] {
     const self = this;
     return {
