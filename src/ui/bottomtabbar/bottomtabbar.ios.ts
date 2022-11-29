@@ -13,6 +13,8 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
   private _borderVisibility: boolean;
   private _itemColor: IBottomTabBar['itemColor']; // Do not remove. COR-1931 describes what happening.
   private _selectionIndicatorImage: ImageIOS;
+  private _iconSize: number
+
   constructor(params?: Partial<IBottomTabBar> & Partial<NativeComponent>) {
     super(params);
     this.addIOSProps(this.getIOSParams());
@@ -56,6 +58,7 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
         item.route = item.route;
         item.ios.font = item.ios.font;
         item.badge = item.badge;
+        item.iconSize = this._iconSize
       });
     }
   }
@@ -166,5 +169,13 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
       this._selectionIndicatorImage = value;
       this.nativeObject.selectionIndicatorImage = this._selectionIndicatorImage.nativeObject;
     }
+  }
+
+  get iconSize(): number {
+    return this._iconSize
+  }
+
+  set iconSize(value: number) {
+    this._iconSize = value
   }
 }
