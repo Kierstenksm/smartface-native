@@ -348,21 +348,21 @@ class LocationPermissionHandler extends PermissionHandler {
 
 class MicrophonePermissionHandler extends PermissionHandler {
   override checkPermission(permission: AndroidAndCommonPermissions): boolean | undefined {
-    if (permission === Permissions.android.microphone) {
+    if (permission === Permissions.microphone) {
       return nativeCheckPermission(Permissions.ANDROID.RECORD_AUDIO);
     }
     return undefined;
   }
 
   override async requestPermission(permission: AndroidAndCommonPermissions): Promise<PermissionResult | undefined> {
-    if (permission === Permissions.android.microphone) {
+    if (permission === Permissions.microphone) {
       return (await nativeRequestPermissions(Permissions.ANDROID.RECORD_AUDIO))[0];
     }
     return Promise.resolve(undefined);
   }
 
   override shouldShowRequestPermissionRationale(permission: AndroidAndCommonPermissions): boolean | undefined {
-    if (permission === Permissions.android.microphone) {
+    if (permission === Permissions.microphone) {
       return nativeShouldShowRequestPermissionRationale(Permissions.ANDROID.RECORD_AUDIO);
     }
     return undefined;

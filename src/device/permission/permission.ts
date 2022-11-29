@@ -17,7 +17,6 @@ export enum PermissionResult {
 }
 
 type BluetoothConnectPermissionGroup = "bluetoothConnect";
-type MicrophonePermissionGroup = "microphone";
 type NotificationPermissionGroup = "notification";
 type ContactPermissionGroup = "contact";
 type PhonePermissionGroup = "phone";
@@ -90,8 +89,7 @@ type StoragePermissionGroup = {
   readAudio: StoragePermissionGroupReadAudio,
 }
 type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
-export type AndroidPermissions = BluetoothConnectPermissionGroup | MicrophonePermissionGroup
-  | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
+export type AndroidPermissions = BluetoothConnectPermissionGroup | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
 export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophoneGroup;
 
 /**
@@ -424,19 +422,6 @@ export namespace Permissions {
     bluetoothConnect: BluetoothConnectPermissionGroup,
 
     /**
-    * Allows to record audio.
-    * 
-    * Following permissions must be added to AndroidManifest.xml.
-    *   android.permission.RECORD_AUDIO
-    *
-    * @property microphone
-    * @readonly
-    * @android
-    * @since 5.0.5
-    */
-    microphone: MicrophonePermissionGroup,
-
-    /**
     * Allows to send notification.
     * Always return true on Android 12L and below.
     * 
@@ -498,7 +483,6 @@ export namespace Permissions {
     sms: SMSPermissionGroup,
   } = {
     bluetoothConnect: 'bluetoothConnect',
-    microphone: 'microphone',
     notification: 'notification',
     phone: 'phone',
     contact: 'contact',
@@ -524,6 +508,8 @@ export namespace Permissions {
     * Asks for microphone usage
     *
     * For ios, NSMicrophoneUsageDescription key must be added to config/iOS/info.plist
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.RECORD_AUDIO
     * 
     * @property camera
     * @readonly
