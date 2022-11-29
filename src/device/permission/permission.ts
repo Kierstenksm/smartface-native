@@ -22,7 +22,7 @@ type ContactPermissionGroup = "contact";
 type PhonePermissionGroup = "phone";
 type SMSPermissionGroup = "sms";
 type CameraPermissionGroup = "camera";
-type MicrophoneGroup = "microphone";
+type MicrophonePermissionGroup = "microphone";
 type LocationPermissionGroupApproximate = "locationApproximate";
 type LocationPermissionGroupPrecise = "locationPrecise";
 type LocationPermissionGroup = {
@@ -90,7 +90,7 @@ type StoragePermissionGroup = {
 }
 type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
 export type AndroidPermissions = BluetoothConnectPermissionGroup | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
-export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophoneGroup;
+export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophonePermissionGroup;
 
 /**
  * Holds values of available permissions. This is a union of Android and iOS permissions.
@@ -517,7 +517,7 @@ export namespace Permissions {
     * @ios
     * @since 5.0.5
     */
-  export const microphone: MicrophoneGroup = 'microphone';
+  export const microphone: MicrophonePermissionGroup = 'microphone';
 
   /**
     * Allows an app to access location.
