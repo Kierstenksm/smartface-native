@@ -88,6 +88,14 @@ export default class BottomTabBarAndroid extends NativeMobileComponent<any, IBot
       this.nativeObject.setBackgroundColor(color.nativeObject);
     }
   }
+  get iconSize() {
+    return AndroidUnitConverter.pixelToDp(this.nativeObject.getItemIconSize());
+  }
+  set iconSize(size: number) {
+    if (typeof size === 'number') {
+      this.nativeObject.setItemIconSize(AndroidUnitConverter.dpToPixel(size));
+    }
+  }
   toString() {
     return 'Tab';
   }
