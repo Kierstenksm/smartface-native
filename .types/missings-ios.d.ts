@@ -1163,6 +1163,7 @@ declare class __SF_Permission extends __SF_NSOBject {
   static requestAuthorizationPhotoLibraryFor(accessLevel: number, callback: (response: number) => void)
   static authorizationStatusPhotoLibraryFor(accessLevel: number): number
   static authorizationStatusForLocation(): number
+  static authorizationStatusForRecord(): number
 }
 
 declare class __SF_CLLocationManager {

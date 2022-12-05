@@ -10,6 +10,12 @@ enum PhotoLibraryAccess {
   readWrite = 2
 }
 
+const mapMicrophonePermission = {
+  1970168948: 0,
+  1684369017: 2,
+  1735552628: 3
+}
+
 class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, any, IPermission> implements IPermission {
   protected createNativeObject() {
     return null;
@@ -20,13 +26,16 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     this.addIOSProps(this.getIOSProps());
   }
 
-  mapCommonPermissionArgumansToIosTypes(permission: Permissions.IOS | CommonPermissions | Parameters<IPermission['requestPermission']>['0']): Permissions.IOS {
-    let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY';
+  mapCommonPermissionArgumansToIosTypes(permission: Permissions.IOS | CommonPermissions | Parameters<IPermission['requestPermission']>['0']): Permissions.IOS | CommonPermissions {
+    let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY' | 'microphone';
     if (permission === Permissions.camera || permission === Permissions.IOS.CAMERA) {
       _permission = 'CAMERA';
     } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise || permission === Permissions.IOS.LOCATION) {
       _permission = 'LOCATION';
-    } else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio || Permissions.IOS.GALLERY) {
+    } else if (_permission === 'microphone' || permission === Permissions.microphone) {
+      return 'microphone'
+    }
+    else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio || Permissions.IOS.GALLERY) {
       _permission = 'GALLERY';
     }
     return Permissions.IOS[_permission]
@@ -36,7 +45,16 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     // const requestTexts = options?.requestTexts || {};
     const mappedPermission = this.mapCommonPermissionArgumansToIosTypes(permission);
     const status = this.ios?.getAuthorizationStatus?.(mappedPermission);
-    if (status === PermissionIOSAuthorizationStatus.DENIED) {
+
+    /*
+      Framework return different status codes depending on the object API. Record api status codes like below;
+      undetermined = 0,
+      denied = 1,
+      granted = 2
+    */
+    if (permission === Permissions.microphone && status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS) {
+      return PermissionResult.GRANTED;
+    } else if (status === PermissionIOSAuthorizationStatus.DENIED) {
       throw PermissionResult.DENIED
     } else if (status === PermissionIOSAuthorizationStatus.AUTHORIZED_ALWAYS || status === PermissionIOSAuthorizationStatus.AUTHORIZED_WHEN_IN_USE) {
       return PermissionResult.GRANTED
@@ -86,6 +104,15 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     });
   }
 
+  private requestMicrophone(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const avaudiosession = __SF_AVAudioSession.sharedInstance();
+      avaudiosession.requestRecordPermissionWithHandler((status) => {
+        status.granted ? resolve() : reject()
+      });
+    })
+  }
+
   getIOSProps(): IPermission['ios'] {
     const self = this;
     return {
@@ -110,6 +137,9 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
           return status;
         } else if (_permission === Permissions.IOS.LOCATION) {
           return __SF_Permission.authorizationStatusForLocation();
+        } else if (_permission === Permissions.microphone) {
+          const status = __SF_Permission.authorizationStatusForRecord()
+          return mapMicrophonePermission[status]
         } else {
           throw new Error("Requesting parameter type could not found or not supported")
         }
@@ -121,6 +151,8 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
           return self.requestLocationPermission();
         } else if (permission === Permissions.IOS.GALLERY || permission === Permissions.storage) {
           return self.requestPhotoLibrary()
+        } else if (permission === Permissions.microphone) {
+          return self.requestMicrophone();
         }
         else {
           throw new Error(permission + " is not supported")
