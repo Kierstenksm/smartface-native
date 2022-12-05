@@ -20,9 +20,12 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
   private _font: ITabbarItem['ios']['font'];
   private _badgeProps: Partial<IBadge>;
   private _badge: IBadge;
+  private _iconSize: number
 
   constructor(params: Partial<ITabbarItem> = {}) {
     super(params);
+
+    this._iconSize = 17
     this.addIOSProps(this.getIOSProps());
   }
   index: number | null;
@@ -127,18 +130,16 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
         this.nativeObject.image = value.selected?.nativeObject || undefined;
       }
     }
-
-    this.resizeTabBarIconIfNeeded()
   }
 
   // Resizing handled internally inside framework-ios based on
   // the actually size of image and device scale factor (1x, 2x 3x)
   private resizeTabBarIconIfNeeded() {
     if (this.nativeObject.image) {
-      this.nativeObject.image = this.nativeObject.image.resize(25, 25)
+      this.nativeObject.image = this.nativeObject.image.resize(this._iconSize, this._iconSize)
     }
     if (this.nativeObject.selectedImage) {
-      this.nativeObject.selectedImage = this.nativeObject.selectedImage.resize(25, 25)
+      this.nativeObject.selectedImage = this.nativeObject.selectedImage.resize(this._iconSize, this._iconSize)
     }
   }
 
@@ -166,5 +167,10 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
     this._badgeProps.font = props.font;
     this._badgeProps.textColor = props.textColor;
     this._badgeProps.visible = props.visible;
+  }
+
+  set iconSize(value: number) {
+    this._iconSize = value
+    this.resizeTabBarIconIfNeeded()
   }
 }
