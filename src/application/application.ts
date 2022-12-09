@@ -91,7 +91,7 @@ export interface ApplicationAndroidProps {
   packageName: string;
   /**
    * This method checks for a permission is shown before to user
-   * and the program is about to request the same permission again.
+   * and the program is about to request the same permission again
    *
    * @method shouldShowRequestPermissionRationale
    * @param {String} permission
