@@ -238,7 +238,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
       },
       set systemIcon(systemIcon) {
         self._systemIcon = systemIcon;
-        self.nativeObject = NativeContextCompat.getDrawable(AndroidConfig.activity, ImageAndroid.systemDrawableId(this._systemIcon));
+        self.nativeObject = NativeContextCompat.getDrawable(AndroidConfig.activity, ImageAndroid.systemDrawableId(self._systemIcon));
       }
     };
   }
