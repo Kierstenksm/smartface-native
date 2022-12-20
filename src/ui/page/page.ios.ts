@@ -466,12 +466,18 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
         return self._largeTitleDisplayMode;
       },
       set largeTitleDisplayMode(value: HeaderBar['ios']['largeTitleDisplayMode']) {
-        if (__SF_UINavigationItem.instancesRespondToSelector('largeTitleDisplayMode')) {
+        //if (__SF_UINavigationItem.instancesRespondToSelector('largeTitleDisplayMode')) {
           if (value) {
             self._largeTitleDisplayMode = value;
             self.nativeObject.navigationItem.largeTitleDisplayMode = self._largeTitleDisplayMode;
           }
-        }
+       // }
+      },
+      get prefersLargeTitles(): HeaderBar['ios']['prefersLargeTitles'] {
+        return self.nativeObject.navigationController.navigationBar.prefersLargeTitles;
+      },
+      set prefersLargeTitles(value: HeaderBar['ios']['prefersLargeTitles']) {
+        self.nativeObject.navigationController.navigationBar.prefersLargeTitles = value      
       },
       get backBarButtonItem(): HeaderBar['ios']['backBarButtonItem'] {
         let retval: HeaderBarItem | undefined = undefined;
