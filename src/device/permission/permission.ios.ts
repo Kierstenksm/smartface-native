@@ -30,12 +30,12 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY' | 'microphone';
     if (permission === Permissions.camera || permission === Permissions.IOS.CAMERA) {
       _permission = 'CAMERA';
-    } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise || permission === Permissions.IOS.LOCATION) {
+    } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise || permission === Permissions.IOS.LOCATION || permission === 'LOCATION') {
       _permission = 'LOCATION';
     } else if (_permission === 'microphone' || permission === Permissions.microphone) {
       return 'microphone'
     }
-    else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio || Permissions.IOS.GALLERY) {
+    else if (permission === Permissions.storage || permission === Permissions.storage.readImageAndVideo || permission === Permissions.storage.readAudio || Permissions.IOS.GALLERY || permission === 'CAMERA') {
       _permission = 'GALLERY';
     }
     return Permissions.IOS[_permission]
