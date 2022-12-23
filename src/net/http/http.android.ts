@@ -27,6 +27,7 @@ enum WITHOUT_BODY_METHODS {
   PURGE
 }
 
+const DEFAULT_TIMEOUT = 60000;
 const CONTENT_TYPE_KEY = 'CONTENT-TYPE';
 const activity = AndroidConfig.activity;
 
@@ -43,13 +44,12 @@ export default class HttpAndroid extends NativeMobileComponent<any, MobileOSProp
   private _client: any;
   constructor(params?: Partial<IHttp>) {
     super(params);
-    this.timeout = 60000;
+    this._client = this._clientBuilder.build();
   }
 
   protected preConstruct(params?: Partial<Record<string, any>>): void {
     this._clientBuilder = new OkHttpClientBuilder();
-    this._client = this._clientBuilder.build();
-
+    this.timeout = DEFAULT_TIMEOUT;
     _instanceCollection.push(this);
     super.preConstruct(params);
   }

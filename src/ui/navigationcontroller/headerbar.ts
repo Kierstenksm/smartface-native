@@ -22,7 +22,6 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
   private _transparentEmptyImage: __SF_UIImage;
   private _titleColor: IColor;
   private _visible: boolean;
-  private _prefersLargeTitles: boolean;
   private _backIndicatorImage: ImageIOS;
   private _backIndicatorTransitionMaskImage: ImageIOS;
   private _titleFont?: IFont;
@@ -58,7 +57,6 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
   }
   preConstruct(params) {
     this._visible = true;
-    this._prefersLargeTitles = false;
     this._transparent = false;
     super.preConstruct(params);
     this.addIOSProps(this.iosProperties());
@@ -223,11 +221,10 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
         self.__updateTitleTextAttributes();
       },
       get prefersLargeTitles(): IHeaderBar['ios']['prefersLargeTitles'] {
-        return self._prefersLargeTitles;
+        return self.nativeObject.prefersLargeTitles;
       },
       set prefersLargeTitles(value: IHeaderBar['ios']['prefersLargeTitles']) {
-        self._prefersLargeTitles = !!value;
-        self.nativeObject.prefersLargeTitles = self._prefersLargeTitles;
+        self.nativeObject.prefersLargeTitles = value;
       },
       get backIndicatorImage(): IHeaderBar['ios']['backIndicatorImage'] {
         return self._backIndicatorImage;

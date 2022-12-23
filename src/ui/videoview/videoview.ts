@@ -256,7 +256,7 @@ export interface IVideoViewAndroidProps extends ViewAndroidProps {
    * @android
    * @since 4.3.1
    */
-  setFullScreenButtonImage: (isInFullScreen: boolean) => void;
+  setFullScreenButtonImage(isInFullScreen: boolean): void;
 }
 
 /**

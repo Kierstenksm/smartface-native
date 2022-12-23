@@ -63,7 +63,7 @@ export default class BlurViewAndroid<TEvent extends string = BlurViewEvents> ext
       return;
     }
     const renderScriptBlur = new RenderScriptBlur(AndroidConfig.activity);
-    const blurViewFacade = this.nativeObject.setupWith(this._rootView.nativeObject).setBlurAlgorithm(renderScriptBlur);
+    const blurViewFacade = this.nativeObject.setupWith(this._rootView.nativeObject, renderScriptBlur);
     blurViewFacade.setBlurRadius(this._blurRadius);
 
     if (this._overlayColor) {

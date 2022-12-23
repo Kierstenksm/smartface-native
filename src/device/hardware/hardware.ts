@@ -36,7 +36,7 @@ export interface HardwareIOSProps {
   /**
    *
    * Microphone related properties
-   *
+   * @deprecated Use Permission.requestPermission(Permissions.microphone) instead
    * @ios
    * @readonly
    * @static
