@@ -12,6 +12,7 @@ export default class MaterialTextBoxIOS<TEvent extends string = TextBoxEvents> e
   private mdcTextInputControllerUnderline: __SF_MDCTextInputControllerUnderline;
   private _multiline: boolean;
   private _lineCount: number;
+  private _maxCharacterLength: number;
   private _rightLayout: { view: IView; width: number; height?: number };
   private _rightLayoutMain: IFlexLayout;
   private _labelsFont: IFont;
@@ -320,6 +321,13 @@ export default class MaterialTextBoxIOS<TEvent extends string = TextBoxEvents> e
   }
   set isPassword(value: boolean) {
     this.nativeObject.secureTextEntry = value;
+  }
+
+  get maxCharacterLength(): number | undefined{
+    return this.nativeObject.maxCharacterLength;
+  }
+  set maxCharacterLength(value: number | undefined){
+     this.nativeObject.maxCharacterLength = value;
   }
 
   get characterRestriction(): number | undefined {
