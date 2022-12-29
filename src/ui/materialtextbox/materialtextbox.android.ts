@@ -440,6 +440,13 @@ export default class MaterialTextBoxAndroid<TEvent extends string = TextBoxEvent
     counterView.setTextColor(this._characterRestrictionColor.nativeObject);
   }
 
+  get maxCharacterLength(): number {
+    return this.sfTextBox.maxLength;
+  }
+  set maxCharacterLength(value: number) {
+    this.sfTextBox.maxLength = value;
+  }
+
   on(eventName: TextBoxEvents, callback: EventListenerCallback) {
     if (Object.values(TextBoxEvents).includes(eventName)) {
       return this.sfTextBox.on(eventName as any, callback);

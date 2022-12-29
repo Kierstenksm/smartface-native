@@ -294,6 +294,7 @@ export interface IMaterialTextBox<
    * Gets/Sets the maxCaharacterLength of the MaterialTextBox. 
    * @property {Number} maxCharacterLength
    * @ios 
+   * @android
    * @since 5.0.5
    */
   maxCharacterLength: number | undefined;
