@@ -19,7 +19,7 @@ class LocationIOS extends NativeEventEmitterComponent<LocationEvents, any, ILoca
   }
   getCurrentLocation(): ReturnType<ILocation['getCurrentLocation']> {
     return new Promise((resolve, reject) => {
-      const locationStatus = PermissionIOS.ios?.getAuthorizationStatus?.(Permissions.IOS['LOCATION']);
+      const locationStatus = PermissionIOS.ios?.getAuthorizationStatus?.(Permissions.location);
       if (locationStatus === PermissionIOSAuthorizationStatus.NOT_DETERMINED) {
         this.start();
         this.once('locationChanged', (location) => {
