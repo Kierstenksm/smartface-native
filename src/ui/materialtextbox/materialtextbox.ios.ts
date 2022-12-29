@@ -322,10 +322,10 @@ export default class MaterialTextBoxIOS<TEvent extends string = TextBoxEvents> e
     this.nativeObject.secureTextEntry = value;
   }
 
-  get maxCharacterLength(): number | undefined{
+  get maxLength(): number {
     return this.nativeObject.maxCharacterLength;
   }
-  set maxCharacterLength(value: number | undefined){
+  set maxLength(value: number) {
      this.nativeObject.maxCharacterLength = value;
   }
 

@@ -291,14 +291,6 @@ export interface IMaterialTextBox<
    */
   characterRestriction: number | undefined;
   /**
-   * Gets/Sets the maxCaharacterLength of the MaterialTextBox. 
-   * @property {Number} maxCharacterLength
-   * @ios 
-   * @android
-   * @since 5.0.5
-   */
-  maxCharacterLength: number | undefined;
-  /**
    * Gets/sets the characterRestrictionColor of the MaterialTextBox.
    * @property {UI.Color} characterRestrictionColor
    * @deprecated Use android.characterRestrictionColor instead.
