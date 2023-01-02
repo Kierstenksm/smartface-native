@@ -63,7 +63,7 @@ const Permissions = {
   WRITE_APN_SETTINGS: 'android.permission.WRITE_APN_SETTINGS'
 } as const;
 
-//InputMethodManager to close softinput keyboard
+//InputMethodManager to close softinput keyboard.
 
 // Intent.ACTION_VIEW
 const ACTION_VIEW = 'android.intent.action.VIEW';
