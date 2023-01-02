@@ -113,6 +113,8 @@ jobs:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/ref:${{env.RELEASE_CYCLE}}
           run: |
             echo ${{ steps.docker_build.outputs.digest }}
+    outputs:
+      RELEASE_CYCLE: ${{env.RELEASE_CYCLE}}
   applyChanges:
     runs-on: ubuntu-latest
     needs: [pushToDockerHub]
@@ -125,5 +127,5 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
           cd ${{ secrets.SERVER_DOC_HELM_PATH }}
-          echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }} ${{ secrets.SERVER_DOC_DEPLOYMENT_PREFIX }}-alpha
+          echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }} ${{ secrets.SERVER_DOC_DEPLOYMENT_PREFIX }}-${{needs.pushToDockerHub.outputs.RELEASE_CYCLE}}
 
