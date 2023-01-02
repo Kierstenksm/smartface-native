@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [publishPreRelease]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@main
 
       - name: setup node
         uses: actions/setup-node@master
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: get-npm-version
         id: package-version
