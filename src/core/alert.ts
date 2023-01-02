@@ -25,7 +25,7 @@ interface AlertOptions {
 }
 
 /**
- * Creates a new AlertView instance and automatically shows it
+ * Creates a new AlertView instance and automatically shows it.
  * @function alert
  * @param {object|string} options is the alert options or the string to display as message. If object is used, it is automatically passed as constructor to the AlertView
  * @param {string} options.message sets message of AlertView
