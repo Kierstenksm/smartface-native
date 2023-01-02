@@ -123,7 +123,6 @@ jobs:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.PORT }}
         script: |
           cd ${{ secrets.SERVER_DOC_HELM_PATH }}
           echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }}
