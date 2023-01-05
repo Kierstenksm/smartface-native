@@ -139,6 +139,8 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
   onHide: () => void;
   onShow: () => void;
   onOrientationChange: (e: { orientation: PageOrientation }) => void;
+  onPickVisualMedia: (uri) => void;
+  onPickMultipleVisualMedia: (uris) => void;
   constructor(params?: Partial<TProps>) {
     super(params);
     this.pageLayoutContainer = AndroidConfig.activity.getLayoutInflater().inflate(NativeSFR.layout.page_container_layout, null);
@@ -368,8 +370,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           requestCode === RequestCodes.Multimedia.PICK_FROM_GALLERY ||
           requestCode === RequestCodes.Multimedia.CAMERA_REQUEST ||
           requestCode === RequestCodes.Multimedia.CropImage.CROP_CAMERA_DATA_REQUEST_CODE ||
-          requestCode === RequestCodes.Multimedia.CropImage.CROP_GALLERY_DATA_REQUEST_CODE ||
-          requestCode === RequestCodes.Multimedia.PICK_MULTIPLE_FROM_GALLERY
+          requestCode === RequestCodes.Multimedia.CropImage.CROP_GALLERY_DATA_REQUEST_CODE
         ) {
           MultimediaAndroid.onActivityResult(requestCode, resultCode, data);
         } else if (requestCode === RequestCodes.Sound.PICK_SOUND) {
@@ -381,6 +382,12 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
         } else if (requestCode === RequestCodes.DocumentPicker.PICK_DOCUMENT_CODE) {
           DocumentPickerAndroid.onActivityResult(requestCode, resultCode, data);
         }
+      },
+      onPickVisualMedia: (uri) => {
+        this.onPickVisualMedia?.(uri);
+      },
+      onPickMultipleVisualMedia: (uris) => {
+        this.onPickMultipleVisualMedia?.(uris);
       }
     });
   }
