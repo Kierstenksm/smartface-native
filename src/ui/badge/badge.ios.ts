@@ -86,10 +86,7 @@ export default class BadgeIOS extends NativeComponent implements IBadge {
       this._textColor = value;
 
       this.completeInMainThread(() => {
-        // this.nativeObject.pp_setBadgeTextColor(value.nativeObject);
         this.nativeObject.badgeLabelTextColor = value.nativeObject
-        console.info("badgeLabelTextColor:" ,this.nativeObject.badgeLabelTextColor.toString())
-
       })
     }
   }
