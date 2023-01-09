@@ -181,7 +181,7 @@ export default class VideoViewAndroid<TEvent extends string = VideoViewEvents> e
     this.nativeInner.getPlayer().seekTo(time);
   }
   setVolume(vol: number): void {
-    this.nativeInner.getPlayer().getAudioComponent().setVolume(vol);
+    this.nativeInner.getPlayer().setVolume(vol);
   }
   setControllerEnabled(enabled: boolean): void {
     this.nativeInner.setUseController(enabled);
