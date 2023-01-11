@@ -1,4 +1,4 @@
-import Color from '../../ui/color';
+import { IColor } from '../../ui/color/color';
 
 export enum StatusBarStyle {
   DEFAULT,
@@ -7,6 +7,7 @@ export enum StatusBarStyle {
 
 class StatusBarIOS {
   readonly Styles = StatusBarStyle;
+  _backgroundColor? : IColor;
   get ios() {
     return {};
   }
@@ -16,36 +17,11 @@ class StatusBarIOS {
   get height(): number | undefined {
     return __SF_UIApplication.sharedApplication().statusBarFrame.height;
   }
-  get backgroundColor(): Color | undefined {
-    const statusBarWindow = __SF_UIApplication.sharedApplication().valueForKey('statusBarWindow');
-    if (statusBarWindow) {
-      const statusBar = statusBarWindow.valueForKey('statusBar');
-      if (statusBar) {
-        const backgroundColor = statusBar.valueForKey('backgroundColor');
-        if (backgroundColor) {
-          // TODO: Color constructor doesnt take parameters
-          return new Color({
-            color: backgroundColor
-          });
-        }
-      }
-    }
-    return undefined;
+  get backgroundColor(): IColor | undefined {
+    return this._backgroundColor;
   }
-  set backgroundColor(value: Color | undefined) {
-    const statusBarWindow = __SF_UIApplication.sharedApplication().valueForKey('statusBarWindow');
-    if (statusBarWindow && value) {
-      const statusBar = statusBarWindow.valueForKey('statusBar');
-      if (statusBar) {
-        value
-          ? statusBar.setValueForKey(
-              // TODO: color needs nativeObject
-              value.nativeObject,
-              'backgroundColor'
-            )
-          : statusBar.setValueForKey(undefined, 'backgroundColor');
-      }
-    }
+  set backgroundColor(value: IColor | undefined) {
+    this._backgroundColor = value;
   }
   get visible(): boolean {
     return !__SF_UIApplication.sharedApplication().sf_statusBarHidden;
