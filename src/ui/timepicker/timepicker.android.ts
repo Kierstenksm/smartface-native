@@ -2,6 +2,7 @@ import { ITimePicker } from './timepicker';
 import NativeEventEmitterComponent from '../../core/native-event-emitter-component';
 import AndroidConfig from '../../util/Android/androidconfig';
 import { TimePickerEvents } from './timepicker-events';
+import AndroidNativeTheme from '../../util/Android/nativeTheme';
 
 const NativeTimePickerDialog = requireClass('android.app.TimePickerDialog');
 
@@ -58,6 +59,7 @@ export default class TimePickerAndroid<TEvent extends string = TimePickerEvents>
     const minutes = this._minutes || _date.getMinutes();
     const nativeObject = new NativeTimePickerDialog(
       AndroidConfig.activity,
+      AndroidNativeTheme.getDialogNativeThemeID(),
       NativeTimePickerDialog.OnTimeSetListener.implement({
         onTimeSet: (timePicker: any, hour: number, minute: number) => {
           const e = {

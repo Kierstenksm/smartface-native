@@ -516,6 +516,19 @@ export enum ApplicationAndroidPermissions {
 }
 
 /**
+ * Determines whether the application should be light or dark theme based.
+ * 
+ * @enum Application.Appearance
+ * @since 5.0.7
+ * @ios
+ * @android
+ */
+export enum Appearance {
+  LIGHT = "light",
+  DARK = "dark"
+}
+
+/**
  * @class Application
  * @since 0.1
  *
@@ -964,6 +977,15 @@ export interface IApplication extends NativeEventEmitterComponent<ApplicationEve
    * @since 4.3.6
    */
   isVoiceOverEnabled: Boolean;
+  /**
+   * Indicates whether the native theme of application. It effects to some native components like alert, DatePicker, TimePicker, etc.
+   *
+   * @property { Application.Appearance } appearance
+   * @android
+   * @ios
+   * @since 5.0.7
+   */
+  appearance: Appearance;
   /**
    * Provides current page instance of the application. Please do not use this property for page actions.
    * Works for Android only. Will always be undefined on iOS

@@ -4,6 +4,7 @@ import AndroidConfig from '../../util/Android/androidconfig';
 import TypeValue from '../../util/Android/typevalue';
 import Color from '../color';
 import { SelectablePickerEvents } from './selectablepicker-events';
+import AndroidNativeTheme from '../../util/Android/nativeTheme';
 
 const NativeDialogInterface = requireClass('android.content.DialogInterface');
 const NativeTextView = requireClass('android.widget.TextView');
@@ -47,7 +48,7 @@ export default class SelectablePickerAndroid<TEvent extends SelectablePickerEven
     super(params);
   }
   protected createNativeObject() {
-    return new NativeAlertDialog.Builder(AndroidConfig.activity);
+    return new NativeAlertDialog.Builder(AndroidConfig.activity, AndroidNativeTheme.getAlertViewNativeThemeID());
   }
   protected preConstruct(params?: Partial<Record<string, any>>): void {
     this._items = [];
