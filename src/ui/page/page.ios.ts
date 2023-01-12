@@ -289,7 +289,9 @@ export default class PageIOS<TEvent extends string = PageEvents, TNative extends
           }
         }
       }
-      this.nativeObject.statusBarBackgroundColor(this.statusBar.backgroundColor.nativeObject);
+      if(this.statusBar.backgroundColor){
+        this.nativeObject.statusBarBackgroundColor(this.statusBar.backgroundColor.nativeObject);
+      }
     };
   }
 
