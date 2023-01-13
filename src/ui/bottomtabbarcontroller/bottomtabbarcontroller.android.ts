@@ -49,7 +49,7 @@ export default class BottomTabbarControllerAndroid extends NativeEventEmitterCom
     super(params);
 
     const listener = NativeBottomNavigationView.OnNavigationItemSelectedListener;
-    this.tabBar.nativeObject.setOnNavigationItemSelectedListener(
+    this.tabBar.nativeObject.setOnItemSelectedListener(
       listener.implement({
         onNavigationItemSelected: (item: any) => {
           const index = item.getItemId();
