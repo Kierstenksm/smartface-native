@@ -191,6 +191,15 @@ export interface ApplicationAndroidProps {
     permission: string
   ) => void;
   keyboardMode: KeyboardMode;
+  /**
+   * Set the configure the native theme.
+   *
+   * @method setAppTheme
+   * @param {String} currentTheme
+   * @android
+   * @since 4.0.2
+   */
+  setAppTheme: (theme: string) => void;
 }
 
 /**
@@ -752,15 +761,6 @@ export interface IApplication extends NativeEventEmitterComponent<ApplicationEve
      */
     Permissions: typeof ApplicationAndroidPermissions;
   };
-  /**
-   * Set the configure the native theme.
-   *
-   * @method setAppTheme
-   * @param {String} currentTheme
-   * @android
-   * @since 4.0.2
-   */
-  setAppTheme: (theme: string) => void;
   /**
    * Triggered when unhandelled error occurs.
    *

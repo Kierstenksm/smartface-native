@@ -178,7 +178,6 @@ class ApplicationAndroidClass extends NativeEventEmitterComponent<ApplicationEve
   onAppShortcutReceived: (e: { data: { [key: string]: any } }) => void;
   onMaximize: () => void;
   onMinimize: () => void;
-  setAppTheme: (theme: string) => void;
   Events = ApplicationEvents;
   tabBar?: IBottomTabBar;
   appearance: Appearance;

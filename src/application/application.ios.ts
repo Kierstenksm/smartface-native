@@ -176,7 +176,6 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
       };
     }
   }
-  setAppTheme: (theme: string) => void;
   registOnItemSelectedListener(): void {
     throw new Error('Method not implemented.');
   }
@@ -297,7 +296,7 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
       onRequestPermissionsResult: () => {},
       Permissions: {},
       navigationBar: {} as any,
-      setAppTheme: () => {}
+      setAppTheme: (theme: string) => {}
     };
   }
   get Android() {
