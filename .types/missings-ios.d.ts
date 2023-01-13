@@ -424,6 +424,7 @@ declare class __SF_UIApplication extends __SF_NSOBject {
   static dataCounters(): { WiFiSent: number; WWANSent: number; WWANReceived: number; WiFiReceived: number };
   static call(uriScheme: string, data: Record<string, any>, onSuccess?: (...args: any[]) => void, onFailure?: (...args: any[]) => void): void;
   static isEmulator(): boolean;
+  static appearance: number;
 }
 
 declare class __SF_CMMotionManager {
@@ -801,6 +802,8 @@ declare class __SF_UIViewController extends __SF_NSOBject {
   statusBarHidden: boolean;
   statusBarStyle: any;
   tabBarController: __SF_UITabBarController;
+  static setAppearance(appearance: number)
+  static appearancePreference: number
 }
 
 declare class __SF_UINavigationItem {
