@@ -5,7 +5,7 @@ import Timer from '../global/timer';
 import Invocation from '../util/iOS/invocation';
 import { ApplicationEvents } from './application-events';
 import StatusBar from './statusbar';
-import { IApplication } from './application';
+import { Appearance, IApplication } from './application';
 import Page from '../ui/page';
 import NavigationController from '../ui/navigationcontroller';
 import { IBottomTabBar } from '../ui/bottomtabbar/bottomtabbar';
@@ -17,6 +17,12 @@ enum EmulatorResetState {
   scan,
   update,
   clear
+}
+
+
+const appearanceMapper = {
+  [Appearance.LIGHT]: 1,
+  [Appearance.DARK]: 2
 }
 
 //Application Direction Manager (RTL Support)
@@ -291,12 +297,12 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
   get android() {
     return {
       checkPermission: () => false,
-      requestPermission: () => {},
+      requestPermission: () => { },
       shouldShowRequestPermissionRationale: () => false,
-      onRequestPermissionsResult: () => {},
+      onRequestPermissionsResult: () => { },
       Permissions: {},
       navigationBar: {} as any,
-      setAppTheme: (theme: string) => {}
+      setAppTheme: (theme: string) => { }
     };
   }
   get Android() {
@@ -306,6 +312,20 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
       NavigationBar: {} as any
     };
   }
+
+  get appearance(): Appearance {
+    if (__SF_UIViewController.appearancePreference === 1) {
+      return Appearance.LIGHT
+    }
+
+    return Appearance.DARK
+  }
+
+  set appearance(value: Appearance) {
+    const mappedValue = appearanceMapper[value] ?? 1
+    __SF_UIViewController.setAppearance(mappedValue)
+  }
+
   protected createNativeObject() {
     return null;
   }
