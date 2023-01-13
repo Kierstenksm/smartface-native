@@ -9,7 +9,7 @@ import SliderDrawerAndroid from '../ui/sliderdrawer/sliderdrawer.android';
 import StatusBar from './statusbar';
 import NavigationBar from './android/navigationbar';
 import { IBottomTabBar } from '../ui/bottomtabbar//bottomtabbar';
-import { ApplicationAndroidPermissions, IApplication, KeyboardMode } from './application';
+import { ApplicationAndroidPermissions, IApplication, KeyboardMode, Appearance } from './application';
 import SystemServices from '../util/Android/systemservices';
 import * as RequestCodes from '../util/Android/requestcodes';
 import ViewController from '../util/Android/transition/viewcontroller';
@@ -178,9 +178,9 @@ class ApplicationAndroidClass extends NativeEventEmitterComponent<ApplicationEve
   onAppShortcutReceived: (e: { data: { [key: string]: any } }) => void;
   onMaximize: () => void;
   onMinimize: () => void;
-  setAppTheme: (theme: string) => void;
   Events = ApplicationEvents;
   tabBar?: IBottomTabBar;
+  appearance: Appearance;
 
   attachSliderDrawer(sliderDrawer: SliderDrawerAndroid) {
     if (sliderDrawer) {
