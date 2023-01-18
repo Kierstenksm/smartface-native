@@ -81,6 +81,7 @@ class ApplicationAndroidClass extends NativeEventEmitterComponent<ApplicationEve
     this._secureWindowContent = false;
     this._keepScreenAwake = false;
     this.statusBar = StatusBar;
+    this.appearance = Appearance.LIGHT;
     super.preConstruct(params);
   }
   statusBar: typeof StatusBar;
