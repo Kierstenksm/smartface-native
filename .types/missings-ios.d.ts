@@ -858,6 +858,7 @@ declare interface iOSCurrentDevice {
 
 declare class __SF_UIDevice {
   static currentDevice(): iOSCurrentDevice;
+  static systemAppearance(): number
   static modelName(): string;
   static currentReachabilityStatus(): number;
   static getIFAddresses(): string[];
