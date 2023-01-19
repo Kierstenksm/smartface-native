@@ -1,3 +1,5 @@
+import { Appearance } from "../../application/application";
+
 /**
  * Determines which operating system is currently running.
  * @enum {String} Device.System.OSType
@@ -112,7 +114,7 @@ export type ClipboardData = {
  *
  */
 export declare class AbstractSystem {
-   /**
+  /**
    *
    * Returns the device's appearance.
    * @property {Appearance} appearance
@@ -122,6 +124,7 @@ export declare class AbstractSystem {
    * @ios
    * @since 5.0.7
    */
+  static appearance: Appearance;
   /**
    * Determines which operating system is currently running.
    * @example
