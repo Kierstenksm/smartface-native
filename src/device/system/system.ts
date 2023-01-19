@@ -112,6 +112,16 @@ export type ClipboardData = {
  *
  */
 export declare class AbstractSystem {
+   /**
+   *
+   * Returns the device's appearance.
+   * @property {Appearance} appearance
+   * @readonly
+   * @static
+   * @android
+   * @ios
+   * @since 5.0.7
+   */
   /**
    * Determines which operating system is currently running.
    * @example
