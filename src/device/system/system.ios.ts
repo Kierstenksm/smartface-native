@@ -12,7 +12,6 @@ class SystemIOS implements AbstractSystem {
   OS = OSType.IOS;
   OSType = OSType;
   BiometryType = BiometryType;
-  appearance: Appearance = mapToAppearance[__SF_UIDevice.systemAppearance()] ?? Appearance.LIGHT
   android = {
     isApplicationInstalled() { }
   };
@@ -25,6 +24,10 @@ class SystemIOS implements AbstractSystem {
       }
     };
     Object.assign(this._ios, ios);
+  }
+
+  get appearance() {
+    return mapToAppearance[__SF_UIDevice.systemAppearance()] ?? Appearance.LIGHT
   }
   get region() {
     const argCountryCode = new Invocation.Argument({
