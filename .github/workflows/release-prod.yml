@@ -24,28 +24,10 @@ jobs:
           npm run deploy:prod
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
-  buildDoc:
-    runs-on: ubuntu-latest
-    needs: [publishProd]
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: setup node
-        uses: actions/setup-node@master
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
-        run: |
-          yarn install
-
-      - name: build
-        run: |
-          yarn build:document
 
   push_to_Docker_Hub:
     runs-on: ubuntu-latest
-    needs: [buildDoc]
+    needs: [publishProd]
 
     steps:
       - name: checkout repo

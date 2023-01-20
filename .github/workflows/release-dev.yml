@@ -39,31 +39,15 @@ jobs:
         run: |
           git push
           git push --tags
-  buildDoc:
+  buildAndPushToDockerHub:
     runs-on: ubuntu-latest
     needs: [publishPreRelease]
-    steps:
-      - uses: actions/checkout@main
 
-      - name: setup node
-        uses: actions/setup-node@master
+    steps:
+      - uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
-        run: |
-          yarn install
-
-      - name: build
-        run: |
-          yarn build:document
-  pushToDockerHub:
-    runs-on: ubuntu-latest
-    needs: [buildDoc]
-
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
+          fetch-depth: 2
+      - run: git checkout HEAD^
 
       - name: get-npm-version
         id: package-version
@@ -128,4 +112,3 @@ jobs:
         script: |
           cd ${{ secrets.SERVER_DOC_HELM_PATH }}
           echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }} ${{ secrets.SERVER_DOC_DEPLOYMENT_PREFIX }}-${{needs.pushToDockerHub.outputs.RELEASE_CYCLE}}
-
