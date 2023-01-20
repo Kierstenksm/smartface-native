@@ -101,7 +101,7 @@ jobs:
       RELEASE_CYCLE: ${{env.RELEASE_CYCLE}}
   applyChanges:
     runs-on: ubuntu-latest
-    needs: [pushToDockerHub]
+    needs: [buildAndPushToDockerHub]
     steps:
     - name: Execute Upgrade Command on Server
       uses: appleboy/ssh-action@v0.1.6
