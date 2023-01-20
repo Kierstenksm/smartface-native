@@ -90,8 +90,7 @@ export interface ApplicationAndroidProps {
    */
   packageName: string;
   /**
-   * This method checks for a permission is shown before to user
-   * and the program is about to request the same permission again
+   * This method checks for a permission is shown before to user and the program is about to request the same permission again
    *
    * @method shouldShowRequestPermissionRationale
    * @param {String} permission
@@ -192,6 +191,15 @@ export interface ApplicationAndroidProps {
     permission: string
   ) => void;
   keyboardMode: KeyboardMode;
+  /**
+   * Set the configure the native theme.
+   *
+   * @method setAppTheme
+   * @param {String} currentTheme
+   * @android
+   * @since 4.0.2
+   */
+  setAppTheme: (theme: string) => void;
 }
 
 /**
@@ -517,6 +525,19 @@ export enum ApplicationAndroidPermissions {
 }
 
 /**
+ * Determines whether the application appearance is light or dark theme.
+ * 
+ * @enum Application.Appearance
+ * @since 5.0.7
+ * @ios
+ * @android
+ */
+export enum Appearance {
+  LIGHT = "light",
+  DARK = "dark"
+}
+
+/**
  * @class Application
  * @since 0.1
  *
@@ -741,15 +762,6 @@ export interface IApplication extends NativeEventEmitterComponent<ApplicationEve
     Permissions: typeof ApplicationAndroidPermissions;
   };
   /**
-   * Set the configure the native theme.
-   *
-   * @method setAppTheme
-   * @param {String} currentTheme
-   * @android
-   * @since 4.0.2
-   */
-  setAppTheme: (theme: string) => void;
-  /**
    * Triggered when unhandelled error occurs.
    *
    * @since 1.2
@@ -965,6 +977,17 @@ export interface IApplication extends NativeEventEmitterComponent<ApplicationEve
    * @since 4.3.6
    */
   isVoiceOverEnabled: Boolean;
+  /**
+   * Indicates whether the appearance of the native components such as alert, DatePicker, TimePicker, etc.
+   * Android handle the components internally Alert, Picker, SelectablePicker, TimePicker, DatePicker. But for iOS
+   * apart from Keyboard and Alert components, must be handled by assigning the proper colors on the component properties.
+   * 
+   * @property { Application.Appearance } appearance
+   * @android
+   * @ios
+   * @since 5.0.7
+   */
+  appearance: Appearance;
   /**
    * Provides current page instance of the application. Please do not use this property for page actions.
    * Works for Android only. Will always be undefined on iOS

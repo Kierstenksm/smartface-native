@@ -2,6 +2,7 @@ import { IDatePicker, DatePickerStyle, DatePickerMode } from './datepicker';
 import AndroidConfig from '../../util/Android/androidconfig';
 import NativeEventEmitterComponent from '../../core/native-event-emitter-component';
 import { DatePickerEvents } from './datepicker-events';
+import AndroidNativeTheme from '../../util/Android/nativeTheme';
 
 const NativeDatePickerDialog = requireClass('android.app.DatePickerDialog');
 const NativeDialogInterface = requireClass('android.content.DialogInterface');
@@ -10,7 +11,7 @@ export default class DatePickerAndroid<TEvent extends string = DatePickerEvents>
   onDateSelected: IDatePicker['onDateSelected'];
   onCancelled: IDatePicker['onCancelled'];
   createNativeObject(params: Partial<IDatePicker> = {}) {
-    const androidStyle = params?.android?.style || DatePickerAndroid.Android.Style.DEFAULT;
+    const androidStyle = params?.android?.style || AndroidNativeTheme.getDialogNativeThemeID();
     const today = new Date();
     this.addAndroidProps({
       get style() {

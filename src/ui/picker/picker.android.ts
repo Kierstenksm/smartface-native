@@ -7,6 +7,7 @@ import ViewAndroid from '../view/view.android';
 import { PickerEvents } from './picker-events';
 import { MobileOSProps } from '../../core/native-mobile-component';
 import { IViewProps, ViewIOSProps, ViewAndroidProps } from '../view/view';
+import AndroidNativeTheme from '../../util/Android/nativeTheme';
 
 const NativeColorDrawable = requireClass('android.graphics.drawable.ColorDrawable');
 const NativeNumberPicker = requireClass('android.widget.NumberPicker');
@@ -157,7 +158,7 @@ export default class PickerAndroid<TEvent extends PickerEvents> extends ViewAndr
       }
     });
 
-    const builder = new NativeAlertDialog.Builder(AndroidConfig.activity);
+    const builder = new NativeAlertDialog.Builder(AndroidConfig.activity, AndroidNativeTheme.getAlertViewNativeThemeID());
     builder.setView(layout);
     builder.setNegativeButton(NativeRString.cancel, cancelListener);
     builder.setPositiveButton(NativeRString.ok, doneListener);

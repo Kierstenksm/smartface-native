@@ -236,7 +236,7 @@ export default class ImageViewIOS<TEvent extends string = ImageViewEvents> exten
     return this.nativeObject.contentMode;
   }
   set imageFillType(value: ImageFillType) {
-    this.nativeObject.contentMode = NativeFillTypeProps[value] || value;
+    this.nativeObject.contentMode = NativeFillTypeProps[value] ?? NativeFillTypeProps[ImageFillType.NORMAL];
   }
 
   loadFromUrl(params: {
