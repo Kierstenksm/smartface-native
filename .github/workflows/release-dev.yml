@@ -111,5 +111,5 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
           cd ${{ secrets.SERVER_DOC_HELM_PATH }}
-          echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }} ${{ secrets.SERVER_DOC_DEPLOYMENT_PREFIX }}-${{needs.pushToDockerHub.outputs.RELEASE_CYCLE}}
+          echo ${{ secrets.SERVER_PASSWORD}} | ${{ secrets.SERVER_DOC_UPDATE_COMMAND }} ${{ secrets.SERVER_DOC_DEPLOYMENT_PREFIX }}-${{needs.buildAndPushToDockerHub.outputs.RELEASE_CYCLE}}
 
