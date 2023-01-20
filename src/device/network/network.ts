@@ -241,7 +241,7 @@ export interface INetwork {
    * @example
    * ```
    * import Network from '@smartface/native/device/network';
-   * Network.isConnected("myprivatenetwork.com")
+   * Network.isConnected("myprivatenetwork.com");
    *     .then(() => {
    *         console.info("Connected to internet");
    *     })
