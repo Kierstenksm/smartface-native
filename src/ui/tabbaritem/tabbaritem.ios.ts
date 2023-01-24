@@ -130,6 +130,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
         this.nativeObject.image = value.selected?.nativeObject || undefined;
       }
     }
+    this.resizeTabBarIconIfNeeded()
   }
 
   // Resizing handled internally inside framework-ios based on
