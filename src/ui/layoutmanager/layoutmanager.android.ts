@@ -186,9 +186,9 @@ export default class LayoutManagerAndroid extends AbstractLayoutManager implemen
               }
             } else {
               if (this._scrollDirection === ScrollDirection.HORIZONTAL) {
-                outRect.left = this._lineSpacing;
+                outRect.left = UnitConverter.dpToPixel(this._lineSpacing);
               } else {
-                outRect.top = this._lineSpacing;
+                outRect.top = UnitConverter.dpToPixel(this._lineSpacing);
               }
             }
           }
