@@ -268,6 +268,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
       this.nativeObject.alwaysBounceVertical = true;
     } else {
       this.refreshControl.removeFromSuperview();
+      this.nativeObject.alwaysBounceVertical = false;
     }
   }
   get paginationEnabled(): boolean {
