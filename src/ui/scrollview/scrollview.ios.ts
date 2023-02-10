@@ -81,7 +81,7 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
 
     this.contentLayout.nativeObject.addFrameObserver();
     this.contentLayout.nativeObject.frameObserveHandler = (e) => {
-      if (!this.autoSizeEnabled) {
+      if (this.autoSizeEnabled) {
         this.changeContentSize(e.frame);
       }
       this.gradientColorFrameObserver?.(e);
@@ -115,7 +115,7 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     }
     this.contentLayout.applyLayout = () => {
       __SF_Dispatch.mainAsync(() => {
-        if (!this.autoSizeEnabled) {
+        if (this.autoSizeEnabled) {
           this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
           return;
         }
@@ -342,7 +342,7 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     } else {
       this._align = ScrollType.VERTICAL;
     }
-    if (!this._autoSizeEnabled) {
+    if (this._autoSizeEnabled) {
       this.changeContentSize(this.contentLayout.nativeObject.frame);
     }
   }
