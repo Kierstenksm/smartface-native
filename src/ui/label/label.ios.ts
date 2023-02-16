@@ -53,13 +53,6 @@ export default class LabelIOS<TEvent extends string = ViewEvents, TNative = any,
   set maxLines(value: ILabel['maxLines']) {
     this.nativeObject.numberOfLines = value;
   }
-  get multiline() {
-    return this.nativeObject.numberOfLines === 0 && this.nativeObject.numberOfLines === 0;
-  }
-  set multiline(value: ILabel['multiline']) {
-    this.nativeObject.numberOfLines = value ? 0 : 1;
-    this.nativeObject.lineBreakMode = value ? 0 : 4;
-  }
   get text() {
     return this.nativeObject.text;
   }

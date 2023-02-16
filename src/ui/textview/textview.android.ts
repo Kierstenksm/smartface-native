@@ -97,7 +97,6 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     this.lineSpacing = this._lineSpacing;
     this.dirty();
     this.nativeObject.setText(this._attributedStringBuilder);
-    this.multiline = this.multiline;
     this.scrollEnabled = this._scrollEnabled;
     this.nativeObject.setHighlightColor(0); //TRANSPARENT COLOR
   }
