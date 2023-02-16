@@ -132,17 +132,8 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   }
   set lineSpacing(value: ITextView['lineSpacing']) {
     this._lineSpacing = value;
-    if (!this._attributedStringBuilder) {
-      return;
-    }
-    const lineSpan = NativeLineHeightSpan.implement({
-      chooseHeight: (text, start, end, spanstartv, v, fm) => {
-        fm.ascent -= AndroidUnitConverter.dpToPixel(this._lineSpacing);
-        fm.descent += AndroidUnitConverter.dpToPixel(this._lineSpacing);
-      }
-    });
     this.dirty();
-    this._attributedStringBuilder.setSpan(lineSpan, 0, this._attributedStringBuilder.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+    this.nativeObject.setLineSpacing(AndroidUnitConverter.dpToPixel(this._lineSpacing), 1);
   }
   get textAlignment(): ITextView['textAlignment'] {
     return this._textAlignment;
