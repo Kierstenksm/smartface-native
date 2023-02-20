@@ -177,6 +177,12 @@ To prevent, we need to customize BaseMovementMethod
       this.nativeObject.setMovementMethod(null);
     }
   }
+
+  protected override updateText(value: string) {
+    super.updateText(value);
+    this.scrollEnabled = this._scrollEnabled;
+  }
+
   protected override updateFont(value: IFont | null) {
     if (this._attributedStringArray?.length) {
       return;

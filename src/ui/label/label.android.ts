@@ -177,8 +177,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     return this.nativeObject.getText().toString();
   }
   set text(value: ILabel['text']) {
-    this.dirty();
-    this.nativeObject.setText(String(value));
+    this.updateText(value);
   }
   get textAlignment(): ILabel['textAlignment'] {
     return this._textAlignment;
@@ -298,6 +297,12 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
       AndroidUnitConverter.dpToPixel(value)
     );
   }
+
+  protected updateText(value: string) {
+    this.dirty();
+    this.nativeObject.setText(String(value));
+  }
+
   protected updateFont(value: IFont | null) {
     this.fontInitial = value;
     this.dirty();
