@@ -5,6 +5,7 @@ import TextAlignment from '../shared/textalignment';
 import { TextViewEvents } from './textview-events';
 import * as TextViewSizeCalculator from '../../util/Android/textviewsizecalculator';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
+import { IFont } from '../font/font';
 
 const NativeHtml = requireClass('android.text.Html');
 const NativeBuild = requireClass('android.os.Build');
@@ -175,5 +176,11 @@ To prevent, we need to customize BaseMovementMethod
       this.scrollableMovementMethodCreated = false;
       this.nativeObject.setMovementMethod(null);
     }
+  }
+  protected override updateFont(value: IFont | null) {
+    if (this._attributedStringArray?.length) {
+      return;
+    }
+    super.updateFont(value);
   }
 }

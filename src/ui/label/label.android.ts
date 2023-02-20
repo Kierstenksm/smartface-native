@@ -149,12 +149,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     });
   }
   set font(value: ILabel['font']) {
-    this.fontInitial = value;
-    this.dirty();
-    this.nativeObject.setTypeface(value?.nativeObject);
-    if (value?.size && typeof value.size === 'number') {
-      this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
-    }
+    this.updateFont(value);
   }
   get multiline(): ILabel['multiline'] {
     return this.nativeObject.getMaxLines() !== 1;
@@ -302,5 +297,13 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
       AndroidUnitConverter.dpToPixel(paddingRight),
       AndroidUnitConverter.dpToPixel(value)
     );
+  }
+  protected updateFont(value: IFont | null) {
+    this.fontInitial = value;
+    this.dirty();
+    this.nativeObject.setTypeface(value?.nativeObject);
+    if (value?.size && typeof value.size === 'number') {
+      this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
+    }
   }
 }
