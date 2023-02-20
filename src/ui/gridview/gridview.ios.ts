@@ -36,7 +36,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     return nativeObject;
   }
   preConstruct(params?: Partial<IGridView>) {
-    this.scrollBarEnabled = true;
+    this.scrollBarEnabled = false;
     this._refreshEnabled = false;
 
     this.collectionViewItems = {};
@@ -265,8 +265,10 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     this._refreshEnabled = value;
     if (value) {
       this.nativeObject.addSubview(this.refreshControl);
+      this.nativeObject.alwaysBounceVertical = true;
     } else {
       this.refreshControl.removeFromSuperview();
+      this.nativeObject.alwaysBounceVertical = false;
     }
   }
   get paginationEnabled(): boolean {

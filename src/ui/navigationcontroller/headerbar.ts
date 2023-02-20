@@ -151,6 +151,8 @@ export class HeaderBar extends NativeMobileComponent<__SF_UINavigationBar, IHead
     if (parseInt(System.OSVersion) >= 15) {
       if (this.appearance && backgroundImageValue) {
         this.appearance.backgroundImage = backgroundImageValue.nativeObject;
+       }else if(this.appearance && this.appearance.backgroundImage){
+        this.appearance.backgroundImage = undefined;
       }
       this.nativeObject.standardAppearance = this.appearance;
       this.nativeObject.scrollEdgeAppearance = this.appearance;

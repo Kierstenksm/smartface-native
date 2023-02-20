@@ -61,8 +61,12 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       this._image = value;
       this.nativeObject.setImageDrawable(value.nativeObject);
     } else if (typeof value === 'string') {
-      const imageFile = new FileAndroid({ path: value });
-      this.loadFromFile({ file: imageFile as any });
+      if (value.startsWith("http")) {
+        this.loadFromUrl({ url: value });
+      } else {
+        const imageFile = new FileAndroid({ path: value });
+        this.loadFromFile({ file: imageFile as any });
+      }
     } else {
       this._image = null;
       this.nativeObject.setImageDrawable(null);

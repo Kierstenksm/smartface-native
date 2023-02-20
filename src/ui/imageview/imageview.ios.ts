@@ -203,7 +203,11 @@ export default class ImageViewIOS<TEvent extends string = ImageViewEvents> exten
     }
     const image = value instanceof ImageIOS ? value : ImageIOS.createFromFile(value);
     if (!image) {
-      this.nativeObject.loadImage(undefined);
+      if(typeof value === 'string'){
+        this.loadFromUrl({url: value})
+      }else{
+         this.nativeObject.loadImage(undefined);
+      }
       return;
     }
 
