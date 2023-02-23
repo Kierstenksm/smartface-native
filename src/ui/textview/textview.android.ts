@@ -5,6 +5,7 @@ import TextAlignment from '../shared/textalignment';
 import { TextViewEvents } from './textview-events';
 import * as TextViewSizeCalculator from '../../util/Android/textviewsizecalculator';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
+import { IFont } from '../font/font';
 
 const NativeHtml = requireClass('android.text.Html');
 const NativeBuild = requireClass('android.os.Build');
@@ -132,17 +133,8 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   }
   set lineSpacing(value: ITextView['lineSpacing']) {
     this._lineSpacing = value;
-    if (!this._attributedStringBuilder) {
-      return;
-    }
-    const lineSpan = NativeLineHeightSpan.implement({
-      chooseHeight: (text, start, end, spanstartv, v, fm) => {
-        fm.ascent -= AndroidUnitConverter.dpToPixel(this._lineSpacing);
-        fm.descent += AndroidUnitConverter.dpToPixel(this._lineSpacing);
-      }
-    });
     this.dirty();
-    this._attributedStringBuilder.setSpan(lineSpan, 0, this._attributedStringBuilder.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+    this.nativeObject.setLineSpacing(AndroidUnitConverter.dpToPixel(this._lineSpacing), 1);
   }
   get textAlignment(): ITextView['textAlignment'] {
     return this._textAlignment;
@@ -184,5 +176,17 @@ To prevent, we need to customize BaseMovementMethod
       this.scrollableMovementMethodCreated = false;
       this.nativeObject.setMovementMethod(null);
     }
+  }
+
+  protected override updateText(value: string) {
+    super.updateText(value);
+    this.scrollEnabled = this._scrollEnabled;
+  }
+
+  protected override updateFont(value: IFont | null) {
+    if (this._attributedStringArray?.length) {
+      return;
+    }
+    super.updateFont(value);
   }
 }
