@@ -151,12 +151,6 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
   set font(value: ILabel['font']) {
     this.updateFont(value);
   }
-  get multiline(): ILabel['multiline'] {
-    return this.nativeObject.getMaxLines() !== 1;
-  }
-  set multiline(value: ILabel['multiline']) {
-    this.nativeObject.setSingleLine(!value);
-  }
   get maxLines(): ILabel['maxLines'] {
     const mMaxLines = this.nativeObject.getMaxLines();
     return mMaxLines === MAX_INT_VALUE ? 0 : mMaxLines;

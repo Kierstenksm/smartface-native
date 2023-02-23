@@ -67,7 +67,6 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   set maxLines(value: ITextView['maxLines']) {
     this.dirty();
     this.nativeObject.setMaxLines(value === 0 ? MAX_INT_VALUE : value);
-    // This one is added to match same behavior of multiline.
     this.scrollEnabled = this._scrollEnabled;
   }
   get selectable(): boolean {
@@ -98,7 +97,6 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     this.lineSpacing = this._lineSpacing;
     this.dirty();
     this.nativeObject.setText(this._attributedStringBuilder);
-    this.multiline = this.multiline;
     this.scrollEnabled = this._scrollEnabled;
     this.nativeObject.setHighlightColor(0); //TRANSPARENT COLOR
   }

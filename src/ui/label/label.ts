@@ -49,17 +49,6 @@ export declare interface ILabel<TEvent extends string = ViewEvents, TMobile exte
    */
   font: IFont | null;
   /**
-   * Enables/disables multiple line property of a Label. If set to true
-   * and the text is long enough, text will be shown in multiline. Setting multiline will override the {@link UI.Label#ellipsizeMode ellipsizeMode} prop.
-   *
-   * @default false
-   * @android
-   * @ios
-   * @since 0.1
-   * @deprecated 4.0.2 Use {@link UI.Label#maxLines maxLines} instead
-   */
-  multiline: boolean;
-  /**
    * Sets the height of the Label to be at most maxLines tall. Setting 0 indicates that maxLines will be as much as given content.
    *
    * @android
