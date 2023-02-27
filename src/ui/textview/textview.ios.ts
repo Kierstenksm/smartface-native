@@ -40,7 +40,6 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     this.nativeObject.setDelaysContentTouches = true;
     this.nativeObject.textContainer.maximumNumberOfLines = 0;
     this.nativeObject.textContainer.lineBreakMode = 0;
-    this.scrollEnabled = false;
 
     this.assignIOSSpecificParameters();
 
@@ -124,7 +123,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   set attributedText(value: ITextView['attributedText']) {
     this.__attributedText = value;
     this.setText(value);
-      this.revalidateProperties()
+    this.revalidateProperties()
   }
 
   private revalidateProperties() {
@@ -155,7 +154,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set font(value: ITextView['font']) {
     // when attributedText property is set, assigning font property breake the font of attributed strings and its size.
-    if (this.__attributedText) return;
+    if (this.__attributedText?.length > 0 && !this.htmlText) return;
 
     this.nativeObject.setEditable = true;
     this.nativeObject.font = value;
@@ -167,6 +166,9 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set text(value: ITextView['text']) {
     this.nativeObject.text = value;
+    this.nativeObject.clearAttributedText()
+    this.__attributedText = []
+
   }
   get textAlignment(): ITextView['textAlignment'] {
     return this.nativeObject.textAlignmentNumber;
@@ -182,7 +184,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set textColor(value: ITextView['textColor']) {
     // when attributedText property is set, assigning textColor property breake the color of attributed strings.
-    if (this.attributedText) return;
+    if (this.__attributedText?.length > 0 && !this.htmlText) return;
 
     this._textColor = value;
     this.nativeObject.setEditable = true;
