@@ -1,5 +1,5 @@
 import { GifImageViewEvents } from './gifimageview-events';
-import ImageViewIOS, { SDWebImageOptions } from '../imageview/imageview.ios';
+import ImageViewIOS from '../imageview/imageview.ios';
 import { IGifImageView } from './gifimageview';
 import ImageiOS from '../image/image.ios';
 import { IFile } from '../../io/file/file';
