@@ -24,6 +24,7 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   private _lineSpacing: ITextView['lineSpacing'];
   private _onLinkClick: ITextView['onLinkClick'];
   private _selectable: ITextView['selectable'];
+  private _maxLines: ITextView['maxLines'];
   createNativeObject() {
     return new __SF_UITextView();
   }
@@ -107,12 +108,14 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set letterSpacing(value: ITextView['letterSpacing']) {
     this._letterSpacing = value;
+    this.setText(this.__attributedText)
   }
   get lineSpacing() {
     return this._lineSpacing;
   }
   set lineSpacing(value: ITextView['letterSpacing']) {
     this._lineSpacing = value;
+    this.setText(this.__attributedText)
   }
   get attributedText() {
     return this.__attributedText;
@@ -120,7 +123,13 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   set attributedText(value: ITextView['attributedText']) {
     this.__attributedText = value;
     this.setText(value);
+    this.revalidateProperties()
   }
+
+  private revalidateProperties() {
+    this.maxLines = this._maxLines;
+  }
+
   get selectable() {
     return this._selectable;
   }
@@ -144,6 +153,9 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     return this.nativeObject.font;
   }
   set font(value: ITextView['font']) {
+    // when attributedText property is set, assigning font property breake the font of attributed strings and its size.
+    if (this.__attributedText?.length > 0 && !this.htmlText) return;
+
     this.nativeObject.setEditable = true;
     this.nativeObject.font = value;
     this.nativeObject.setEditable = false;
@@ -154,6 +166,9 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set text(value: ITextView['text']) {
     this.nativeObject.text = value;
+    this.nativeObject.clearAttributedText()
+    this.__attributedText = []
+
   }
   get textAlignment(): ITextView['textAlignment'] {
     return this.nativeObject.textAlignmentNumber;
@@ -168,6 +183,9 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     return this._textColor;
   }
   set textColor(value: ITextView['textColor']) {
+    // when attributedText property is set, assigning textColor property breake the color of attributed strings.
+    if (this.__attributedText?.length > 0 && !this.htmlText) return;
+
     this._textColor = value;
     this.nativeObject.setEditable = true;
     if (value instanceof Color) this.nativeObject.textColor = value.nativeObject;
@@ -184,7 +202,10 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
     return this.nativeObject.textContainer.maximumNumberOfLines;
   }
   set maxLines(value: ITextView['maxLines']) {
+    this._maxLines = value;
+    this.nativeObject.setEditable = true;
     this.nativeObject.textContainer.maximumNumberOfLines = value;
+    this.nativeObject.setEditable = false;
   }
 
   private setText(value: ITextView['attributedText']) {
