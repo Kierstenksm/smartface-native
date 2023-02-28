@@ -1,12 +1,11 @@
 import { GifImageViewEvents } from './gifimageview-events';
-import ImageViewIOS, { SDWebImageOptions } from '../imageview/imageview.ios';
+import ImageViewIOS from '../imageview/imageview.ios';
 import { IGifImageView } from './gifimageview';
 import ImageiOS from '../image/image.ios';
 import { IFile } from '../../io/file/file';
 import GifImageIOS from '../gifimage/gifimage.ios';
 import { IGifImage } from '../gifimage/gifimage';
 import { IImage } from '../image/image';
-import ImageIOS from '../image/image.ios';
 import ImageCacheType from '../shared/imagecachetype';
 
 export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents> extends ImageViewIOS<TEvent | GifImageViewEvents> implements IGifImageView {
@@ -77,7 +76,7 @@ export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents>
   loadFromUrl(params: {
     url: string;
     headers?: { [name: string]: string };
-    placeholder?: ImageIOS;
+    placeholder?: ImageiOS;
     fade?: boolean;
     useHTTPCacheControl?: boolean;
     onSuccess?: () => void;
@@ -109,7 +108,7 @@ export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents>
   }): void { 
     this.nativeObject.fetchFromURLCallback(params.url, (image) => {
       if (image) {
-        params.onSuccess?.(ImageIOS.createFromImage(image), 1);
+        params.onSuccess?.(ImageiOS.createFromImage(image), 1);
       } else {
         params.onFailure?.()
       }
