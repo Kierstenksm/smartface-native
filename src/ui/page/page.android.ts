@@ -402,6 +402,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
       this.headerBar.visible = true;
       this.headerBar.android.padding = { top: 0, bottom: 0, left: 0, right: 4 };
       this.headerBar.android.contentInsetStartWithNavigation = 0;
+      this.headerBar.title = "";
     }
   }
 
