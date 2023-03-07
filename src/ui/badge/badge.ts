@@ -16,7 +16,7 @@ export declare interface IBadge extends INativeComponent {
   /**
    * Gets/sets visible of badge.
    *
-   * @property {Boolean} visible
+   * @property {Boolean} [visible = false]
    * @android
    * @ios
    * @since 3.1.0
