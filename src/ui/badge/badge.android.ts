@@ -39,7 +39,7 @@ export default class BadgeAndroid extends NativeComponent implements IBadge {
   }
 
   protected preConstruct(params?: Partial<Record<string, any>>): void {
-    this._visible = true;
+    this.visible = false;
     this._text = '';
     this._borderColor = Color.WHITE;
     this._borderWidth = AndroidUnitConverter.dpToPixel(2);
