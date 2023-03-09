@@ -9,4 +9,13 @@ export default class GridViewItemIOS<TEvent extends string = FlexLayoutEvents, T
   constructor(params: Partial<IGridViewItem> = {}) {
     super(params);
   }
+
+  get flexGrow() {
+    return this.nativeObject.yoga.flexGrow;
+  }
+
+  set flexGrow(value) {
+    // flexGrow property setter not allowed because,
+    // it is cause wrong calculation and re-cycle issue on the list.
+  }
 }
