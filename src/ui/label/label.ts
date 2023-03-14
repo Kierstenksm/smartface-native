@@ -24,6 +24,15 @@ export interface LabelAndroidProps extends ViewAndroidProps {
    * @since 4.0.2
    */
   textDirection?: TextDirection;
+
+  /**
+   * Gets/sets the whether Label includes extra top and bottom font padding to make space for the ascenders/descenders.
+   *
+   * @property {Boolean} [includeFontPadding = true]
+   * @android
+   * @since 5.1.1
+   */
+  includeFontPadding: boolean;
 }
 
 export interface LabelIOSProps extends ViewIOSProps {}
