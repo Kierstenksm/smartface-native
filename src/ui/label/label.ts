@@ -32,7 +32,7 @@ export interface LabelAndroidProps extends ViewAndroidProps {
    * @android
    * @since 5.1.1
    */
-  includeFontPadding: boolean;
+  includeFontPadding?: boolean;
 }
 
 export interface LabelIOSProps extends ViewIOSProps {}
