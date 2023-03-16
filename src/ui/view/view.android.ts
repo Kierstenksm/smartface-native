@@ -120,7 +120,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   private _rippleEnabled: boolean;
   private _rippleColor?: IColor;
   private _useForeground: boolean;
-  protected _bitwiseBorders: number = 0;
+  protected _bitwiseBorders: number;
   private _isRTL: boolean;
   yogaNode: any;
   // as { updateRippleEffectIfNeeded: () => void; rippleColor: Color | null; [key: string]: any } & TNative;
@@ -156,6 +156,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this._scale = { x: 1.0, y: 1.0 };
     this._masksToBounds = true;
     this._maskedBorders = [ViewAndroid.Border.TOP_LEFT, ViewAndroid.Border.TOP_RIGHT, ViewAndroid.Border.BOTTOM_RIGHT, ViewAndroid.Border.BOTTOM_LEFT];
+    this._bitwiseBorders = this._maskedBorders.reduce((acc, cValue) => acc | cValue, 0);
     this._isRTL = AndroidConfig.activity.getResources().getConfiguration().getLayoutDirection() === 1;
     super.preConstruct(params);
 
@@ -421,7 +422,6 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this._borderTopStartRadius = -1;
     this._borderTopRightRadius = value;
     this._borderTopEndRadius = -1;
-    this._bitwiseBorders = ViewAndroid.Border.ALL;
 
     this._resetBackground();
     this.android.updateRippleEffectIfNeeded?.();
