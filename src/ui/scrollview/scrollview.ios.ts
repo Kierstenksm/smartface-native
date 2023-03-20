@@ -115,7 +115,7 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     }
     this.contentLayout.applyLayout = () => {
       __SF_Dispatch.mainAsync(() => {
-        if (this.autoSizeEnabled) {
+        if (!this.autoSizeEnabled) {
           this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
           return;
         }
@@ -151,33 +151,33 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
 
         if (this._align === ScrollType.HORIZONTAL) {
           //// PADDING CHECK ///////
-          if (TypeUtil.isNumeric(this.contentLayout.paddingRight)) {
+          if (TypeUtil.isUnitNumeric(this.contentLayout.paddingRight)) {
             rect.width = rect.width + this.contentLayout.paddingRight;
-          } else if (TypeUtil.isNumeric(this.contentLayout.padding)) {
+          } else if (TypeUtil.isUnitNumeric(this.contentLayout.padding)) {
             rect.width = rect.width + this.contentLayout.padding;
           }
           ///////////////////////////
 
           //// MARGIN CHECK /////////
-          if (widthAffectingView && TypeUtil.isNumeric(widthAffectingView.yoga.getYGValueForKey('marginLeft'))) {
+          if (widthAffectingView && TypeUtil.isUnitNumeric(widthAffectingView.yoga.getYGValueForKey('marginLeft'))) {
             rect.width = rect.width + widthAffectingView.yoga.getYGValueForKey('marginLeft');
-          } else if (widthAffectingView && TypeUtil.isNumeric(widthAffectingView.yoga.getYGValueForKey('margin'))) {
+          } else if (widthAffectingView && TypeUtil.isUnitNumeric(widthAffectingView.yoga.getYGValueForKey('margin'))) {
             rect.width = rect.width + widthAffectingView.yoga.getYGValueForKey('margin');
           }
           rect.height = this.nativeObject.frame.height;
         } else {
           //// PADDING CHECK ///////
-          if (TypeUtil.isNumeric(this.contentLayout.paddingBottom)) {
+          if (TypeUtil.isUnitNumeric(this.contentLayout.paddingBottom)) {
             rect.height = rect.height + this.contentLayout.paddingBottom;
-          } else if (TypeUtil.isNumeric(this.contentLayout.padding)) {
+          } else if (TypeUtil.isUnitNumeric(this.contentLayout.padding)) {
             rect.height = rect.height + this.contentLayout.padding;
           }
           ///////////////////////////
 
           //// MARGIN CHECK /////////
-          if (heightAffectingView && TypeUtil.isNumeric(heightAffectingView.yoga.getYGValueForKey('marginBottom'))) {
+          if (heightAffectingView && TypeUtil.isUnitNumeric(heightAffectingView.yoga.getYGValueForKey('marginBottom'))) {
             rect.height = rect.height + heightAffectingView.yoga.getYGValueForKey('marginBottom');
-          } else if (heightAffectingView && TypeUtil.isNumeric(heightAffectingView.yoga.getYGValueForKey('margin'))) {
+          } else if (heightAffectingView && TypeUtil.isUnitNumeric(heightAffectingView.yoga.getYGValueForKey('margin'))) {
             rect.height = rect.height + heightAffectingView.yoga.getYGValueForKey('margin');
           }
           ///////////////////////////
@@ -337,6 +337,8 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     }
   }
   set align(value: ScrollViewAlign) {
+    if (!value) return;
+
     if (value === ScrollViewAlign.HORIZONTAL) {
       this._align = ScrollType.HORIZONTAL;
     } else {
