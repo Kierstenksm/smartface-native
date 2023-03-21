@@ -324,7 +324,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderTopLeftRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopLeftRadius is available on Android.
    */
   borderTopLeftRadius: number;
   /**
@@ -334,7 +334,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderTopRightRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopRightRadius is available on Android.
    */
   borderTopRightRadius: number;
   /**
@@ -344,7 +344,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderTopStartRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopStartRadius is available on Android.
    */
   borderTopStartRadius: number;
   /**
@@ -354,7 +354,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderTopEndRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopEndRadius is available on Android.
    */
   borderTopEndRadius: number;
   /**
@@ -364,7 +364,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderBottomLeftRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomLeftRadius is available on Android.
    */
   borderBottomLeftRadius: number;
   /**
@@ -374,7 +374,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderBottomRightRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomRightRadius is available on Android.
    */
   borderBottomRightRadius: number;
 
@@ -385,7 +385,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderBottomStartRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomStartRadius is available on Android.
    */
   borderBottomStartRadius: number;
 
@@ -396,7 +396,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
-   * @deprecated since 5.1.1 Use the maskedBorders property instead. Also android.borderBottomEndRadius is available on Android.
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomEndRadius is available on Android.
    */
   borderBottomEndRadius: number;
 
@@ -755,6 +755,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @ios
    * @android
    * @since 4.1.4
+   * @deprecated since 5.0.3 Use the borderRadiusEdges properties instead.
    */
   maskedBorders: Border[];
   /**
