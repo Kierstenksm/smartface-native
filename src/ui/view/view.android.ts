@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { Rectangle } from '../../primitive/rectangle';
 import { ViewEvents } from './view-events';
-import { Border, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import OverScrollMode from '../shared/android/overscrollmode';
 import { ScrollViewAlign } from '../scrollview/scrollview';
 import { getRippleMask } from '../../helper/getrippleeffect';
@@ -89,6 +89,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   nativeInner: any;
   uniqueId: string;
   protected _maskedBorders: number[];
+  protected _borderRadiusEdges: BorderRadiusEdges;
   protected _masksToBounds: boolean;
   protected _onTouch: IView['onTouch'];
   protected _onTouchEnded: IView['onTouchEnded'];
@@ -613,6 +614,27 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
       }
       return border;
     });
+  }
+
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    const maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT);
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT);
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT);
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT);
+    }
+    this.maskedBorders = maskedCorners;
   }
 
   get maskedBorders() {
