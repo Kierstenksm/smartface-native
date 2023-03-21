@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { IColor } from '../color/color';
 import { ViewEvents } from './view-events';
-import { Border, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEges, IView, IViewProps, ViewBase } from './view';
 import { Size } from '../../primitive/size';
 import { YGUnit } from '../shared/ios/yogaenums';
 import Invocation from '../../util/iOS/invocation';
@@ -31,6 +31,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   private _isLTR: boolean;
 
+  private _borderRadiusEdges: BorderRadiusEges = { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }
   private _borderTopLeftRadius: number;
   private _borderTopRightRadius: number;
   private _borderBottomLeftRadius: number;
@@ -453,6 +454,28 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
     }
     this._maskedBorders = value;
     this.nativeObject.layer.maskedCorners = corners;
+  }
+
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEges) {
+    let maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT)
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT)
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT)
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT)
+    }
+
+    this.maskedBorders = maskedCorners;
   }
 
   get backgroundColor(): IView['backgroundColor'] {
