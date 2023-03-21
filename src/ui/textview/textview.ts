@@ -182,4 +182,12 @@ export declare interface ITextView<
    * @since 3.0.0
    */
   lineSpacing: number;
+  /**
+   * Sets the height of the TextView to be at most maxLines tall. Setting 0 indicates that maxLines will be as much as given content.
+   * @property {Number} [maxLines = 0]
+   * @android
+   * @ios
+   * @since 4.0.2
+   */
+  maxLines: number;
 }
