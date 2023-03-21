@@ -214,6 +214,86 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
       },
       set overScrollMode(mode) {
         self.overScrollMode = mode;
+      },
+      get borderBottomLeftRadius() {
+        return self._borderBottomLeftRadius;
+      },
+      set borderBottomLeftRadius(value) {
+        self._borderBottomLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomStartRadius() {
+        return self._borderBottomStartRadius;
+      },
+      set borderBottomStartRadius(value) {
+        self._borderBottomStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_LEFT : ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomRightRadius() {
+        return self._borderBottomRightRadius;
+      },
+      set borderBottomRightRadius(value) {
+        self._borderBottomRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomEndRadius() {
+        return self._borderBottomEndRadius;
+      },
+      set borderBottomEndRadius(value) {
+        self._borderBottomEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_RIGHT : ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopLeftRadius() {
+        return self._borderTopLeftRadius;
+      },
+      set borderTopLeftRadius(value) {
+        self._borderTopLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopStartRadius() {
+        return self._borderTopStartRadius;
+      },
+      set borderTopStartRadius(value) {
+        self._borderTopStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_LEFT : ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopRightRadius() {
+        return self._borderTopRightRadius;
+      },
+      set borderTopRightRadius(value) {
+        self._borderTopRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopEndRadius() {
+        return self._borderTopEndRadius;
+      },
+      set borderTopEndRadius(value) {
+        self._borderTopEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_RIGHT : ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
       }
     };
   }
