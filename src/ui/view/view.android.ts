@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { Rectangle } from '../../primitive/rectangle';
 import { ViewEvents } from './view-events';
-import { Border, BorderRadiusEges, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import OverScrollMode from '../shared/android/overscrollmode';
 import { ScrollViewAlign } from '../scrollview/scrollview';
 import { getRippleMask } from '../../helper/getrippleeffect';
@@ -89,7 +89,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   nativeInner: any;
   uniqueId: string;
   protected _maskedBorders: number[];
-  protected _borderRadiusEdges: BorderRadiusEges;
+  protected _borderRadiusEdges: BorderRadiusEdges;
   protected _masksToBounds: boolean;
   protected _onTouch: IView['onTouch'];
   protected _onTouchEnded: IView['onTouchEnded'];
@@ -620,7 +620,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return this._borderRadiusEdges
   }
 
-  set borderRadiusEdges(value: BorderRadiusEges) {
+  set borderRadiusEdges(value: BorderRadiusEdges) {
     const maskedCorners: Border[] = [];
     if (value.topLeft !== false) {
       maskedCorners.push(Border.TOP_LEFT);
