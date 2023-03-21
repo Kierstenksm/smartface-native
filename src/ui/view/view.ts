@@ -8,6 +8,14 @@ import NativeEventEmitterComponent from '../../core/native-event-emitter-compone
 import ViewState from '../shared/viewState';
 import { IViewGroup } from '../viewgroup/viewgroup';
 import { IColor } from '../color/color';
+
+export type BorderRadiusEges = {
+  topLeft?: Boolean
+  topRight?: Boolean
+  bottomLeft?: Boolean
+  bottomRight?: Boolean
+}
+
 export interface ViewAndroidProps {
   readonly yogaNode: any;
   /**
@@ -731,6 +739,16 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    */
   masksToBounds: boolean;
   /**
+   * A Boolean indicating whether sublayers are clipped to the layer’s bounds. Android sublayers still overlaps the border's width and
+   * as known issue,if {@link UI.View#borderRadiusEges borderRadiusEges} is used then sublayer won't be clipped.
+   *
+   * @property {UI.View.BorderRadiusEges[]} [borderRadiusEges = {topLeft: true, topRight: true, bottomLeft: true, bottomRight: true}]
+   * @ios
+   * @android
+   * @since 5.1.1
+   */
+  borderRadiusEdges: BorderRadiusEges;
+  /**
    * Specified enums indicates that which corner of View will have radius.
    *
    * @property {UI.View.Border[]} [maskedBorders = [View.Border.TOP_LEFT, View.Border.TOP_RIGHT, View.Border.BOTTOM_RIGHT, View.Border.BOTTOM_LEFT]]
@@ -775,8 +793,8 @@ export interface IView<
   TNative extends { [key: string]: any } = { [key: string]: any },
   TMobileProps extends MobileOSProps<ViewIOSProps, ViewAndroidProps> = MobileOSProps<ViewIOSProps, ViewAndroidProps>
 > extends Omit<IViewProps<TMobileProps>, 'nativeObject'>,
-    IEventEmitter<TEvent | ViewEvents>,
-    INativeComponent<TNative> {
+  IEventEmitter<TEvent | ViewEvents>,
+  INativeComponent<TNative> {
   parent: IView | undefined;
   readonly uniqueId: string;
   /**
@@ -1263,6 +1281,7 @@ export declare class AbstractView<TEvent extends string = ViewEvents, TNative = 
   alignSelf: Flex.AlignSelf;
   masksToBounds: boolean;
   maskedBorders: Border[];
+  borderRadiusEdges: BorderRadiusEges;
   static readonly Border: typeof Border;
 
   on(eventName: 'touch', callback: (e: Point2D) => void): () => void;
