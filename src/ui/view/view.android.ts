@@ -621,6 +621,20 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   }
 
   set borderRadiusEdges(value: BorderRadiusEges) {
+    const maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT);
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT);
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT);
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT);
+    }
+    this.maskedBorders = maskedCorners;
   }
 
   get maskedBorders() {
