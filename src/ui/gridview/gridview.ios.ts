@@ -37,7 +37,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
   }
   preConstruct(params?: Partial<IGridView>) {
     this.scrollBarEnabled = false;
-    this._refreshEnabled = false;
+    this._refreshEnabled = true;
 
     this.collectionViewItems = {};
     this.registeredIndentifier = [];
