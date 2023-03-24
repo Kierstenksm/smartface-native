@@ -49,6 +49,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     this.setNativeParams();
     this.setScrollEvents();
     super.preConstruct(params);
+    this.refreshEnabled = true;
   }
   constructor(params?: Partial<IGridView>) {
     super(params);
@@ -262,6 +263,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     return this._refreshEnabled;
   }
   set refreshEnabled(value: boolean) {
+    console.log("refreshenable: ", value)
     this._refreshEnabled = value;
     if (value) {
       this.nativeObject.addSubview(this.refreshControl);
