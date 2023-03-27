@@ -43,6 +43,13 @@ export default class SwitchIOS<TEvent extends string = SwitchEvents> extends Vie
 
     this.thumbOffColor = this._thumbOffColor;
     this.toggleOffColor = this._toggleOffColor;
+    this.resetShadowSetters();
+  }
+
+  private resetShadowSetters(){
+    this.ios.shadowOffset = this.ios.shadowOffset;
+    this.shadowColor = this.shadowColor;
+    this.ios.shadowRadius = this.ios.shadowRadius;
   }
 
   get enabled(): boolean {
