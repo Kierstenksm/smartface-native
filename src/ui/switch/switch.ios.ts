@@ -47,6 +47,7 @@ export default class SwitchIOS<TEvent extends string = SwitchEvents> extends Vie
   }
 
   private resetShadowSetters(){
+    this.ios.shadowOpacity = this.ios.shadowOpacity;
     this.ios.shadowOffset = this.ios.shadowOffset;
     this.shadowColor = this.shadowColor;
     this.ios.shadowRadius = this.ios.shadowRadius;
