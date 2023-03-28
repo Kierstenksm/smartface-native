@@ -21,6 +21,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
   private _rotation: number;
   private _rotationX: number;
   private _rotationY: number;
+  private _shadowOpacity: number;
   private _scale: Point2D;
   private _width: number;
   private _height: number;
@@ -167,7 +168,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowRadius:', [argShadowRadius]);
       },
       get shadowOpacity() {
-        return Invocation.invokeInstanceMethod(self.nativeObject.layer, 'shadowOpacity', [], 'CGFloat');
+        return self._shadowOpacity;
       },
       set shadowOpacity(shadowOpacity: number) {
         const argShadowOpacity = new Invocation.Argument({
@@ -175,6 +176,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
           value: shadowOpacity
         });
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowOpacity:', [argShadowOpacity]);
+        self._shadowOpacity = shadowOpacity;
         self.backgroundColor = self.backgroundColor;
       },
       get shadowColor() {
