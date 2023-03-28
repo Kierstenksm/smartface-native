@@ -72,6 +72,14 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
   }
   protected preConstruct(params) {
     this.contentLayout = new FlexLayoutIOS();
+    this.contentLayout.nativeObject = new __SF_UScrollLayout();
+    this.contentLayout.nativeObject.yoga.isEnabled = true;
+
+    this.contentLayout.nativeObject.scrollApplyLayout = () => {
+      this.contentLayout.applyLayout();
+    }
+
+    this.contentLayout.id = 9090
     this.setLayoutProps();
     this._frame = {};
     this._align = ScrollType.VERTICAL;
@@ -119,10 +127,6 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
           this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
           return;
         }
-
-        this.contentLayout.width = this.nativeObject.frame.width;
-        this.contentLayout.height = this.nativeObject.frame.height;
-        this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
 
         const rect = {
           x: 0,
@@ -184,9 +188,13 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
           rect.width = this.nativeObject.frame.width;
         }
 
+        if (this.contentLayout.width === rect.width
+          && this.contentLayout.height === rect.height) {
+            return;
+        }
+
         this.contentLayout.width = rect.width;
         this.contentLayout.height = rect.height;
-        this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
         this.changeContentSize(rect);
       });
     };

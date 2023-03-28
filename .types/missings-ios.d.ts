@@ -152,6 +152,8 @@ declare class __SF_UIView extends __SF_NSOBject {
   layer: any;
   uuid: string;
 }
+
+declare class __SF_UScrollLayout extends __SF_UIView {}
 declare class __SF_NSUserDefaults extends __SF_NSOBject {
   setObjectForKey(value: any, key: string): any;
   synchronize(): any;
