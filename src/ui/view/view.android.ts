@@ -929,6 +929,9 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return PixelToDp(this.yogaNode.getMinHeight().value);
   }
   set minHeight(minHeight) {
+    this.setMinHeight(minHeight);
+  }
+  protected setMinHeight(minHeight) {
     this.yogaNode.setMinHeight(DpToPixel(minHeight));
     this.requestLayout();
   }
