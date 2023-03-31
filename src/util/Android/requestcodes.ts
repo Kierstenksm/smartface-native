@@ -34,3 +34,7 @@ export enum DocumentPicker {
 export enum Location {
   CHECK_SETTINGS_CODE = SFLocationCallback.REQUEST_CHECK_SETTINGS
 }
+
+export enum Share {
+  CREATE_DOCUMENT_CODE = 1300
+}
