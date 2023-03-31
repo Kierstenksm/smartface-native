@@ -51,7 +51,7 @@ export default class LabelIOS<TEvent extends string = ViewEvents, TNative = any,
     return this.nativeObject.numberOfLines;
   }
   set maxLines(value: ILabel['maxLines']) {
-    this.nativeObject.numberOfLines = value;
+    this.nativeObject.numberOfLines = Number(value) || value === 0 ? value : 1; 
   }
   get text() {
     return this.nativeObject.text;
