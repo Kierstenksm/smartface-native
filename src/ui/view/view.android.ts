@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { Rectangle } from '../../primitive/rectangle';
 import { ViewEvents } from './view-events';
-import { Border, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import OverScrollMode from '../shared/android/overscrollmode';
 import { ScrollViewAlign } from '../scrollview/scrollview';
 import { getRippleMask } from '../../helper/getrippleeffect';
@@ -89,6 +89,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   nativeInner: any;
   uniqueId: string;
   protected _maskedBorders: number[];
+  protected _borderRadiusEdges: BorderRadiusEdges;
   protected _masksToBounds: boolean;
   protected _onTouch: IView['onTouch'];
   protected _onTouchEnded: IView['onTouchEnded'];
@@ -214,6 +215,86 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
       },
       set overScrollMode(mode) {
         self.overScrollMode = mode;
+      },
+      get borderBottomLeftRadius() {
+        return self._borderBottomLeftRadius;
+      },
+      set borderBottomLeftRadius(value) {
+        self._borderBottomLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomStartRadius() {
+        return self._borderBottomStartRadius;
+      },
+      set borderBottomStartRadius(value) {
+        self._borderBottomStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_LEFT : ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomRightRadius() {
+        return self._borderBottomRightRadius;
+      },
+      set borderBottomRightRadius(value) {
+        self._borderBottomRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomEndRadius() {
+        return self._borderBottomEndRadius;
+      },
+      set borderBottomEndRadius(value) {
+        self._borderBottomEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_RIGHT : ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopLeftRadius() {
+        return self._borderTopLeftRadius;
+      },
+      set borderTopLeftRadius(value) {
+        self._borderTopLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopStartRadius() {
+        return self._borderTopStartRadius;
+      },
+      set borderTopStartRadius(value) {
+        self._borderTopStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_LEFT : ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopRightRadius() {
+        return self._borderTopRightRadius;
+      },
+      set borderTopRightRadius(value) {
+        self._borderTopRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopEndRadius() {
+        return self._borderTopEndRadius;
+      },
+      set borderTopEndRadius(value) {
+        self._borderTopEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_RIGHT : ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
       }
     };
   }
@@ -535,6 +616,27 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     });
   }
 
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    const maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT);
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT);
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT);
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT);
+    }
+    this.maskedBorders = maskedCorners;
+  }
+
   get maskedBorders() {
     return this._maskedBorders;
   }
@@ -827,6 +929,9 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return PixelToDp(this.yogaNode.getMinHeight().value);
   }
   set minHeight(minHeight) {
+    this.setMinHeight(minHeight);
+  }
+  protected setMinHeight(minHeight) {
     this.yogaNode.setMinHeight(DpToPixel(minHeight));
     this.requestLayout();
   }

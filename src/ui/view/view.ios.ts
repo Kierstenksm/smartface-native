@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { IColor } from '../color/color';
 import { ViewEvents } from './view-events';
-import { Border, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import { Size } from '../../primitive/size';
 import { YGUnit } from '../shared/ios/yogaenums';
 import Invocation from '../../util/iOS/invocation';
@@ -9,7 +9,7 @@ import Exception from '../../util/exception';
 import ColorIOS from '../color/color.ios';
 import { IViewGroup } from '../viewgroup/viewgroup';
 
-export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, TProps extends IViewProps = IViewProps>
+export default class ViewIOS<TEvent extends string = ViewEvents, TNative extends { [key: string]: any; } = any, TProps extends IViewProps = IViewProps>
   extends ViewBase<TEvent, TNative, TProps>
   implements IView<TEvent, TNative, TProps>
 {
@@ -21,6 +21,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
   private _rotation: number;
   private _rotationX: number;
   private _rotationY: number;
+  private _shadowOpacity: number;
   private _scale: Point2D;
   private _width: number;
   private _height: number;
@@ -31,6 +32,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   private _isLTR: boolean;
 
+  private _borderRadiusEdges: BorderRadiusEdges = { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }
   private _borderTopLeftRadius: number;
   private _borderTopRightRadius: number;
   private _borderBottomLeftRadius: number;
@@ -166,7 +168,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowRadius:', [argShadowRadius]);
       },
       get shadowOpacity() {
-        return Invocation.invokeInstanceMethod(self.nativeObject.layer, 'shadowOpacity', [], 'CGFloat');
+        return self._shadowOpacity;
       },
       set shadowOpacity(shadowOpacity: number) {
         const argShadowOpacity = new Invocation.Argument({
@@ -174,6 +176,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
           value: shadowOpacity
         });
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowOpacity:', [argShadowOpacity]);
+        self._shadowOpacity = shadowOpacity;
         self.backgroundColor = self.backgroundColor;
       },
       get shadowColor() {
@@ -453,6 +456,28 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
     }
     this._maskedBorders = value;
     this.nativeObject.layer.maskedCorners = corners;
+  }
+
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    let maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT)
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT)
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT)
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT)
+    }
+
+    this.maskedBorders = maskedCorners;
   }
 
   get backgroundColor(): IView['backgroundColor'] {

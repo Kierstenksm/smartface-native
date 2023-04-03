@@ -35,6 +35,7 @@ const NativeEllipsizeMode = {
 const MAX_INT_VALUE = 2147483647;
 const AUTO_SIZE_TEXT_TYPE_NONE = 0;
 const MINIMUM_FONT_SIZE = 7;
+const DEFAULT_MAX_LINES = 1;
 
 export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = LabelAndroidProps, TProps extends ILabel = ILabel>
   extends ViewAndroid<TEvent, TNative, TProps>
@@ -57,6 +58,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
   private _padding: number;
   constructor(params: Partial<TProps>) {
     super(params);
+    this.maxLines = DEFAULT_MAX_LINES;
   }
   protected preConstruct(params?: Partial<TProps>): void {
     this._adjustFontSizeToFit = false;
@@ -156,7 +158,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     return mMaxLines === MAX_INT_VALUE ? 0 : mMaxLines;
   }
   set maxLines(value: ILabel['maxLines']) {
-    const valueInt = isNaN(value) ? 0 : value;
+    const valueInt = isNaN(value) || value === null ? DEFAULT_MAX_LINES : value;
     this.dirty();
     this.nativeObject.setMaxLines(valueInt === 0 ? MAX_INT_VALUE : valueInt);
   }

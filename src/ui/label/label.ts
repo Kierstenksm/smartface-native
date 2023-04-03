@@ -59,7 +59,7 @@ export declare interface ILabel<TEvent extends string = ViewEvents, TMobile exte
   font: IFont | null;
   /**
    * Sets the height of the Label to be at most maxLines tall. Setting 0 indicates that maxLines will be as much as given content.
-   *
+   * @property {Number} [maxLines = 1]
    * @android
    * @ios
    * @since 4.0.2

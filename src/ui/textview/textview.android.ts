@@ -27,7 +27,7 @@ const TextAlignmentDic = {
 };
 
 const MAX_INT_VALUE = 2147483647;
-const SPAN_EXCLUSIVE_EXCLUSIVE = 33;
+const DEFAULT_MAX_LINES = 0; // 0 indicates that maxLines will be as much as given content
 
 export default class TextViewAndroid<TEvent extends string = TextViewEvents, TProps extends ITextView = ITextView> extends LabelAndroid<TEvent | TextViewEvents, any, TProps> implements ITextView {
   private _attributedStringBuilder: any;
@@ -41,6 +41,7 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   private scrollableMovementMethodCreated: boolean;
   constructor(params: Partial<TProps> = {}) {
     super(params);
+    this.maxLines = DEFAULT_MAX_LINES;
   }
   protected preConstruct(params?: Partial<TProps>): void {
     this._letterSpacing = 9;

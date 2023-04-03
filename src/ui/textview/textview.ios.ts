@@ -166,7 +166,6 @@ export default class TextViewIOS<TEvent extends TextViewEvents, TProps extends I
   }
   set text(value: ITextView['text']) {
     this.nativeObject.text = value;
-    this.nativeObject.clearAttributedText()
     this.__attributedText = []
 
   }

@@ -8,6 +8,7 @@ import ImageAndroid from '../../ui/image/image.android';
 import { IPage } from '../../ui/page/page';
 import AndroidConfig from '../../util/Android/androidconfig';
 import { IShare } from './share';
+import * as RequestCodes from '../../util/Android/requestcodes';
 
 const NativeIntent = requireClass('android.content.Intent');
 const NativeBuildConfig = requireClass(AndroidConfig.activity.getPackageName() + '.BuildConfig');
@@ -19,6 +20,8 @@ const NativeFileOutStream = requireClass('java.io.FileOutputStream');
 const NativeStringUtil = requireClass('io.smartface.android.utils.StringUtil');
 const NativeURI = requireClass('android.net.Uri');
 const NativeArrayList = requireClass('java.util.ArrayList');
+const NativeFileInputStream = requireClass('java.io.FileInputStream');
+const NativeFileUtil = requireClass('io.smartface.android.utils.FileUtil');
 
 const Authority = NativeBuildConfig.APPLICATION_ID + '.provider';
 
@@ -27,9 +30,32 @@ interface ContentSharing {
   parcelabels: any;
 }
 
+const ACTIVITY_RESULT_OK = -1;
+
 class ShareAndroidClass extends NativeMobileComponent implements IShare {
+  CREATE_DOCUMENT_CODE = RequestCodes.Share.CREATE_DOCUMENT_CODE;
+  _saveToFilesFile?: File;
+
+  constructor() {
+    super();
+    this.addAndroidProps(this.getAndroidProps());
+  }
   protected createNativeObject() {
     return null;
+  }
+  private getAndroidProps(): Partial<{ [key: string]: any; }> {
+    const self = this;
+    return {
+      saveToFiles(file: File, page: IPage) {
+        self._saveToFilesFile = file;
+        const intent = new NativeIntent(NativeIntent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(NativeIntent.CATEGORY_OPENABLE);
+        intent.setType("application/*");
+        intent.putExtra(NativeIntent.EXTRA_TITLE, file.name);
+        const shareIntent = NativeIntent.createChooser(intent, "");
+        page.nativeObject.startActivityForResult(shareIntent, self.CREATE_DOCUMENT_CODE);
+      }
+    };
   }
   shareText(text: string) {
     this.shareContent({
@@ -247,6 +273,24 @@ class ShareAndroidClass extends NativeMobileComponent implements IShare {
     // }
     contentSharing.mimeTypes.push(fileType);
     contentSharing.parcelabels.add(uri);
+  }
+
+  private onActivityResultSaveToFiles(resultCode: number, data: any) {
+    if (resultCode === ACTIVITY_RESULT_OK && this._saveToFilesFile) {
+      const fileURI = data.getData();
+      const fileInputStream = new NativeFileInputStream(this._saveToFilesFile.nativeObject)
+      const fileOutputStream = AndroidConfig.activity.getContentResolver().openOutputStream(fileURI);
+      NativeFileUtil.copyStream(fileInputStream, fileOutputStream);
+      fileInputStream.close();
+      fileOutputStream.close();
+      this._saveToFilesFile = undefined;
+    }
+  }
+
+  onActivityResult(requestCode: number, resultCode: number, data: any) {
+    if (requestCode === this.CREATE_DOCUMENT_CODE) {
+      this.onActivityResultSaveToFiles(resultCode, data);
+    }
   }
 }
 

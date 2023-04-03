@@ -98,6 +98,12 @@ export default class ButtonAndroid<TEvent extends string = ButtonEvents, TNative
   onPress: IButton['onPress'];
   onLongPress: IButton['onLongPress'];
 
+  protected override setMinHeight(minHeight) {
+    this.nativeObject.setMinimumHeight(AndroidUnitConverter.dpToPixel(minHeight));
+    this.nativeObject.setMinHeight(AndroidUnitConverter.dpToPixel(minHeight));
+    super.setMinHeight(minHeight);
+  }
+
   _resetBackground() {
     this.setBorder();
     if (this.__backgroundImages) {
