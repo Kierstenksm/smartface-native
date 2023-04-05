@@ -20,7 +20,6 @@ export interface IBlobAndroidProps {
  *     import Blob from '@smartface/native/blob';
  *     var myBase64Str = "SGVsbG8gV29ybGQ=";
  *     var blob = Blob.createFromBase64(myBase64Str);
- * 
  */
 export interface IBlob<TNative = any, TProps extends MobileOSProps<{}, IBlobAndroidProps> = MobileOSProps<{}, IBlobAndroidProps>> extends INativeMobileComponent<TNative, TProps> {
   /**
