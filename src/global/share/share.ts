@@ -4,6 +4,21 @@ import { IImage } from '../../ui/image/image';
 import { MobileOSProps, NativeMobileComponent } from '../../core/native-mobile-component';
 import { IPage } from '../../ui/page/page';
 
+export interface ShareAndroidProps {
+  /**
+   * Share a file to save it to the file system. 
+   * System opens an interface where the user can select a directory and change the filename. 
+   * This action can be done via the share menu on iOS.
+   *
+   * @method saveToFiles
+   * @param {IO.File} file
+   * @param {UI.Page} page
+   * @android
+   * @since 5.1.1
+   */
+  saveToFiles(file: File, page: IPage): void;
+}
+
 export interface ShareIOSProps {
   /**
    * @property {String} AirDrop
@@ -64,7 +79,7 @@ export interface ShareIOSProps {
  * other apps on the device. Blacklist works for iOS only.
  *
  */
-export interface IShare extends NativeMobileComponent<any, MobileOSProps<ShareIOSProps, {}>> {
+export interface IShare extends NativeMobileComponent<any, MobileOSProps<ShareIOSProps, ShareAndroidProps>> {
   /**
    * Shares a text.
    *

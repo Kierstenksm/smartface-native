@@ -95,13 +95,11 @@ export default class BadgeIOS extends NativeComponent implements IBadge {
   }
   set font(value: IBadge['font']) {
     this._font = value;
-        
+
     if (value) {
       this.completeInMainThread(() => {
         this.nativeObject.pp_setBadgeTextFont(value);
       })
-    } else {
-      throw new Error("Font paramater can not be undefined")
     }
   }
 

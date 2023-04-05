@@ -248,6 +248,7 @@ export interface IScrollView<TEvent extends string = ScrollViewEvents, TMobile e
    * @android
    * @ios
    * @since 3.0.2
+   * @deprecated since 5.1.1
    */
   autoSizeEnabled: boolean;
 

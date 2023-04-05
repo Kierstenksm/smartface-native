@@ -31,7 +31,7 @@ import LayoutParams from '../../util/Android/layoutparams';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
 import copyObjectPropertiesWithDescriptors from '../../util/copyObjectPropertiesWithDescriptors';
 import SystemServices from '../../util/Android/systemservices';
-import ViewAndroid from '../view/view.android';
+import ShareAndroid from '../../global/share/share.android';
 
 
 const PorterDuff = requireClass('android.graphics.PorterDuff');
@@ -381,6 +381,8 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           EmailComposerAndroid.onActivityResult(requestCode, resultCode, data);
         } else if (requestCode === RequestCodes.DocumentPicker.PICK_DOCUMENT_CODE) {
           DocumentPickerAndroid.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode === RequestCodes.Share.CREATE_DOCUMENT_CODE) {
+          ShareAndroid.onActivityResult(requestCode, resultCode, data);
         }
       },
       onPickVisualMedia: (uri) => {

@@ -72,6 +72,14 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
   }
   protected preConstruct(params) {
     this.contentLayout = new FlexLayoutIOS();
+    this.contentLayout.nativeObject = new __SF_UScrollLayout();
+    this.contentLayout.nativeObject.yoga.isEnabled = true;
+
+    this.contentLayout.nativeObject.scrollApplyLayout = () => {
+      this.contentLayout.applyLayout();
+    }
+
+    this.contentLayout.id = 9090
     this.setLayoutProps();
     this._frame = {};
     this._align = ScrollType.VERTICAL;
@@ -115,14 +123,10 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     }
     this.contentLayout.applyLayout = () => {
       __SF_Dispatch.mainAsync(() => {
-        if (this.autoSizeEnabled) {
+        if (!this.autoSizeEnabled) {
           this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
           return;
         }
-
-        this.contentLayout.width = this.nativeObject.frame.width;
-        this.contentLayout.height = this.nativeObject.frame.height;
-        this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
 
         const rect = {
           x: 0,
@@ -151,42 +155,46 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
 
         if (this._align === ScrollType.HORIZONTAL) {
           //// PADDING CHECK ///////
-          if (TypeUtil.isNumeric(this.contentLayout.paddingRight)) {
+          if (TypeUtil.isUnitNumeric(this.contentLayout.paddingRight)) {
             rect.width = rect.width + this.contentLayout.paddingRight;
-          } else if (TypeUtil.isNumeric(this.contentLayout.padding)) {
+          } else if (TypeUtil.isUnitNumeric(this.contentLayout.padding)) {
             rect.width = rect.width + this.contentLayout.padding;
           }
           ///////////////////////////
 
           //// MARGIN CHECK /////////
-          if (widthAffectingView && TypeUtil.isNumeric(widthAffectingView.yoga.getYGValueForKey('marginLeft'))) {
+          if (widthAffectingView && TypeUtil.isUnitNumeric(widthAffectingView.yoga.getYGValueForKey('marginLeft'))) {
             rect.width = rect.width + widthAffectingView.yoga.getYGValueForKey('marginLeft');
-          } else if (widthAffectingView && TypeUtil.isNumeric(widthAffectingView.yoga.getYGValueForKey('margin'))) {
+          } else if (widthAffectingView && TypeUtil.isUnitNumeric(widthAffectingView.yoga.getYGValueForKey('margin'))) {
             rect.width = rect.width + widthAffectingView.yoga.getYGValueForKey('margin');
           }
           rect.height = this.nativeObject.frame.height;
         } else {
           //// PADDING CHECK ///////
-          if (TypeUtil.isNumeric(this.contentLayout.paddingBottom)) {
+          if (TypeUtil.isUnitNumeric(this.contentLayout.paddingBottom)) {
             rect.height = rect.height + this.contentLayout.paddingBottom;
-          } else if (TypeUtil.isNumeric(this.contentLayout.padding)) {
+          } else if (TypeUtil.isUnitNumeric(this.contentLayout.padding)) {
             rect.height = rect.height + this.contentLayout.padding;
           }
           ///////////////////////////
 
           //// MARGIN CHECK /////////
-          if (heightAffectingView && TypeUtil.isNumeric(heightAffectingView.yoga.getYGValueForKey('marginBottom'))) {
+          if (heightAffectingView && TypeUtil.isUnitNumeric(heightAffectingView.yoga.getYGValueForKey('marginBottom'))) {
             rect.height = rect.height + heightAffectingView.yoga.getYGValueForKey('marginBottom');
-          } else if (heightAffectingView && TypeUtil.isNumeric(heightAffectingView.yoga.getYGValueForKey('margin'))) {
+          } else if (heightAffectingView && TypeUtil.isUnitNumeric(heightAffectingView.yoga.getYGValueForKey('margin'))) {
             rect.height = rect.height + heightAffectingView.yoga.getYGValueForKey('margin');
           }
           ///////////////////////////
           rect.width = this.nativeObject.frame.width;
         }
 
+        if (this.contentLayout.width === rect.width
+          && this.contentLayout.height === rect.height) {
+            return;
+        }
+
         this.contentLayout.width = rect.width;
         this.contentLayout.height = rect.height;
-        this.contentLayout.nativeObject.yoga.applyLayoutPreservingOrigin(false);
         this.changeContentSize(rect);
       });
     };
@@ -337,6 +345,8 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     }
   }
   set align(value: ScrollViewAlign) {
+    if (!value) return;
+
     if (value === ScrollViewAlign.HORIZONTAL) {
       this._align = ScrollType.HORIZONTAL;
     } else {

@@ -16,6 +16,7 @@ import { ITextBox } from './textbox';
  *     });
  *     myPage.layout.addChild(myTextBox);
  *
+ * 
  */
 const TextBox: ConstructorOf<ITextBox, Partial<ITextBox>> = require(`./textbox.${Device.deviceOS.toLowerCase()}`).default;
 type TextBox = ITextBox;

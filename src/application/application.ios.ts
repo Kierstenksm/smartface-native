@@ -190,7 +190,8 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
   }
   exit() {
     //@ts-ignore TODO: global Application variable from framework. NTVE-697
-    Application.onExit();
+    this.emit('exit');
+    this._onExit?.();
     SMFApplication.exit();
   }
   restart() {

@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { IColor } from '../color/color';
 import { ViewEvents } from './view-events';
-import { Border, IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import { Size } from '../../primitive/size';
 import { YGUnit } from '../shared/ios/yogaenums';
 import Invocation from '../../util/iOS/invocation';
@@ -9,7 +9,7 @@ import Exception from '../../util/exception';
 import ColorIOS from '../color/color.ios';
 import { IViewGroup } from '../viewgroup/viewgroup';
 
-export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, TProps extends IViewProps = IViewProps>
+export default class ViewIOS<TEvent extends string = ViewEvents, TNative extends { [key: string]: any; } = any, TProps extends IViewProps = IViewProps>
   extends ViewBase<TEvent, TNative, TProps>
   implements IView<TEvent, TNative, TProps>
 {
@@ -21,6 +21,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
   private _rotation: number;
   private _rotationX: number;
   private _rotationY: number;
+  private _shadowOpacity: number;
   private _scale: Point2D;
   private _width: number;
   private _height: number;
@@ -31,6 +32,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   private _isLTR: boolean;
 
+  private _borderRadiusEdges: BorderRadiusEdges = { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }
   private _borderTopLeftRadius: number;
   private _borderTopRightRadius: number;
   private _borderBottomLeftRadius: number;
@@ -166,7 +168,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowRadius:', [argShadowRadius]);
       },
       get shadowOpacity() {
-        return Invocation.invokeInstanceMethod(self.nativeObject.layer, 'shadowOpacity', [], 'CGFloat');
+        return self._shadowOpacity;
       },
       set shadowOpacity(shadowOpacity: number) {
         const argShadowOpacity = new Invocation.Argument({
@@ -174,6 +176,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
           value: shadowOpacity
         });
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowOpacity:', [argShadowOpacity]);
+        self._shadowOpacity = shadowOpacity;
         self.backgroundColor = self.backgroundColor;
       },
       get shadowColor() {
@@ -294,7 +297,6 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
   }
   set borderRadius(value) {
     this.nativeObject.layer.cornerRadius = value;
-    this.applyMaskedCorners();
   }
 
   get borderTopLeftRadius() {
@@ -303,6 +305,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopLeftRadius(value) {
     this._borderTopLeftRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
   }
 
@@ -312,6 +315,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopRightRadius(value) {
     this._borderTopRightRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
   }
 
@@ -321,6 +325,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomLeftRadius(value) {
     this._borderBottomLeftRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
   }
 
@@ -330,6 +335,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomRightRadius(value) {
     this._borderBottomRightRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
   }
 
@@ -339,6 +345,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopStartRadius(value) {
     this._borderTopStartRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
   }
 
@@ -348,6 +355,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopEndRadius(value) {
     this._borderTopEndRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
   }
 
@@ -357,6 +365,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomStartRadius(value) {
     this._borderBottomStartRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
   }
 
@@ -366,6 +375,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomEndRadius(value) {
     this._borderBottomEndRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
   }
 
@@ -376,14 +386,14 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
     // borderRadius value get latest topLeft, topRight, bottomLeft, bottomRight respecting in order
     // For example; topLeft: 30, topRight: 40, bottomLeft: 50, borderRadius would get '50' because of order above
     const masks: Border[] = [];
-    if (this.nativeObject.borderTopLeftRadius !== -2) {
+    if (this.nativeObject.borderTopLeftRadius !== -1) {
       masks.push(Border.TOP_LEFT);
-    } if (this.nativeObject.borderTopRightRadius !== -2) {
+    } if (this.nativeObject.borderTopRightRadius !== -1) {
       masks.push(Border.TOP_RIGHT);
-    } if (this.nativeObject.borderBottomLeftRadius !== -2) {
+    } if (this.nativeObject.borderBottomLeftRadius !== -1) {
       masks.push(Border.BOTTOM_LEFT);
     }
-    if (this.nativeObject.borderBottomRightRadius !== -2) {
+    if (this.nativeObject.borderBottomRightRadius !== -1) {
       masks.push(Border.BOTTOM_RIGHT);
     }
 
@@ -409,7 +419,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
     this.nativeObject.borderTopLeftRadius = topLeft;
     this.nativeObject.borderTopRightRadius = topRight;
-    
+
     // property call matters between individual radius and borderRadius
     // so we are forcing to recalculate masks in order to apply given individual corner radiuses
     this.applyMaskedCorners();
@@ -446,6 +456,28 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
     }
     this._maskedBorders = value;
     this.nativeObject.layer.maskedCorners = corners;
+  }
+
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    let maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT)
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT)
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT)
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT)
+    }
+
+    this.maskedBorders = maskedCorners;
   }
 
   get backgroundColor(): IView['backgroundColor'] {

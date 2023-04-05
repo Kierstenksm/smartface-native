@@ -9,7 +9,7 @@ export interface IconAndroidProps extends LabelAndroidProps {
    * 
    * Better icon placement can be achieved when the value is set to false.
    * 
-   * @property {boolean} [includeFontPadding = false]
+   * @property {Boolean} [includeFontPadding = false]
    * @android
    * @since 5.0.4
    */
