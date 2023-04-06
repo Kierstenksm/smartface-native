@@ -83,7 +83,7 @@ export default class ScrollViewIOS<TEvent extends string = ScrollViewEvents> ext
     this.setLayoutProps();
     this._frame = {};
     this._align = ScrollType.VERTICAL;
-    this._autoSizeEnabled = false;
+    this._autoSizeEnabled = true;
     super.preConstruct(params);
     this.addIOSProps(this.getIOSProps());
 
