@@ -41,6 +41,9 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
     sslPinning: []
   }
 
+  static get disableCertificateVerification() : boolean { return false };
+  static set disableCertificateVerification(value : boolean) { };
+
   private _listeners: Map<string, Array<Function>> = new Map<string, Array<Function>>();
 
   constructor() {
