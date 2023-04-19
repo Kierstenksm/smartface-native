@@ -167,14 +167,14 @@ export declare class AbstractXHR implements IXHR {
   addEventListener(eventName: string, handler: (...args: any[]) => void): void;
   removeEventListener(eventName: string, toDetach: (...args: any[]) => void): void;
   /**
-   * Disable certificate verification in XMLHttpRequest and ImageView. 
+   * Disable certificate verification across all components that use HTTP.
    * It can be used to bypass self-signed certificate.
    * This property must be assigned when the application is started and cannot be changed dynamically.
    *
+   * @property {Boolean} [disableCertificateVerification = false]  
    * @android
    * @ios
    * @static
-   * @property disableCertificateVerification
    * @since 5.1.1
    */
   static disableCertificateVerification?: boolean;
