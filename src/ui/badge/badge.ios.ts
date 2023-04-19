@@ -2,7 +2,7 @@ import { IBadge } from './badge';
 import NativeComponent from '../../core/native-component';
 import Color from '../color';
 
-const DEFAULT_MOVE_X = 18;
+const DEFAULT_MOVE_X = 0;
 
 // Uses https://github.com/jkpang/PPBadgeView
 export default class BadgeIOS extends NativeComponent implements IBadge {
@@ -15,10 +15,15 @@ export default class BadgeIOS extends NativeComponent implements IBadge {
   private _borderWidth: number;
   private _height: number;
   private _isRTL: boolean;
+  private _moveX: number;
+  private _moveY: number;
   constructor(params: Partial<IBadge> = {}) {
     super(params);
+    const defaultMoveX = this._isRTL ? 0 : DEFAULT_MOVE_X 
+    this.moveX = params.moveX || defaultMoveX
+    this.moveY = params.moveY || 0
     if (this.text) {
-      this.move(this._isRTL ? 0 : DEFAULT_MOVE_X, 0);
+      this.move(this.moveX, this.moveY);
     }
   }
   protected createNativeObject(params: Partial<IBadge> = {}) {
@@ -145,9 +150,25 @@ export default class BadgeIOS extends NativeComponent implements IBadge {
       this.nativeObject.pp_setIsRTL(value);
     });
   }
+
+  get moveX () {
+     return this._moveX
+  }
+  set moveX(value : number){
+    this._moveX = value
+  }
+  get moveY () {
+    return this._moveY
+ }
+  set moveY(value : number){
+   this._moveY = value
+ }
+
   move(x: number, y: number): void {
+    this.moveX = x || DEFAULT_MOVE_X
+    this.moveY = y || 0
     this.completeInMainThread(() => {
-      this.nativeObject.pp_moveBadgeWithXY(x, y);
+      this.nativeObject.pp_moveBadgeWithXY(this.moveX, this.moveY);
     });
   }
 }

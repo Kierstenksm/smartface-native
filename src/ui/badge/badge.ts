@@ -79,4 +79,18 @@ export declare interface IBadge extends INativeComponent {
    * @since 3.0.0
    */
   move(x: number, y: number): void;
+  /**
+   * Set badge offset to use properly the move() funtion for specify X position properly. 
+   * Note: This setter has wrote for hold position of X value correctly, because of the constructer called many times.
+   * @property {Number} x
+   * @ios
+   */
+  moveX: number
+   /**
+   * Set badge offset to use properly the move() funtion for specify Y position properly
+   * Note: This setter has wrote for hold position of Y value correctly, because of the constructer called many times.
+   * @property {Number} y
+   * @ios
+   */
+  moveY: number
 }

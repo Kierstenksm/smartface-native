@@ -168,6 +168,8 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
     this._badgeProps.font = props.font;
     this._badgeProps.textColor = props.textColor;
     this._badgeProps.visible = props.visible;
+    this._badgeProps.moveX = props.moveX;
+    this._badgeProps.moveY = props.moveY;
   }
 
   set iconSize(value: number) {
