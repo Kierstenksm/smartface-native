@@ -235,7 +235,7 @@ export default class MapViewIOS<TEvent extends string = MapViewEvents> extends V
   }
   private setNativeEvents() {
     this.nativeObject.mapViewFinishRender = () => {
-      if (!this._isFirstRender) {
+      if (this._isFirstRender) {
         return;
       }
       this._isFirstRender = false;
