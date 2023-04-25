@@ -309,7 +309,7 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
         self._overScrollMode = mode;
       },
       get onScrollStateChanged(): IListView['android']['onScrollStateChanged'] {
-        return this._onScrollStateChanged();
+        return this._onScrollStateChanged;
       },
       set onScrollStateChanged(value: IListView['android']['onScrollStateChanged']) {
         self._onScrollStateChanged = value;
