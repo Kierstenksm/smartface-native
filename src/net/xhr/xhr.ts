@@ -166,6 +166,18 @@ export declare class AbstractXHR implements IXHR {
   ontimeout: (...args: any[]) => void;
   addEventListener(eventName: string, handler: (...args: any[]) => void): void;
   removeEventListener(eventName: string, toDetach: (...args: any[]) => void): void;
+  /**
+   * Disable certificate verification across all components that use HTTP.
+   * It can be used to bypass self-signed certificate.
+   * This property must be assigned when the application is started and cannot be changed dynamically.
+   *
+   * @property {Boolean} [disableCertificateVerification = false]  
+   * @android
+   * @ios
+   * @static
+   * @since 5.1.1
+   */
+  static disableCertificateVerification?: boolean;
   static ios: {
     sslPinning?: { host: string; certificates: string[]; validateCertificateChain?: boolean; validateHost?: boolean }[];
   };

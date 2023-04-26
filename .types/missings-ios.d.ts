@@ -1307,6 +1307,7 @@ declare class __SF_XMLHttpRequest {
   getHeaderField(response: any, headerField: string): string;
   getAllHeaderFields(response: any): [String: String];
   serverTrustPolicies?: __SF_SMFServerTrustPolicy[]
+  static disableCertificateVerification: boolean
 }
 
 declare class __SF_URLSessionTask {

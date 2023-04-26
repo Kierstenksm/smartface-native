@@ -1,6 +1,5 @@
-import { IImageView, ImageFillType, ImageViewFillTypeIOS } from './imageview';
+import { IImageView, ImageFillType } from './imageview';
 import FileAndroid from '../../io/file/file.android';
-import PathAndroid from '../../io/path/path.android';
 import AndroidConfig from '../../util/Android/androidconfig';
 import ColorAndroid from '../color/color.android';
 import ImageAndroid from '../image/image.android';
