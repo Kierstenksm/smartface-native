@@ -1,9 +1,9 @@
-import { SVGImageViewEvents } from './svgimageview-events';
+import { SvgImageViewEvents } from './svgimageview-events';
 import ImageViewIOS from '../imageview/imageview.ios';
-import { ISVGImageView } from './svgimageview';
+import { ISvgImageView } from './svgimageview';
 
-export default class SVGImageViewIOS<TEvent extends string = SVGImageViewEvents> extends ImageViewIOS<TEvent | SVGImageViewEvents> implements ISVGImageView {
-  constructor(params?: ISVGImageView) {
+export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents> extends ImageViewIOS<TEvent | SvgImageViewEvents> implements ISvgImageView {
+  constructor(params?: ISvgImageView) {
     super(params);
   }
 }

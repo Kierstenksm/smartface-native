@@ -1,7 +1,7 @@
 import { ImageViewEvents } from '../imageview/imageview-events';
 
-export const SVGImageViewEvents = {
+export const SvgImageViewEvents = {
   ...ImageViewEvents
 } as const;
 
-export type SVGImageViewEvents = ExtractValues<typeof SVGImageViewEvents>;
+export type SvgImageViewEvents = ExtractValues<typeof SvgImageViewEvents>;

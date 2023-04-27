@@ -1,5 +1,5 @@
 import { IImageView } from '../imageview/imageview';
-import { SVGImageViewEvents } from './svgimageview-events';
+import { SvgImageViewEvents } from './svgimageview-events';
 
-export interface ISVGImageView<TEvent extends string = SVGImageViewEvents> extends IImageView<TEvent | SVGImageViewEvents> {
+export interface ISvgImageView<TEvent extends string = SvgImageViewEvents> extends IImageView<TEvent | SvgImageViewEvents> {
 }
