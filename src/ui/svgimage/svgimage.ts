@@ -1,7 +1,15 @@
 import { INativeComponent } from '../../core/inative-component';
 import { MobileOSProps, NativeMobileComponent } from '../../core/native-mobile-component';
 
-export interface ISvgImage extends INativeComponent, MobileOSProps {
+export type AndroidProps = {
+  /**
+   * This is an internal property. It hold the native drawable value of the svg image.
+   * @private
+   */
+  drawable?: any;
+};
+
+export interface ISvgImage extends INativeComponent, MobileOSProps<any, AndroidProps> {
 }
 
 export abstract class AbstractSvgImage extends NativeMobileComponent<any, ISvgImage> implements ISvgImage {
@@ -24,7 +32,7 @@ export abstract class AbstractSvgImage extends NativeMobileComponent<any, ISvgIm
    * @static
    * @since 5.1.1
    */
-  static createFromFile(path: string, width?: number, height?: number): ISvgImage | null {
+  static createFromFile(path: string): ISvgImage | null {
     throw new Error('Method not implemented.');
   }
   protected abstract createNativeObject(params?: Partial<ISvgImage>): any;

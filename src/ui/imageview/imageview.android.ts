@@ -133,7 +133,8 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       useHTTPCacheControl,
       useHTTPCacheControl ? false : android.useDiskCache,
       android.useMemoryCache,
-      android.cacheSignature
+      android.cacheSignature,
+      this.isSvg()
     );
     try {
       SFGlide.loadFromUrl(loadFromUrlParameters);
@@ -156,7 +157,8 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       android.useMemoryCache,
       width,
       height,
-      android.cacheSignature
+      android.cacheSignature,
+      this.isSvg()
     );
     const resolvedPath = file.resolvedPath;
     if (!AndroidConfig.isEmulator && resolvedPath.type === PathFileType.DRAWABLE) {
@@ -229,13 +231,18 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       useHTTPCacheControl ? false : android.useDiskCache,
       android.useMemoryCache,
       glideTarget,
-      android.cacheSignature
+      android.cacheSignature,
+      this.isSvg()
     );
     try {
       SFGlide.fetchFromUrl(parameters);
     } catch (error) {
       onFailure?.();
     }
+  }
+
+  protected isSvg() : boolean {
+    return false;
   }
 
   getCacheTypeByName(cacheName: string) {
