@@ -1,6 +1,9 @@
-import { SvgImageImpl } from "./svgimage";
+import { AbstractSvgImage } from "./svgimage";
 
-const ISvgImage: typeof SvgImageImpl = require(`./svgimage.${Device.deviceOS.toLowerCase()}`).default;
-type ISvgImage = SvgImageImpl;
+class SvgImageimpl extends AbstractSvgImage {}
 
-export default ISvgImage;
+const SvgImage: typeof SvgImageimpl = require(`./svgimage.${Device.deviceOS.toLowerCase()}`).default;
+type SvgImage = SvgImageimpl;
+
+export default SvgImage;
+

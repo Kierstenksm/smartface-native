@@ -35,32 +35,7 @@ export abstract class AbstractSvgImage extends NativeMobileComponent<any, ISvgIm
   static createFromFile(path: string): ISvgImage | null {
     throw new Error('Method not implemented.');
   }
-  protected abstract createNativeObject(params?: Partial<ISvgImage>): any;
-}
-
-/**
- * @class UI.SvgImage
- * @since 5.1.1
- *
- * SvgImage is used to store the svg data read from the filesystem.
- * It can be set to UI objects' properties (e.g. UI.SvgImage.svgImage).
- * SvgImage's file should not be in images folder. You can use assets folder.
- *
- *     @example
- *     import SvgImage from '@smartface/native/ui/svgimage';
- *     import SvgImageView from '@smartface/native/ui/svgimageview';
- *
- *     const mySvgImage = SvgImage.createFromFile("assets://sample.svg")
- *     const mySvgImageView = new SvgImageView({
- *         svgImage: mySvgImage,
- *         width: 200, height: 200
- *     });
- *
- *     myPage.layout.addChild(mySvgImageView);
- *
- */
-export class SvgImageImpl extends AbstractSvgImage {
-  protected createNativeObject(params?: Partial<ISvgImage>) {
+  protected createNativeObject(params?: Partial<ISvgImage>): any {
     throw new Error('Method not implemented.');
   }
 }
