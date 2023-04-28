@@ -1,4 +1,4 @@
-import File from '../../io/file';
+import FileAndroid from '../../io/file/file.android';
 import { AbstractSvgImage, ISvgImage } from './svgimage';
 
 const NativeRenderOptions = requireClass("com.caverock.androidsvg.RenderOptions");
@@ -17,7 +17,7 @@ export default class SvgImageAndroid extends AbstractSvgImage {
   }
 
   static createFromFile(path: string): ISvgImage {
-    const file = new File({ path });
+    const file = new FileAndroid({ path });
     const svgImage = NativeSVG.getFromInputStream(new NativeFileInputStream(file.nativeObject));
     const picture = svgImage.renderToPicture(NativeRenderOptions.create());
     const pictureDrawable = new NativePictureDrawable(picture);
