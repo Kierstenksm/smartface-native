@@ -1,8 +1,5 @@
 import { INativeComponent } from '../../core/inative-component';
 import { MobileOSProps, NativeMobileComponent } from '../../core/native-mobile-component';
-import IBlob from '../../global/blob/blob';
-import { Size } from '../../primitive/size';
-import { IImage } from '../image/image';
 
 export interface ISvgImage extends INativeComponent, MobileOSProps {
 }
@@ -55,24 +52,6 @@ export abstract class AbstractSvgImage extends NativeMobileComponent<any, ISvgIm
  *
  */
 export class SvgImageImpl extends AbstractSvgImage {
-  get loopCount(): number {
-    throw new Error('Method not implemented.');
-  }
-  set loopCount(value: number) {
-    throw new Error('Method not implemented.');
-  }
-  get frameCount(): number {
-    throw new Error('Method not implemented.');
-  }
-  get posterImage(): IImage {
-    throw new Error('Method not implemented.');
-  }
-  get instrinsicSize(): Size {
-    throw new Error('Method not implemented.');
-  }
-  toBlob(): IBlob | null {
-    throw new Error('Method not implemented.');
-  }
   protected createNativeObject(params?: Partial<ISvgImage>) {
     throw new Error('Method not implemented.');
   }

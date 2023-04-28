@@ -14,7 +14,7 @@ export const NativeFillTypeProps = {
   [ImageFillType.NORMAL]: 4
 };
 
-enum SDWebImageOptions {
+export enum SDWebImageOptions {
     /**
      * By default, when a URL fail to be downloaded, the URL is blacklisted so the library won't keep trying.
      * This flag disable this blacklisting.

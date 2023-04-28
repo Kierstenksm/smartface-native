@@ -49,6 +49,13 @@ declare class __SF_UIImageView extends __SF_UIView {
   tintColor: __SF_UIColor;
   loadFromURL(url: any, placeholder: __SF_UIImage, headers: any, onSuccess: (innerFade: boolean, image: __SF_UIImage, error: any, cache: any /**TODO: ImageCacheType */, url: any) => void): void;
 }
+
+declare class __SF_SVGImage extends __SF_UIImage { }
+
+declare class __SF_SVGImageView extends __SF_UIImageView {
+  static createFromFile(path: string, callback: (image?: __SF_SVGImage) => void)
+}
+
 declare class __SF_NSInvocation extends __SF_NSOBject {
   static createInvocationWithSelectorInstance(name: string, obj: any): __SF_NSInvocation;
   static createClassInvocationWithSelectorInstance(name: string, obj: any): __SF_NSInvocation;
@@ -153,7 +160,7 @@ declare class __SF_UIView extends __SF_NSOBject {
   uuid: string;
 }
 
-declare class __SF_UScrollLayout extends __SF_UIView {}
+declare class __SF_UScrollLayout extends __SF_UIView { }
 declare class __SF_NSUserDefaults extends __SF_NSOBject {
   setObjectForKey(value: any, key: string): any;
   synchronize(): any;
