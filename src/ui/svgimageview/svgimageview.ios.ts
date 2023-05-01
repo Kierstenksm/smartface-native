@@ -7,6 +7,7 @@ import { ImageParams, ImageIOSProps, ImageAndroidProps } from '../image/image';
 import ImageIOS from '../image/image.ios';
 import ImageCacheType from '../shared/imagecachetype';
 import File from '../../io/file';
+import FileIOS from '../../io/file/file.ios';
 
 export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents> extends ImageViewIOS<TEvent | SvgImageViewEvents> implements ISvgImageView {
   constructor(params?: ISvgImageView) {
@@ -20,8 +21,19 @@ export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents>
   get svgImage(): SvgImageIOS {
     return this.nativeObject.svgImage
   }
-  set svgImage(value: SvgImageIOS) {
-    this.nativeObject.svgImage = value.nativeObject;
+  set svgImage(value: string | SvgImageIOS | null) {
+    if (value instanceof SvgImageIOS) {
+      this.nativeObject.svgImage = value.nativeObject;
+    } else if (typeof value === 'string') {
+      if (value.startsWith("http")) {
+        this.loadFromUrl({ url: value })
+      } else {
+        const imageFile = new FileIOS({ path: value })
+        this.loadFromFile({ file: imageFile as any })
+      }
+    } else {
+      this.nativeObject.svgImage = null;
+    }
   }
 
   loadFromUrl(params: { url: string; headers?: { [name: string]: string; } | undefined; placeholder?: ImageIOS<__SF_UIImage, WithMobileOSProps<Partial<ImageParams>, ImageIOSProps, ImageAndroidProps>> | undefined; fade?: boolean | undefined; useHTTPCacheControl?: boolean | undefined; onSuccess?: (() => void) | undefined; onFailure?: (() => void) | undefined; android?: { useDiskCache?: boolean | undefined; useMemoryCache?: boolean | undefined; } | undefined; ios?: { isRefreshCached?: boolean | undefined; } | undefined; cache?: ImageCacheType | undefined; }): void {

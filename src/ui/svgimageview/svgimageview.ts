@@ -11,5 +11,5 @@ export interface ISvgImageView<TEvent extends string = SvgImageViewEvents> exten
    * @ios
    * @since 5.1.1
    */
-  svgImage: undefined | ISvgImage;
+  svgImage: string | undefined | ISvgImage;
 }
