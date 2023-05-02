@@ -2,7 +2,7 @@ import AndroidConfig from '../../util/Android/androidconfig';
 import ImageViewAndroid from '../imageview/imageview.android';
 import { IZoomableImageView } from './zoomableimageview';
 
-const NativePhotoViewer = requireClass('com.github.chrisbanes.photoview.PhotoView');
+const SFZoomableImageView = requireClass('io.smartface.android.sfcore.ui.zoomableimageview.SFZoomableImageView');
 
 export default class ZoomableImageViewAndroid extends ImageViewAndroid implements IZoomableImageView {
   _animated: boolean;
@@ -14,7 +14,7 @@ export default class ZoomableImageViewAndroid extends ImageViewAndroid implement
   }
 
   protected createNativeObject() {
-    return new NativePhotoViewer(AndroidConfig.activity);
+    return new SFZoomableImageView(AndroidConfig.activity);
   }
 
   protected preConstruct(params?: Partial<IZoomableImageView>): void {
