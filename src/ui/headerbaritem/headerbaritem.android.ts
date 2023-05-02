@@ -31,7 +31,7 @@ export default class HeaderBarItemAndroid extends NativeMobileComponent<any, IHe
     protected createNativeObject() {
         return null;
     }
-    iOS = { SystemItem: {} };
+    static iOS = { SystemItem: {} };
     private _title: string;
     private _image: IImage | string | null;
     private _customView?: IView;
