@@ -75,7 +75,7 @@ export default class SelectablePickerAndroid<TEvent extends SelectablePickerEven
     return this._multiSelectEnabled;
   }
   set multiSelectEnabled(value: ISelectablePicker['multiSelectEnabled']) {
-    if (!this._isShowed) {
+    if (this._isShowed) {
       return;
     }
     this._multiSelectEnabled = value;
