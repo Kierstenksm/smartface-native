@@ -1,3 +1,4 @@
+import FileIOS from '../../io/file/file.ios';
 import { AbstractSvgImage, ISvgImage } from './svgimage';
 
 export default class SvgImageIOS extends AbstractSvgImage {
@@ -7,12 +8,15 @@ export default class SvgImageIOS extends AbstractSvgImage {
   protected createNativeObject(params: Partial<ISvgImage>) {
     return params.nativeObject
   }
-  static createFromFile(path: string): ISvgImage {
+  static createFromFile(path: string): ISvgImage | null {
+    const file = new FileIOS({ path: path })
+    const actualPath = file.nativeObject.getActualPath();
+
     let svgImage;
-    __SF_SVGImageView.createFromFile(path, (image) => {
+    __SF_SVGImageView.createFromFile(actualPath, (image) => {
       svgImage = image
     })
 
-    return new SvgImageIOS({ nativeObject: svgImage })
+    return actualPath ? new SvgImageIOS({ nativeObject: svgImage }) : null
   }
 }
