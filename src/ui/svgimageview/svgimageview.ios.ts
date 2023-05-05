@@ -1,13 +1,14 @@
 import { SvgImageViewEvents } from './svgimageview-events';
 import { ISvgImageView } from './svgimageview';
 import SvgImageIOS from '../svgimage/svgimage.ios';
-import ImageViewIOS, { SDWebImageOptions } from '../imageview/imageview.ios';
+import ImageViewIOS, { NativeFillTypeProps, SDWebImageOptions } from '../imageview/imageview.ios';
 import { WithMobileOSProps } from '../../core/native-mobile-component';
 import { ImageParams, ImageIOSProps, ImageAndroidProps } from '../image/image';
 import ImageIOS from '../image/image.ios';
 import ImageCacheType from '../shared/imagecachetype';
 import File from '../../io/file';
 import FileIOS from '../../io/file/file.ios';
+import { ImageFillType } from '../imageview/imageview';
 
 export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents> extends ImageViewIOS<TEvent | SvgImageViewEvents> implements ISvgImageView {
   constructor(params?: ISvgImageView) {
@@ -16,6 +17,11 @@ export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents>
 
   protected createNativeObject() {
     return new __SF_SVGImageView()
+  }
+
+  protected preConstruct(params?: Partial<Record<string, any>>): void {
+    this.imageFillType = ImageFillType.ASPECTFIT;
+    super.preConstruct(params);
   }
 
   get svgImage(): SvgImageIOS {
@@ -34,6 +40,15 @@ export default class SvgImageViewIOS<TEvent extends string = SvgImageViewEvents>
     } else {
       this.nativeObject.svgImage = null;
     }
+  }
+
+  get imageFillType(): ImageFillType {
+    return this.nativeObject.contentMode;
+  }
+
+  set imageFillType(value: ImageFillType) {
+    // Due to IDE does not re-draw svgs, imageFillType only supports 'ASPECTFIT' for SVGImageView
+    this.nativeObject.contentMode = NativeFillTypeProps[2]
   }
 
   loadFromUrl(params: { url: string; headers?: { [name: string]: string; } | undefined; placeholder?: ImageIOS<__SF_UIImage, WithMobileOSProps<Partial<ImageParams>, ImageIOSProps, ImageAndroidProps>> | undefined; fade?: boolean | undefined; useHTTPCacheControl?: boolean | undefined; onSuccess?: (() => void) | undefined; onFailure?: (() => void) | undefined; android?: { useDiskCache?: boolean | undefined; useMemoryCache?: boolean | undefined; } | undefined; ios?: { isRefreshCached?: boolean | undefined; } | undefined; cache?: ImageCacheType | undefined; }): void {
