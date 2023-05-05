@@ -112,7 +112,6 @@ class ApplicationIOSClass extends NativeEventEmitterComponent<ApplicationEvents>
     this._onMaximize = value;
     //@ts-ignore TODO: global Application variable from framework. NTVE-697
     Application.onMaximize = () => {
-      console.info('onmaximize event native');
       this._onMaximize?.();
       this.emit('maximize');
     };
