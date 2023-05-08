@@ -40,7 +40,7 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
   static ios: { sslPinning: TSSLPinning[] } = {
     sslPinning: []
   }
-
+  static disableCertificateVerification: boolean = false
   private _listeners: Map<string, Array<Function>> = new Map<string, Array<Function>>();
 
   constructor() {
@@ -51,6 +51,9 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
 
   protected createNativeObject() {
     const nativeObject = new __SF_XMLHttpRequest();
+    nativeObject.disableCertificateVerification = XHRIOS.disableCertificateVerification
+    __SF_XMLHttpRequest.disableCertificateVerification = XHRIOS.disableCertificateVerification
+
 
     if (XHRIOS.ios.sslPinning) {
       let trustPolicies: __SF_SMFServerTrustPolicy[] | undefined = undefined;

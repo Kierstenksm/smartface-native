@@ -5,6 +5,7 @@ import { statuses, IXHR, XMLHttpRequestResponseType } from './xhr';
 import { XHREvents } from './xhr-events';
 
 const NativeXMLHttpRequest = requireClass('io.smartface.android.sfcore.net.XMLHttpRequest');
+const NativeGlideModule = requireClass('io.smartface.android.sfcore.ui.imageview.MyGlideModule');
 
 export default class XHRAndroid<TEvent extends string = XHREvents, TProps extends MobileOSProps = MobileOSProps> extends NativeEventEmitterComponent<TEvent | XHREvents, any, TProps> implements IXHR {
   static UNSENT = 0;
@@ -14,6 +15,14 @@ export default class XHRAndroid<TEvent extends string = XHREvents, TProps extend
   static DONE = 4;
 
   static ios = { sslPinning: [] }
+
+  static get disableCertificateVerification() : boolean {
+    return NativeXMLHttpRequest.getUseUnsafeHttpClient() && NativeGlideModule.getUseUnsafeHttpClient();
+  };
+  static set disableCertificateVerification(value : boolean) {
+    NativeXMLHttpRequest.setUseUnsafeHttpClient(value);
+    NativeGlideModule.setUseUnsafeHttpClient(value);
+  };
 
   onabort: (...args: any[]) => void = () => {};
   onerror: (...args: any[]) => void = () => {};
