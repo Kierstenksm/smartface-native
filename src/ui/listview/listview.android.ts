@@ -69,11 +69,11 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
 
     this.setNativeInner();
     this.setDataAdapter();
+    this.setItemTouchHelper();
 
     super.preConstruct(params);
     this.addAndroidProps(this.getAndroidParams());
     this.addIOSProps(this.getIOSParams());
-    this.setItemTouchHelper();
     this.createScrollListener();
   }
   constructor(params?: IListView) {
@@ -309,7 +309,7 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
         self._overScrollMode = mode;
       },
       get onScrollStateChanged(): IListView['android']['onScrollStateChanged'] {
-        return this._onScrollStateChanged();
+        return this._onScrollStateChanged;
       },
       set onScrollStateChanged(value: IListView['android']['onScrollStateChanged']) {
         self._onScrollStateChanged = value;

@@ -51,7 +51,7 @@ export default class MapViewIOS<TEvent extends string = MapViewEvents> extends V
     this._zoomLevel = DEFAULT_ZOOM_LEVEL;
     this._cluster = [];
     this._pinArray = {};
-    this._isFirstRender = false;
+    this._isFirstRender = true;
     super.preConstruct(params);
     this.addIOSProps(this.getIOSProps());
     this.addAndroidProps(this.getAndroidProps());

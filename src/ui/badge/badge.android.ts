@@ -37,6 +37,8 @@ export default class BadgeAndroid extends NativeComponent implements IBadge {
     super(params);
     this.setDefaults();
   }
+  moveX: number;
+  moveY: number;
 
   protected preConstruct(params?: Partial<Record<string, any>>): void {
     this.visible = false;

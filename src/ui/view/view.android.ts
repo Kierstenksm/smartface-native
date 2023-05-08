@@ -129,11 +129,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return new NativeView(AndroidConfig.activity);
   }
   protected preConstruct(params?: Partial<TProps>): void {
-    if (this.nativeObject?.toString().indexOf('YogaLayout') !== -1) {
-      this.yogaNode = this.nativeObject.getYogaNode();
-    } else {
-      this.yogaNode = NativeYogaNodeFactory.create();
-    }
+    this.createYogaNode();
     this._borderColor = ColorAndroid.BLACK;
     this._borderWidth = 0;
     this._borderRadius = 0;
@@ -165,6 +161,15 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this.nativeObject.setId(NativeView.generateViewId());
     this._sfOnTouchViewManager = new SFOnTouchViewManager();
   }
+
+  protected createYogaNode(): void {
+    if (this.nativeObject?.toString().indexOf('YogaLayout') !== -1) {
+      this.yogaNode = this.nativeObject.getYogaNode();
+    } else {
+      this.yogaNode = NativeYogaNodeFactory.create();
+    }
+  }
+
   constructor(params?: Partial<TProps>) {
     super(params);
   }
