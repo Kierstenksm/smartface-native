@@ -59,7 +59,11 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
         item.ios.font = item.ios.font;
         item.badge = item.badge;
         item.iconSize = this._iconSize
+        if(item.ios.font && parseInt(SystemIOS.OSVersion) >= 15){
+          this.appearance.tabbarItemFont = item.ios.font;
+        }
       });
+     this.refreshAppearance()
     }
   }
   getIOSParams(): IBottomTabBar['ios'] {
@@ -75,6 +79,14 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
       }
     };
   }
+
+  private refreshAppearance(){
+    if(parseInt(SystemIOS.OSVersion) >= 15){
+      this.nativeObject.standardAppearance = this.appearance;
+      this.nativeObject.scrollEdgeAppearance = this.appearance;
+    }
+  }
+  
   get itemColor() {
     return this._itemColor;
   }
@@ -93,9 +105,7 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
     // Xcode 13.1 background bug fixes [NTVE-398]
     if (parseInt(SystemIOS.OSVersion) >= 15) {
       this.appearance.backgroundColor = value.nativeObject;
-
-      this.nativeObject.standardAppearance = this.appearance;
-      this.nativeObject.scrollEdgeAppearance = this.appearance;
+      this.refreshAppearance()
     } else {
       this.nativeObject.barTintColor = value.nativeObject;
     }
