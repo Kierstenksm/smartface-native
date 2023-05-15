@@ -52,8 +52,8 @@ class ShareAndroidClass extends NativeMobileComponent implements IShare {
         intent.addCategory(NativeIntent.CATEGORY_OPENABLE);
         intent.setType("application/*");
         intent.putExtra(NativeIntent.EXTRA_TITLE, file.name);
-        const shareIntent = NativeIntent.createChooser(intent, "");
-        page.nativeObject.startActivityForResult(shareIntent, self.CREATE_DOCUMENT_CODE);
+        const chooserIntent = NativeIntent.createChooser(intent, null);
+        page.nativeObject.startActivityForResult(chooserIntent, self.CREATE_DOCUMENT_CODE);
       }
     };
   }
@@ -115,7 +115,8 @@ class ShareAndroidClass extends NativeMobileComponent implements IShare {
 
     !contentSharing.parcelabels.isEmpty() && shareIntent.putExtra(NativeIntent.EXTRA_STREAM, contentSharing.parcelabels);
     shareIntent.putExtra(NativeIntent.EXTRA_MIME_TYPES, array(contentSharing.mimeTypes, 'java.lang.String'));
-    AndroidConfig.activity.startActivity(shareIntent);
+    const chooserIntent = NativeIntent.createChooser(shareIntent, null);
+    AndroidConfig.activity.startActivity(chooserIntent);
   }
   shareContacts(params: { items: IContact[]; fileName?: string; page: IPage; blacklist: string[] }) {
     const itemList = params.items || [];
@@ -137,7 +138,8 @@ class ShareAndroidClass extends NativeMobileComponent implements IShare {
     const shareIntent = new NativeIntent(actionType);
     shareIntent.setType(type);
     shareIntent.putExtra(extraType, extra);
-    AndroidConfig.activity.startActivity(shareIntent);
+    const chooserIntent = NativeIntent.createChooser(shareIntent, null);
+    AndroidConfig.activity.startActivity(chooserIntent);
   }
   private getUriFromFile(fileNativeObject) {
     if (AndroidConfig.sdkVersion < 24) {
