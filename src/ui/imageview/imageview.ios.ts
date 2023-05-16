@@ -342,7 +342,7 @@ export default class ImageViewIOS<TEvent extends string = ImageViewEvents> exten
     params.useHTTPCacheControl && (options = options | SDWebImageOptions.SDWebImageRefreshCached);
 
     const headers = params.headers || {};
-    this.nativeObject.loadFromURL(__SF_NSURL.URLWithString(params.url), params.placeholder?.nativeObject || undefined, headers, options || undefined, (image, error, cache, url) => {
+    this.nativeObject.fetchFromURL(__SF_NSURL.URLWithString(params.url), params.placeholder?.nativeObject || undefined, headers, options || undefined, (image, error, cache, url) => {
       if (!error) {
         __SF_Dispatch.mainAsync((innerIndex) => {
           // TODO Recheck after build
