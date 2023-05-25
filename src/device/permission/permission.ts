@@ -23,6 +23,7 @@ type PhonePermissionGroup = "phone";
 type SMSPermissionGroup = "sms";
 type CameraPermissionGroup = "camera";
 type MicrophonePermissionGroup = "microphone";
+type CalendarPermissionGroup = "calendar";
 type LocationPermissionGroupApproximate = "locationApproximate";
 type LocationPermissionGroupPrecise = "locationPrecise";
 type LocationPermissionGroup = {
@@ -90,7 +91,7 @@ type StoragePermissionGroup = {
 }
 type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
 export type AndroidPermissions = BluetoothConnectPermissionGroup | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
-export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophonePermissionGroup;
+export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophonePermissionGroup | CalendarPermissionGroup;
 
 /**
  * Holds values of available permissions. This is a union of Android and iOS permissions.
@@ -557,6 +558,22 @@ export namespace Permissions {
     readImageAndVideo: 'storageReadImageAndVideo',
     readAudio: 'storageReadAudio',
   };
+
+  /**
+    * Asks for calendar access.
+    *
+    * For ios, NSCalendarsUsageDescription key must be added to config/iOS/info.plist
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.READ_CALENDAR
+    *   android.permission.WRITE_CALENDAR
+    * 
+    * @property calendar
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.1.4
+    */
+  export const calendar: CalendarPermissionGroup = 'calendar';
 }
 
 export interface PermissionIOSProps {

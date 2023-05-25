@@ -556,9 +556,38 @@ class StoragePermissionHandler extends PermissionHandler {
   }
 }
 
+class CalendarPermissionHandler extends PermissionHandler {
+  calendarPermissions = [
+    Permissions.ANDROID.READ_CALENDAR,
+    Permissions.ANDROID.WRITE_CALENDAR,
+  ];
+
+  override checkPermission(permission: AndroidAndCommonPermissions): boolean | undefined {
+    if (permission === Permissions.calendar) {
+      return this.checkPermissions(this.calendarPermissions);
+    }
+    return undefined;
+  }
+
+  override requestPermission(permission: AndroidAndCommonPermissions): Promise<PermissionResult | undefined> {
+    if (permission === Permissions.calendar) {
+      return this.requestPermissions(this.calendarPermissions);
+    }
+    return Promise.resolve(undefined);
+  }
+
+  override shouldShowRequestPermissionRationale(permission: AndroidAndCommonPermissions): boolean | undefined {
+    if (permission === Permissions.calendar) {
+      return this.shouldShowRationaleForPermissions(this.calendarPermissions);
+    }
+    return undefined;
+  }
+}
+
 const permissionHandlers = [new BluetoothConnectPermissionHandler(), new CameraPermissionHandler(),
 new LocationPermissionHandler(), new MicrophonePermissionHandler(), new NotificationPermissionHandler(),
-new PhonePermissionHandler(), new ContactPermissionHandler(), new SMSPermissionHandler(), new StoragePermissionHandler()];
+new PhonePermissionHandler(), new ContactPermissionHandler(), new SMSPermissionHandler(), 
+new StoragePermissionHandler(), new CalendarPermissionHandler()];
 
 const PermissionAndroid = new PermissionAndroidClass();
 export default PermissionAndroid;

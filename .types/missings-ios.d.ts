@@ -530,6 +530,10 @@ declare class __SF_UIDocumentPickerViewController {
   delegate?: __SF_UIDocumentPickerViewControllerDelegate;
 }
 
+declare class __SF_CalenderEvent {
+  presentEventCreatingDialog(title?: string, description?: string, location?: string, startDate?: string, endDate?: string, allDay?: boolean)
+}
+
 declare class __SF_UIDocumentPickerViewControllerDelegate {
   constructor();
   didPickDocumentsAtURLs(urls: { path: string }[]): void;
@@ -1177,6 +1181,8 @@ declare class __SF_Permission extends __SF_NSOBject {
   static authorizationStatusPhotoLibraryFor(accessLevel: number): number
   static authorizationStatusForLocation(): number
   static authorizationStatusForRecord(): number
+  static authorizationStatusForCalenderEvent(): number
+  static requestAuthorizationForCalenderEvent(callBack: (response: boolean) => void)
 }
 
 declare class __SF_CLLocationManager {

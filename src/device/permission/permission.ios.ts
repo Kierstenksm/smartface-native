@@ -5,6 +5,7 @@ import { PermissionEvents } from './permission-events';
 import SystemIOS from '../../device/system/system.ios';
 import LocationIOS from '../../device/location/location.ios';
 
+
 enum PhotoLibraryAccess {
   addOnly = 1,
   readWrite = 2
@@ -28,7 +29,9 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
 
   mapCommonPermissionArgumansToIosTypes(permission: Permissions.IOS | CommonPermissions | Parameters<IPermission['requestPermission']>['0']): Permissions.IOS | CommonPermissions {
     let _permission = permission as Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'> | 'GALLERY' | 'microphone';
-    if (permission === Permissions.camera || permission === Permissions.IOS.CAMERA) {
+    if (permission === Permissions.calendar) {
+      return 'calendar'
+    } else if (permission === Permissions.camera || permission === Permissions.IOS.CAMERA) {
       _permission = 'CAMERA';
     } else if (permission === Permissions.location || permission === Permissions.location.approximate || permission === Permissions.location.precise || permission === Permissions.IOS.LOCATION || permission === 'LOCATION') {
       _permission = 'LOCATION';
@@ -104,6 +107,14 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
     });
   }
 
+  private requestCalenderEvent(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      __SF_Permission.requestAuthorizationForCalenderEvent((status) => {
+        status ? resolve() : reject();
+      })
+    });
+  }
+
   private requestMicrophone(): Promise<void> {
     return new Promise((resolve, reject) => {
       const avaudiosession = __SF_AVAudioSession.sharedInstance();
@@ -140,6 +151,8 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
         } else if (_permission === Permissions.microphone) {
           const status = __SF_Permission.authorizationStatusForRecord()
           return mapMicrophonePermission[status]
+        } else if (_permission === Permissions.calendar) {
+          return __SF_Permission.authorizationStatusForCalenderEvent();
         } else {
           throw new Error("Requesting parameter type could not found or not supported")
         }
@@ -153,8 +166,10 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
           return self.requestPhotoLibrary()
         } else if (permission === Permissions.microphone) {
           return self.requestMicrophone();
-        }
-        else {
+        } else if (permission === Permissions.calendar) {
+          return self.requestCalenderEvent();
+
+        } else {
           throw new Error(permission + " is not supported")
         }
       }
