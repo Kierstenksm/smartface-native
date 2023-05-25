@@ -110,7 +110,7 @@ class PermissionIOSClass extends NativeEventEmitterComponent<PermissionEvents, a
   private requestCalenderEvent(): Promise<void> {
     return new Promise((resolve, reject) => {
       __SF_Permission.requestAuthorizationForCalenderEvent((status) => {
-        status === PermissionIOSAuthorizationStatus.DENIED ? resolve() : reject();
+        status ? resolve() : reject();
       })
     });
   }

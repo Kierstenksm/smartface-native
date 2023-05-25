@@ -1182,7 +1182,7 @@ declare class __SF_Permission extends __SF_NSOBject {
   static authorizationStatusForLocation(): number
   static authorizationStatusForRecord(): number
   static authorizationStatusForCalenderEvent(): number
-  static requestAuthorizationForCalenderEvent(callBack: (response: number) => void)
+  static requestAuthorizationForCalenderEvent(callBack: (response: boolean) => void)
 }
 
 declare class __SF_CLLocationManager {
