@@ -135,6 +135,65 @@ export interface NotificationAndroidProps {
   subText: string;
 }
 
+export interface NotificationsBaseAndroidProps {
+  /**
+   * Create the notification channel. If the channel is already created, it will update the channel.
+   *
+   * @method createNotificationChannel
+   * @android
+   * @since 5.1.4
+   */
+  createNotificationChannel(notificationChannel : NotificationChannelAndroid);
+  
+  /**
+   * Delete the notification channel by id. 
+   *
+   * @method createNotificationChannel
+   * @android
+   * @since 5.1.4
+   */
+  deleteNotificationChannel(notificationChannelId : string);
+}
+
+export interface NotificationChannelAndroid {
+  /**
+   * Gets/sets the unique id of the notification channel. 
+   *
+   * @property {String} id
+   * @android
+   * @since 5.1.4
+   */
+  id: string;
+
+  /**
+   * Gets/sets the name of the notification channel.
+   *
+   * @property {String} name
+   * @android
+   * @since 5.1.4
+   */
+  name: string;
+
+  /**
+   * Gets/sets the description of the notification channel.
+   *
+   * @property {String} name
+   * @android
+   * @since 5.1.4
+   */
+  description: string;
+
+  /**
+   * Gets/sets the sound file name of the notification channel. Sound file must be located at the res/raw folder. 
+   * You can put the audio files under config/resources. smartface cli tool copies these files under res/raw when publishing.
+   *
+   * @property {String} sound
+   * @android
+   * @since 5.1.4
+   */
+  sound?: string;
+}
+
 /**
  * @class Notifications
  *
@@ -149,7 +208,7 @@ export interface NotificationAndroidProps {
  *     });
  *
  */
-export interface NotificationsBase extends NativeEventEmitterComponent<NotificationEvents, any, MobileOSProps<NotificationIOSProps, {}>> {
+export interface NotificationsBase extends NativeEventEmitterComponent<NotificationEvents, any, MobileOSProps<NotificationIOSProps, NotificationsBaseAndroidProps>> {
   /**
    * Cancel all presented or scheduled local notifications.
    *
