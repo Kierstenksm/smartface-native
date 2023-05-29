@@ -42,6 +42,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
   protected preConstruct(params?: Partial<IViewProps<MobileOSProps<ViewIOSProps, ViewAndroidProps>>>): void {
     this._newImageLoaded = false;
     super.preConstruct(params);
+    this.imageFillType = ImageFillType.NORMAL;
   }
 
   protected override createYogaNode() {

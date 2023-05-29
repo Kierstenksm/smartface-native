@@ -4,10 +4,17 @@ import ImageViewAndroid from '../imageview/imageview.android';
 import SvgImageAndroid from '../svgimage/svgimage.android';
 import AndroidConfig from '../../util/Android/androidconfig';
 import FileAndroid from '../../io/file/file.android';
+import { ImageFillType } from '../imageview/imageview';
 const NativeSFSvgImageView = requireClass("io.smartface.android.sfcore.ui.imageview.svg.SFSvgImageView");
 
 export default class SvgImageViewAndroid<TEvent extends string = SvgImageViewEvents> extends ImageViewAndroid<TEvent | SvgImageViewEvents> implements ISvgImageView {
   private _svgImage: SvgImageAndroid;
+
+  protected preConstruct(params?: Partial<Record<string, any>> | undefined): void {
+    super.preConstruct(params);
+    this.imageFillType = ImageFillType.ASPECTFIT;
+  }
+
   constructor(params: Partial<ISvgImageView> = {}) {
     super(params);
   }
