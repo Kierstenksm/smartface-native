@@ -17,9 +17,9 @@ export default class AttributedTitle {
 
       titleBuilder.clear();
       titleBuilder.setSpan(titleBuilder);
-      this.context.__setTitle(titleBuilder);
+      this.context.titleSetter(titleBuilder);
     } else {
-      this.context.__setTitle(null);
+      this.context.titleSetter(null);
     }
   }
 }

@@ -335,7 +335,10 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           default:
             tempOrientation = PageAndroid.Orientation.PORTRAIT;
         }
-        this.onOrientationChange?.({ orientation: tempOrientation as any });
+        if(this._orientation !== tempOrientation) {
+          this.onOrientationChange?.({ orientation: tempOrientation as any });
+          this._orientation = tempOrientation;
+        }
       },
       onCreateContextMenu: (menu: any) => {
         const items = this.contextMenu.items;

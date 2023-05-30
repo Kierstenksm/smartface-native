@@ -161,8 +161,8 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
     return this.layout.getScreenLocation();
   }
   private setBadgeProps(props: Partial<IBadge>) {
-    this._badgeProps.backgroundColor = props.backgroundColor;
     this._badgeProps.text = props.text;
+    this._badgeProps.backgroundColor = props.backgroundColor;
     this._badgeProps.borderColor = props.borderColor;
     this._badgeProps.borderWidth = props.borderWidth;
     this._badgeProps.font = props.font;

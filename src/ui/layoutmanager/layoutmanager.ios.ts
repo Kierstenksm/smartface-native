@@ -69,22 +69,6 @@ export default class LayoutManagerIOS extends AbstractLayoutManager<__SF_UIColle
         Invocation.invokeInstanceMethod(this.nativeObject, 'setItemSize:', [argumentSize]);
       }
     };
-    nativeObject.targetContentOffsetForProposedContentOffsetWithScrollingVelocityCallback = (proposedContentOffset, velocity) => {
-      const proposedContentOffsetWithInset = {
-        x: proposedContentOffset.x + (this.contentInset.left || 0),
-        y: proposedContentOffset.y + (this.contentInset.top || 0)
-      };
-      if (this.ios.targetContentOffset) {
-        const returnValue = this.ios.targetContentOffset(proposedContentOffsetWithInset, velocity);
-        if (isNotEmpty(this.contentInset.left) && isNotEmpty(returnValue.x)) returnValue.x -= this.contentInset.left;
-        if (isNotEmpty(this.contentInset.top) && isNotEmpty(returnValue.y)) returnValue.y -= this.contentInset.top;
-        return {
-          x: returnValue.x || 0,
-          y: returnValue.y || 0
-        };
-      }
-      return proposedContentOffset;
-    };
     return nativeObject;
   }
   get spanCount(): ILayoutManager['spanCount'] {

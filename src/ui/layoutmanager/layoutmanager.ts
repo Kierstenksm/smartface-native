@@ -4,26 +4,7 @@ import NativeComponent from '../../core/native-component';
 import { INativeComponent } from '../../core/inative-component';
 import { MobileOSProps, NativeMobileComponent } from '../../core/native-mobile-component';
 
-export interface LayoutManagerIOSParams {
-  /**
-   * If you want the scrolling behavior to snap to specific boundaries, you can override this method and use it to change the point at which to stop.
-   * For example, you might use this method to always stop scrolling on a boundary between items, as opposed to stopping in the middle of an item.For Android, you can use {@link UI.GridView#snapToAlignment}.
-   * @event targetContentOffset
-   * @deprecated
-   * @ios
-   * @since 3.2.0
-   * @example
-   * ```
-   * import LayoutManager from '@smartface/native/ui/layoutmanager';
-   *
-   * const layoutManager = new LayoutManager();
-   * layoutManager.on(LayoutManager.Events.TargetContentOffset, (params) => {
-   *  console.info('targetContentOffset', params);
-   * });
-   * ```
-   */
-  targetContentOffset: (proposedContentOffset: Point2D, velocity: Point2D) => Point2D;
-}
+
 
 /**
  * Constants indicating the direction of scrolling for the layout.
@@ -71,7 +52,7 @@ export enum ScrollDirection {
  *
  *
  */
-export declare interface ILayoutManager extends INativeComponent, MobileOSProps<LayoutManagerIOSParams, {}> {
+export declare interface ILayoutManager extends INativeComponent, MobileOSProps {
   /**
    * User must return a length value for scrollDirection that user lays out the objects.
    * If vertical, length value will be height of item. If horizontal, length value will be width of item.
