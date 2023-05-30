@@ -86,8 +86,10 @@ export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents>
     cache?: ImageCacheType;
   }): void {
     this.nativeObject.loadURLCallback(params.url, (image) => {
-      if (image) {
-        params.onSuccess?.()
+      if (image) {  
+        const gifAnimatedImage = __SF_FLAnimatedImage.animatedImageWithGIFData(image);
+        this.gifImage = new GifImageIOS({ nativeObject: gifAnimatedImage });
+        params.onSuccess?.();
       } else {
         params.onFailure?.()
       }

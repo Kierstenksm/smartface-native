@@ -304,7 +304,6 @@ export default class ListViewAndroid<TEvent extends string = ListViewEvents> ext
         return self._overScrollMode;
       },
       set overScrollMode(mode: OverScrollMode) {
-        console.info('set overscrollmode: ', mode)
         self.nativeInner.setOverScrollMode(mode);
         self._overScrollMode = mode;
       },

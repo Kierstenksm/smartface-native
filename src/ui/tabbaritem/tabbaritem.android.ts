@@ -1,6 +1,5 @@
 import { ITabbarItem } from './tabbaritem';
 import { NativeMobileComponent } from '../../core/native-mobile-component';
-import AttributedString from '../attributedstring';
 import UnitConverter from '../../util/Android/unitconverter';
 import BottomTabBar from '../bottomtabbar';
 import ImageAndroid from '../image/image.android';
@@ -11,10 +10,13 @@ import BadgeAndroid from '../badge/badge.android';
 import { IBadge } from '../badge/badge';
 import { ITabBarController } from '../tabbarcontroller/tabbarcontroller';
 import { IBottomTabBar } from '../bottomtabbar/bottomtabbar';
+import AttributedStringAndroid from '../attributedstring/attributedstring.android';
+import { IAttributedString } from '../attributedstring/attributedstring';
 
 const NativeFrameLayout = requireClass('android.widget.FrameLayout');
 const NativeStateListDrawable = requireClass('android.graphics.drawable.StateListDrawable');
 const NativeR = requireClass('android.R');
+const NativeSpannableStringBuilder = requireClass('android.text.SpannableStringBuilder');
 
 export default class TabbarItemAndroid extends NativeMobileComponent<any, ITabbarItem> implements ITabbarItem {
   protected createNativeObject() {
@@ -26,8 +28,8 @@ export default class TabbarItemAndroid extends NativeMobileComponent<any, ITabba
   private _systemIcon: any;
   private _tabBarItemParent: ITabBarController | IBottomTabBar | null;
   index: number | null;
-  _attributedTitleBuilder: any;
-  private _attributedTitle?: AttributedString;
+  _attributedTitleBuilder?: any;
+  private _attributedTitle?: AttributedStringAndroid;
   private _route: string;
 
   constructor(params?: Partial<ITabbarItem>) {
@@ -55,12 +57,16 @@ export default class TabbarItemAndroid extends NativeMobileComponent<any, ITabba
         }
       },
       get attributedTitle() {
-        // TODO: Ask if _attributedTitleBuilder exists or not.
-        // return self._attributedTitleBuilder || self._android?.attributedTitle;
         return self._attributedTitle;
       },
-      set attributedTitle(value: AttributedString | undefined) {
-        self._attributedTitle = value;
+      set attributedTitle(value: IAttributedString | undefined) {
+        self._attributedTitle = value as AttributedStringAndroid;
+        if (self._attributedTitleBuilder) {
+          self._attributedTitleBuilder.clear();
+        } else {
+          self._attributedTitleBuilder = new NativeSpannableStringBuilder();
+        }
+        self._attributedTitle?.setSpan(self._attributedTitleBuilder);
       }
     };
   }

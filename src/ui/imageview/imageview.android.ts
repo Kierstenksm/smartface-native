@@ -42,6 +42,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
   protected preConstruct(params?: Partial<IViewProps<MobileOSProps<ViewIOSProps, ViewAndroidProps>>>): void {
     this._newImageLoaded = false;
     super.preConstruct(params);
+    this.imageFillType = ImageFillType.NORMAL;
   }
 
   protected override createYogaNode() {
@@ -51,8 +52,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
   get image(): ImageAndroid | null {
     if (!this._image || this._newImageLoaded) {
       this._newImageLoaded = false;
-      const drawable = !!this.nativeObject.getDrawable();
-      // TODO Recheck after build
+      const drawable = this.nativeObject.getDrawable();
       this._image = drawable ? new ImageAndroid({ drawable }) : null;
     }
     return this._image;
@@ -110,6 +110,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       onFailure?.();
       return;
     }
+    this._newImageLoaded = true;
     let glideRequestListener = null;
     if (onFailure || onSuccess) {
       glideRequestListener = GlideRequestListener.implement({
@@ -151,6 +152,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
     if (!(file instanceof FileAndroid)) {
       return;
     }
+    this._newImageLoaded = true;
     const parameters = new LoadFromFileParameters(
       AndroidConfig.activity,
       this.nativeObject,
@@ -187,7 +189,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       useHTTPCacheControl = false,
       android = { useMemoryCache: true, useDiskCache: true, cacheSignature: null }
     } = params;
-
+    this._newImageLoaded = true;
     if (!url) {
       onFailure?.();
       return;

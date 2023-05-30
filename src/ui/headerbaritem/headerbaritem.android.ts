@@ -82,7 +82,7 @@ export default class HeaderBarItemAndroid extends NativeMobileComponent<any, IHe
                 self._systemIcon = systemIcon;
 
                 if (!self.nativeObject || !self.imageButton) {
-                    self.nativeObject = this.createNativeImageButton.call(self);
+                    self.nativeObject = self.createNativeImageButton.call(self);
                     self.updateAccessibilityLabel(self._accessibilityLabel);
                 }
 

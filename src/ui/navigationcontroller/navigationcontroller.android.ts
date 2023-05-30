@@ -51,9 +51,6 @@ export default class NavigationControllerAndroid extends AbstractNavigationContr
         childController.pageID = FragmentTransition.generatePageID();
       }
 
-      // if (this.pageIDCollectionInStack[childController.pageID]) {
-      // console.log("This page exist in history!");
-      // }
       this.pageIDCollectionInStack[childController.pageID] = childController;
     }
 
@@ -125,10 +122,6 @@ export default class NavigationControllerAndroid extends AbstractNavigationContr
   push(params: Parameters<INavigationController['push']>['0']) {
     if (!params.controller.pageID) {
       params.controller.pageID = FragmentTransition.generatePageID();
-    }
-
-    if (this.pageIDCollectionInStack[params.controller.pageID]) {
-      // console.log("This page exist in history! PageID: " + params.controller.pageID);
     }
 
     this.isActive && ViewController.deactivateController(this.getCurrentController() as any);
