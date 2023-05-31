@@ -58,7 +58,6 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
   private _padding: number;
   constructor(params: Partial<TProps>) {
     super(params);
-    this.maxLines = DEFAULT_MAX_LINES;
   }
   protected preConstruct(params?: Partial<TProps>): void {
     this._adjustFontSizeToFit = false;
@@ -68,6 +67,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     this._textColor = ColorAndroid.BLUE;
     this.viewNativeDefaultTextAlignment = TextAlignmentDic[TextAlignment.MIDLEFT];
     this.textAlignment = TextAlignment.MIDLEFT;
+    this.maxLines = this.getDefaultMaxLine();
     super.preConstruct(params);
     this.initAndroidProps();
   }
@@ -159,7 +159,9 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
   }
   set maxLines(value: ILabel['maxLines']) {
     const valueInt = isNaN(value) || value === null ? DEFAULT_MAX_LINES : value;
-    this.dirty();
+    if(this.yogaNode) {
+      this.dirty();
+    }
     this.nativeObject.setMaxLines(valueInt === 0 ? MAX_INT_VALUE : valueInt);
   }
   get ellipsizeMode(): ILabel['ellipsizeMode'] {
@@ -306,5 +308,9 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     if (value?.size && typeof value.size === 'number') {
       this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
     }
+  }
+
+  protected getDefaultMaxLine() {
+    return DEFAULT_MAX_LINES;
   }
 }

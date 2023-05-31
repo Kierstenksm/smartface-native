@@ -41,7 +41,6 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   private scrollableMovementMethodCreated: boolean;
   constructor(params: Partial<TProps> = {}) {
     super(params);
-    this.maxLines = DEFAULT_MAX_LINES;
   }
   protected preConstruct(params?: Partial<TProps>): void {
     this._letterSpacing = 9;
@@ -66,7 +65,9 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     return mMaxLines === MAX_INT_VALUE ? 0 : mMaxLines;
   }
   set maxLines(value: ITextView['maxLines']) {
-    this.dirty();
+    if(this.yogaNode) {
+      this.dirty();
+    }
     this.nativeObject.setMaxLines(value === 0 ? MAX_INT_VALUE : value);
     this.scrollEnabled = this._scrollEnabled;
   }
@@ -187,5 +188,9 @@ To prevent, we need to customize BaseMovementMethod
       return;
     }
     super.updateFont(value);
+  }
+
+  protected override getDefaultMaxLine() {
+    return DEFAULT_MAX_LINES;
   }
 }
