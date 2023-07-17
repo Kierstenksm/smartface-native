@@ -13,6 +13,24 @@ import { MobileOSProps } from '../../core/native-mobile-component';
 import { TextViewAndroidPRoperties } from '../textview/textview';
 
 export interface TextBoxAndroidProps extends TextViewAndroidPRoperties {
+  /**
+   * Gets/sets the cursor position of TextBox.
+   *
+   * @property {Object} cursorPosition
+   * @property {Number} cursorPosition.start
+   * @property {Number} cursorPosition.end
+   * @android
+   * @deprecated
+   * @since 2.0.8
+   * @example
+   * ```
+   * import TextBox from '@smartface/native/ui/textbox';
+   *
+   * const textBox = new TextBox();
+   * 	console.info(textBox.cursorPosition);
+   *
+   * ```
+   */
   cursorPosition: {
     start: number;
     end: number;
@@ -24,6 +42,7 @@ export interface TextBoxAndroidProps extends TextViewAndroidPRoperties {
    * @param {Number} value
    * @android
    * @since 2.0.10
+   * @deprecated since 5.0.5 Use the {@link UI.TextBox#maxLength} instead.
    */
   maxLength: number;
 }
@@ -121,7 +140,7 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @ios
    * @since 0.1
    */
-  font: IFont;
+  font: IFont | null;
   /**
    * Gets/sets the text of the TextBox.
    * @property {String} [text = ""]
@@ -130,6 +149,14 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @since 0.1
    */
   text: string;
+  /**
+   * Gets/Sets maximum character lenght restrict of TextBox. 
+   * @property {number} [maxLength]
+   * @android
+   * @ios
+   * @since 5.0.5
+   */
+  maxLength?: number;
   /**
    * Gets/sets automatically capitalization of the TextBox. {@link UI.TextBox#cursorPosition Cursor Position} might be necessary to re-set.
    * @property {UI.TextBox.AutoCapitalize} [autoCapitalize = UI.TextBox.AutoCapitalize.NONE]
@@ -164,7 +191,6 @@ export interface ITextBox<TEvent extends string = TextBoxEvents, TMobile extends
    * @android
    * @ios
    * @since 2.0.8
-   * @deprecated
    * @example
    * ```
    * import TextBox from '@smartface/native/ui/textbox';

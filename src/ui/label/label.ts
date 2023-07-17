@@ -24,6 +24,15 @@ export interface LabelAndroidProps extends ViewAndroidProps {
    * @since 4.0.2
    */
   textDirection?: TextDirection;
+
+  /**
+   * Gets/sets the whether Label includes extra top and bottom font padding to make space for the ascenders/descenders.
+   *
+   * @property {Boolean} [includeFontPadding = true]
+   * @android
+   * @since 5.1.1
+   */
+  includeFontPadding?: boolean;
 }
 
 export interface LabelIOSProps extends ViewIOSProps {}
@@ -47,21 +56,10 @@ export declare interface ILabel<TEvent extends string = ViewEvents, TMobile exte
    * @ios
    * @since 0.1
    */
-  font: IFont;
-  /**
-   * Enables/disables multiple line property of a Label. If set to true
-   * and the text is long enough, text will be shown in multiline. Setting multiline will override the {@link UI.Label#ellipsizeMode ellipsizeMode} prop.
-   *
-   * @default false
-   * @android
-   * @ios
-   * @since 0.1
-   * @deprecated 4.0.2 Use {@link UI.Label#maxLines maxLines} instead
-   */
-  multiline: boolean;
+  font: IFont | null;
   /**
    * Sets the height of the Label to be at most maxLines tall. Setting 0 indicates that maxLines will be as much as given content.
-   *
+   * @property {Number} [maxLines = 1]
    * @android
    * @ios
    * @since 4.0.2

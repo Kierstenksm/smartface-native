@@ -124,8 +124,8 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
             });
           }
         },
-        beforeTextChanged: function (charSequence, start, count, after) {},
-        afterTextChanged: function (editable) {}
+        beforeTextChanged: function (charSequence, start, count, after) { },
+        afterTextChanged: function (editable) { }
       })
     );
 
@@ -324,6 +324,19 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
     this.nativeObject.setImeOptions(NativeActionKeyType[this._actionKeyType]);
   }
 
+  get maxLength(): number {
+    return this._maxLength || 0;
+  }
+  set maxLength(value: number) {
+    const filterArray = toJSArray(this.nativeObject.getFilters()) || [];
+    this.removeInputLengthFilter(filterArray);
+    if (typeof value === 'number') {
+      filterArray.push(new NativeInputFilter.LengthFilter(value));
+    }
+    this.nativeObject.setFilters(array(filterArray, 'android.text.InputFilter'));
+    this._maxLength = value;
+  }
+
   showKeyboard(): void {
     this.requestFocus();
   }
@@ -354,7 +367,7 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
     this._onTextChanged = value;
   }
 
-  onClearButtonPress() {}
+  onClearButtonPress() { }
 
   get onEditEnds(): () => void {
     return this._onEditEnds;
@@ -396,5 +409,14 @@ export default class TextBoxAndroid<TEvent extends string = TextBoxEvents, TNati
   updateInputType(unsetFlags: number, setFlags: number) {
     const currentInputType = this.nativeObject.getInputType();
     this.nativeObject.setInputType((currentInputType & ~unsetFlags) | setFlags);
+  }
+
+  removeInputLengthFilter(filterArray : any[]) {
+    for (let i = 0; i < filterArray.length; i++) {
+      if ((filterArray[i] + '').includes('android.text.InputFilter$LengthFilter')) {
+        filterArray.splice(i, 1);
+        break;
+      }
+    }
   }
 }

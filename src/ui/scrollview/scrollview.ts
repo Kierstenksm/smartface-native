@@ -1,10 +1,8 @@
 import { MobileOSProps } from '../../core/native-mobile-component';
 import { Point2D } from '../../primitive/point2d';
 import FlexLayout from '../flexlayout';
-import OverScrollMode from '../shared/android/overscrollmode';
 import ContentInsetAdjustment from '../shared/ios/contentinsetadjustment';
-import { AbstractViewGroup, IViewGroup, ViewGroupIOSProps } from '../viewgroup/viewgroup';
-import ViewGroupIOS from '../viewgroup/viewgroup.ios';
+import { AbstractViewGroup, IViewGroup, ViewGroupAndroidProps, ViewGroupIOSProps } from '../viewgroup/viewgroup';
 import { ScrollViewEvents } from './scrollview-events';
 
 export enum ScrollViewEdge {
@@ -19,7 +17,7 @@ export enum ScrollViewAlign {
   HORIZONTAL = 'horizontal'
 }
 
-export interface ScrollViewIOSParams extends ViewGroupIOSProps {
+export interface ScrollViewIOSProps extends ViewGroupIOSProps {
   decelerationRate: number;
   /**
    * If the value of this property is YES , scrolling is enabled, and if it is NO , scrolling is disabled. The default is YES.
@@ -159,6 +157,10 @@ export interface ScrollViewIOSParams extends ViewGroupIOSProps {
   onScrollEndDraggingWithVelocityTargetContentOffset: (contentOffset: __SF_NSRect, velocity: __SF_NSRect, targetContentOffset: Point2D) => void;
 }
 
+export interface ScrollViewAndroidParams extends ViewGroupAndroidProps {
+
+}
+
 /**
  * @class UI.ScrollView
  * @extends UI.ViewGroup
@@ -205,16 +207,9 @@ export interface ScrollViewIOSParams extends ViewGroupIOSProps {
  *     scrollView.layout.addChild(buttonTop);
  *     scrollView.layout.addChild(buttonBottom);
  */
-export interface IScrollView<TEvent extends string = ScrollViewEvents, TMobile extends MobileOSProps<ScrollViewIOSParams, {}> = MobileOSProps<ScrollViewIOSParams, {}>>
+export interface IScrollView<TEvent extends string = ScrollViewEvents, TMobile extends MobileOSProps<ScrollViewIOSProps, ScrollViewAndroidParams> = MobileOSProps<ScrollViewIOSProps, {}>>
   extends IViewGroup<TEvent | ScrollViewEvents, any, TMobile> {
-  /**
-   * Gets/sets over-scroll mode for this view.
-   *
-   * @property {UI.Android.OverScrollMode} [overScrollMode = UI.Android.OverScrollMode.ALWAYS]
-   * @android
-   * @since 3.0.2
-   */
-  overScrollMode: OverScrollMode;
+
   /**
    * Gets/sets the alignment of the scrollview. If alignment is HORIZONTAL, the ScrollView
    * will scroll horizontally, otherwise will scroll vertically.
@@ -253,6 +248,7 @@ export interface IScrollView<TEvent extends string = ScrollViewEvents, TMobile e
    * @android
    * @ios
    * @since 3.0.2
+   * @deprecated since 5.1.1
    */
   autoSizeEnabled: boolean;
 
@@ -365,7 +361,6 @@ export interface IScrollView<TEvent extends string = ScrollViewEvents, TMobile e
 
 export declare class AbstractScrollView<TEvent extends string = ScrollViewEvents> extends AbstractViewGroup<TEvent | ScrollViewEvents, any, IScrollView> implements IScrollView {
   constructor(params?: Partial<IScrollView>);
-  overScrollMode: OverScrollMode;
   align: ScrollViewAlign;
   layout: FlexLayout;
   scrollBarEnabled: boolean;

@@ -222,6 +222,12 @@ export default class GridViewAndroid<TEvent extends string = GridViewEvents> ext
           return;
         }
         self.toggleScrollListener(typeof value === 'function');
+      },
+      get nestedScrollingEnabled() {
+        return self.nativeObject.isNestedScrollingEnabled();
+      },
+      set nestedScrollingEnabled(nestedScrollingEnabled: boolean) {
+        self.nativeObject.setNestedScrollingEnabled(nestedScrollingEnabled);
       }
     };
   }

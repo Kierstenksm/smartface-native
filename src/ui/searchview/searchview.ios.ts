@@ -235,6 +235,7 @@ export default class SearchViewIOS<TEvent extends string = SearchViewEvents> ext
     this._showsCancelButton = false;
     this._searchViewStyle = UISearchBarStyle.default;
     this._textAligment = TextAlignment.MIDLEFT;
+    this.borderColor = Color.BLACK
     super.preConstruct(params);
     this.addIOSProps(this.getIOSProps());
   }
@@ -307,9 +308,6 @@ export default class SearchViewIOS<TEvent extends string = SearchViewEvents> ext
     this._backgroundColor = value.nativeObject;
     this.nativeObject.barTintColor = this._backgroundColor;
     this.nativeObject.backgroundColor = this._backgroundColor;
-    if (this.borderWidth === 0) {
-      this.borderColor = value;
-    }
   }
 
   get iconImage(): IImage {
@@ -335,14 +333,8 @@ export default class SearchViewIOS<TEvent extends string = SearchViewEvents> ext
     this._borderWidth = value;
     // Native object's layer must be updated!
     // Yoga's borderWidth property only effects positioning of its child view.
-    if (this._borderWidth === 0) {
-      this.nativeObject.layer.borderWidth = 1;
-      this.nativeObject.yoga.borderWidth = 1;
-      this.borderColor = this.backgroundColor;
-    } else {
-      this.nativeObject.layer.borderWidth = value;
-      this.nativeObject.yoga.borderWidth = value;
-    }
+    this.nativeObject.layer.borderWidth = value;
+    this.nativeObject.yoga.borderWidth = value;
   }
 
   addToHeaderBar(page: Page): void {

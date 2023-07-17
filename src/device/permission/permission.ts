@@ -15,6 +15,84 @@ export enum PermissionResult {
   DENIED,
   NEVER_ASK_AGAIN
 }
+
+type BluetoothConnectPermissionGroup = "bluetoothConnect";
+type NotificationPermissionGroup = "notification";
+type ContactPermissionGroup = "contact";
+type PhonePermissionGroup = "phone";
+type SMSPermissionGroup = "sms";
+type CameraPermissionGroup = "camera";
+type MicrophonePermissionGroup = "microphone";
+type CalendarPermissionGroup = "calendar";
+type LocationPermissionGroupApproximate = "locationApproximate";
+type LocationPermissionGroupPrecise = "locationPrecise";
+type LocationPermissionGroup = {
+  /**
+    * Allows an app to access approximate location.
+    * 
+    * Following permission must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *
+    * @property approximate
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+  approximate: LocationPermissionGroupApproximate;
+
+  /**
+    * Allows an app to access precise location.
+    * 
+    * Following permissions must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_FINE_LOCATION
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *
+    * @property precise
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+  precise: LocationPermissionGroupPrecise
+}
+type LocationPermissions = LocationPermissionGroup | LocationPermissionGroupApproximate | LocationPermissionGroupPrecise;
+type StoragePermissionGroupReadImageAndVideo = "storageReadImageAndVideo";
+type StoragePermissionGroupReadAudio = "storageReadAudio";
+type StoragePermissionGroup = {
+  /**
+    * Allows to read and write images and videos.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_IMAGES
+    *   android.permission.READ_MEDIA_VIDEO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property readImageAndVideo
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+  readImageAndVideo: StoragePermissionGroupReadImageAndVideo,
+
+  /**
+    * Allows to read and write audio.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_AUDIO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property readAudio
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+  readAudio: StoragePermissionGroupReadAudio,
+}
+type StoragePermissions = StoragePermissionGroup | StoragePermissionGroupReadImageAndVideo | StoragePermissionGroupReadAudio;
+export type AndroidPermissions = BluetoothConnectPermissionGroup | NotificationPermissionGroup | ContactPermissionGroup | PhonePermissionGroup | SMSPermissionGroup;
+export type CommonPermissions = CameraPermissionGroup | LocationPermissions | StoragePermissions | MicrophonePermissionGroup | CalendarPermissionGroup;
+
 /**
  * Holds values of available permissions. This is a union of Android and iOS permissions.
  *
@@ -31,10 +109,19 @@ export enum PermissionResult {
  * Permission.requestPermission(Permissions.CAMERA);
  */
 export namespace Permissions {
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#ios
+   */
   export enum IOS {
     LOCATION = 'CLLocationManager',
-    CAMERA = 'PHPhotoLibrary'
+    CAMERA = 'AVCaptureDevice',
+    GALLERY = 'PHPhotoLibrary'
   }
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#android
+   */
   export enum ANDROID {
     /**
      * Allows to read the calendar data.
@@ -224,6 +311,7 @@ export namespace Permissions {
      * Allows to read from external storage.
      * If you granted {@link Application.Android.Permissions#WRITE_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE} permission,
      * you don't need this to granted this permission.
+     * Available on API Level 32 (Android 12) and below. You can use granular media permissions (READ_MEDIA_AUDIO, READ_MEDIA_IMAGE, READ_MEDIA_VIDEO) on API Level 33 (Android 13) and above.
      *
      * @property READ_EXTERNAL_STORAGE
      * @readonly
@@ -269,13 +357,223 @@ export namespace Permissions {
     BLUETOOTH = 'android.permission.BLUETOOTH',
     /**
      * Required to be able to connect to paired Bluetooth devices.
+     * 
      * @property BLUETOOTH_CONNECT
      * @readonly
      */
-    BLUETOOTH_CONNECT = 'android.permission.BLUETOOTH_CONNECT'
+    BLUETOOTH_CONNECT = 'android.permission.BLUETOOTH_CONNECT',
+    /**
+     * Allows the app to post notifications.
+     * Available on API Level 33 (Android 13) and above
+     * 
+     * @property POST_NOTIFICATIONS
+     * @readonly
+     */
+    POST_NOTIFICATIONS = 'android.permission.POST_NOTIFICATIONS',
+    /**
+     * Allows the app to read media audio.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_AUDIO
+     * @readonly
+     */
+    READ_MEDIA_AUDIO = 'android.permission.READ_MEDIA_AUDIO',
+    /**
+     * Allows the app to read media images.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_IMAGES
+     * @readonly
+     */
+    READ_MEDIA_IMAGES = 'android.permission.READ_MEDIA_IMAGES',
+    /**
+     * Allows the app to read media video.
+     * Available on API Level 33 (Android 13) and above.
+     * 
+     * @property READ_MEDIA_VIDEO
+     * @readonly
+     */
+    READ_MEDIA_VIDEO = 'android.permission.READ_MEDIA_VIDEO'
   }
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#location
+   */
   export const LOCATION = 'LOCATION';
+
+  /**
+   * @deprecated since v5.0.5 please use Permissions#camera
+   */
   export const CAMERA = 'CAMERA';
+
+  export const android: {
+    /**
+    * Allows to find and connect Bluetooth devices.
+    * Checks if android.permission.BLUETOOTH is defined in manifest file in Android 11 and below, shows permission dialog in Android 12 and above.
+    * 
+    * Following permissions must be added to AndroidManifest.xml.
+    *   android.permission.BLUETOOTH_CONNECT
+    *   android.permission.BLUETOOTH
+    *
+    * @property bluetoothConnect
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+    bluetoothConnect: BluetoothConnectPermissionGroup,
+
+    /**
+    * Allows to send notification.
+    * Always return true on Android 12L and below.
+    * 
+    * Following permission must be added to AndroidManifest.xml.
+    *   android.permission.POST_NOTIFICATIONS
+    *
+    * @property notification
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+    notification: NotificationPermissionGroup,
+
+    /**
+    * Allows to make and manage phone calls.
+    *
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_PHONE_STATE
+    *   android.permission.CALL_PHONE
+    *   android.permission.USE_SIP
+    * 
+    * @property phone
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+    phone: PhonePermissionGroup,
+
+    /**
+     * Allows to access the contacts.
+     * 
+     * Some or all of the following permissions must be added to AndroidManifest.xml.
+     *   android.permission.READ_CONTACTS
+     *   android.permission.WRITE_CONTACTS
+     *   android.permission.GET_ACCOUNTS
+     *
+     * @property contact
+     * @readonly
+     * @android
+     * @since 5.0.5
+     */
+    contact: ContactPermissionGroup,
+
+    /**
+    * Allows to send and view sms messages.
+    * 
+    * Some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.SEND_SMS
+    *   android.permission.READ_SMS
+    *   android.permission.RECEIVE_SMS
+    *   android.permission.RECEIVE_WAP_PUSH
+    *   android.permission.RECEIVE_MMS
+    *
+    * @property sms
+    * @readonly
+    * @android
+    * @since 5.0.5
+    */
+    sms: SMSPermissionGroup,
+  } = {
+    bluetoothConnect: 'bluetoothConnect',
+    notification: 'notification',
+    phone: 'phone',
+    contact: 'contact',
+    sms: 'sms',
+  }
+  export type ios = {}
+
+  /**
+    * Required to be able to access the camera device.
+    *
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.CAMERA
+    * 
+    * @property camera
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
+  export const camera: CameraPermissionGroup = 'camera';
+
+  /**
+    * Asks for microphone usage
+    *
+    * For ios, NSMicrophoneUsageDescription key must be added to config/iOS/info.plist
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.RECORD_AUDIO
+    * 
+    * @property camera
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
+  export const microphone: MicrophonePermissionGroup = 'microphone';
+
+  /**
+    * Allows an app to access location.
+    *
+    * For Android, some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.ACCESS_COARSE_LOCATION
+    *   android.permission.ACCESS_FINE_LOCATION
+    * 
+    * @property location
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
+  export const location: LocationPermissionGroup = {
+    approximate: 'locationApproximate',
+    precise: 'locationPrecise',
+  };
+
+  /**
+    * Allows to read and write storage.
+    * 
+    * For Android, some or all of the following permissions must be added to AndroidManifest.xml.
+    *   android.permission.READ_MEDIA_IMAGES
+    *   android.permission.READ_MEDIA_AUDIO
+    *   android.permission.READ_MEDIA_VIDEO
+    *   android.permission.READ_EXTERNAL_STORAGE
+    *   android.permission.WRITE_EXTERNAL_STORAGE
+    *
+    * @property storage
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.0.5
+    */
+  export const storage: StoragePermissionGroup = {
+    readImageAndVideo: 'storageReadImageAndVideo',
+    readAudio: 'storageReadAudio',
+  };
+
+  /**
+    * Asks for calendar access.
+    *
+    * For ios, NSCalendarsUsageDescription key must be added to config/iOS/info.plist
+    * For Android, following permission must be added to AndroidManifest.xml.
+    *   android.permission.READ_CALENDAR
+    *   android.permission.WRITE_CALENDAR
+    * 
+    * @property calendar
+    * @readonly
+    * @android
+    * @ios
+    * @since 5.1.4
+    */
+  export const calendar: CalendarPermissionGroup = 'calendar';
 }
 
 export interface PermissionIOSProps {
@@ -283,12 +581,12 @@ export interface PermissionIOSProps {
    * Invokes iOS permission type in order to check the status of the permission
    * @param permission iOS Native permission type. E.g. 'PHPPhotoLibrary'. See IOSPermission value for all available permissions.
    */
-  getAuthorizationStatus(permission: Permissions.IOS): PermissionIOSAuthorizationStatus;
+  getAuthorizationStatus(permission: Permissions.IOS | CommonPermissions): PermissionIOSAuthorizationStatus;
   /**
    * Requests given permission.
    * @returns Promise that resolves when the permission is granted. If you want to get the status of the permission after the promise, please use getAuthorizationStatus again.
    */
-  requestAuthorization(permission: Permissions.IOS): Promise<void>;
+  requestAuthorization(permission: Permissions.IOS | CommonPermissions): Promise<void>;
 }
 
 export interface PermissionAndroidProps {
@@ -302,7 +600,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  shouldShowRequestPermissionRationale(permission: Permissions.ANDROID): boolean;
+  shouldShowRequestPermissionRationale(permission: Permissions.ANDROID | AndroidPermissions | CommonPermissions): boolean;
   /**
    * This event is called after Application.requestPermissions function. This event is fired in asynchronous way.
    *
@@ -322,7 +620,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  checkPermission(permission: Permissions.ANDROID): boolean;
+  checkPermission(permission: Permissions.ANDROID | AndroidPermissions | CommonPermissions): boolean;
   /**
    * With requestPermissions, the System Dialog will appear to ask for permission grant by user for dangerous(privacy) permissions.
    * {@link Application.android#onRequestPermissionsResult onRequestPermissionsResult} will be fired after user interact with permission dialog.
@@ -340,7 +638,7 @@ export interface PermissionAndroidProps {
    * @android
    * @since 1.2
    */
-  requestPermissions(permissions: Permissions.ANDROID[] | Permissions.ANDROID, requestIdentifier?: number): Promise<PermissionResult[]>;
+  requestPermissions(permissions: Permissions.ANDROID[] | Permissions.ANDROID | AndroidPermissions | CommonPermissions, requestIdentifier?: number): Promise<PermissionResult[]>;
 }
 
 export interface IPermission extends IEventEmitter<PermissionEvents>, INativeMobileComponent<any, MobileOSProps<PermissionIOSProps, PermissionAndroidProps>> {
@@ -349,7 +647,7 @@ export interface IPermission extends IEventEmitter<PermissionEvents>, INativeMob
    * For Android, this will override onRequestPermissionsResult method, therefore if you want to handle another android specific permissions,
    * please override the method again.
    */
-  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID'>): Promise<PermissionResult>;
+  requestPermission(permission: Exclude<Extract<keyof typeof Permissions, string>, 'IOS' | 'ANDROID' | 'location' | 'storage'> | CommonPermissions): Promise<PermissionResult>;
 
   on(eventName: 'requestPermissionsResult', callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;
   on(eventName: PermissionEvents, callback: (e: { requestCode: number; result: boolean[] | boolean }) => void): () => void;

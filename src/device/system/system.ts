@@ -1,3 +1,5 @@
+import { Appearance } from "../../application/application";
+
 /**
  * Determines which operating system is currently running.
  * @enum {String} Device.System.OSType
@@ -79,6 +81,16 @@ export enum BiometryType {
   FACEID = 2
 }
 
+export type ClipboardData = {
+  text?: string;
+  android?: {
+    /**
+     * If clipboard contains any sensitive content; such as passwords or credit card information; you must set this field to true.
+     */
+    isSensitive: boolean;
+  };
+};
+
 /**
  * @class Device.System
  * @since 0.1
@@ -102,6 +114,17 @@ export enum BiometryType {
  *
  */
 export declare class AbstractSystem {
+  /**
+   *
+   * Returns the device's appearance.
+   * @property {Appearance} appearance
+   * @readonly
+   * @static
+   * @android
+   * @ios
+   * @since 5.0.7
+   */
+  static appearance: Appearance;
   /**
    * Determines which operating system is currently running.
    * @example
@@ -420,6 +443,7 @@ export declare class AbstractSystem {
    * @ios
    * @static
    * @since 0.1
+   * @deprecated since 5.0.4 Use {@link Device.System#setClipboard} and {@link Device.System#getClipboard}
    */
   static clipboard: string | null;
 
@@ -467,4 +491,28 @@ export declare class AbstractSystem {
    * The set of available biometric authentication types.
    */
   static readonly BiometryType: BiometryType;
+
+  /**
+   * Set ClipboardData to the device clipboard.
+   * 
+   * If clipboard contains any sensitive content; such as passwords or credit card information; you must set {@link Device.System#ClipboardData.android.isSensitive} to true for Android.
+   * @method setClipboard
+   * @param {ClipboardData} clipboardData
+   * @android
+   * @ios
+   * @static
+   * @since 5.0.4
+   */
+  static setClipboard(clipboardData: ClipboardData): void;
+
+  /**
+   * Get ClipboardData from the device clipboard.
+   * @method getClipboard
+   * @android
+   * @ios
+   * @return {ClipboardData}
+   * @static
+   * @since 5.0.4
+   */
+  static getClipboard(): ClipboardData;
 }

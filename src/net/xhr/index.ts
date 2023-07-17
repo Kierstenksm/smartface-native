@@ -1,7 +1,6 @@
-import { ConstructorOf } from '../../core/constructorof';
-import { IXHR } from './xhr';
+import { AbstractXHR } from './xhr';
 
-const XHR: ConstructorOf<IXHR, Partial<IXHR>> = require(`./xhr.${Device.deviceOS.toLowerCase()}`).default;
-type XHR = IXHR;
 
+const XHR: typeof AbstractXHR = require(`./xhr.${Device.deviceOS.toLowerCase()}`).default;
+type XHR = AbstractXHR;
 export default XHR;

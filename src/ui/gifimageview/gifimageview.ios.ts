@@ -5,6 +5,7 @@ import ImageiOS from '../image/image.ios';
 import { IFile } from '../../io/file/file';
 import GifImageIOS from '../gifimage/gifimage.ios';
 import { IGifImage } from '../gifimage/gifimage';
+import ImageCacheType from '../shared/imagecachetype';
 import { IImage } from '../image/image';
 
 export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents> extends ImageViewIOS<TEvent | GifImageViewEvents> implements IGifImageView {
@@ -72,7 +73,47 @@ export default class GifImageViewIOS<TEvent extends string = GifImageViewEvents>
     this.gifImage = gifImage;
   }
 
-  loadFromUrl(): void {}
+  loadFromUrl(params: {
+    url: string;
+    headers?: { [name: string]: string };
+    placeholder?: ImageiOS;
+    fade?: boolean;
+    useHTTPCacheControl?: boolean;
+    onSuccess?: () => void;
+    onFailure?: () => void;
+    android?: { useDiskCache?: boolean; useMemoryCache?: boolean };
+    ios?: { isRefreshCached?: boolean };
+    cache?: ImageCacheType;
+  }): void {
+    this.nativeObject.loadURLCallback(params.url, (image) => {
+      if (image) {  
+        const gifAnimatedImage = __SF_FLAnimatedImage.animatedImageWithGIFData(image);
+        this.gifImage = new GifImageIOS({ nativeObject: gifAnimatedImage });
+        params.onSuccess?.();
+      } else {
+        params.onFailure?.()
+      }
+    })
+  }
 
-  fetchFromUrl(): void {}
+  fetchFromUrl(params: {
+    url: string;
+    headers?: { [name: string]: string };
+    placeholder?: IImage;
+    useHTTPCacheControl?: boolean;
+    onSuccess?: (image: IImage | null, cache: ImageCacheType) => void;
+    onFailure?: () => void;
+    android?: { useDiskCache?: boolean; useMemoryCache?: boolean };
+    ios?: { isRefreshCached?: boolean };
+    image: any;
+    cache: ImageCacheType;
+  }): void { 
+    this.nativeObject.fetchFromURLCallback(params.url, (image) => {
+      if (image) {
+        params.onSuccess?.(ImageiOS.createFromImage(image), 1);
+      } else {
+        params.onFailure?.()
+      }
+    })
+  }
 }

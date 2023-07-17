@@ -7,7 +7,7 @@ import { WebViewEvents } from './webview-events';
 import { IView, ViewAndroidProps, ViewIOSProps } from '../view/view';
 import { MobileOSProps } from '../../core/native-mobile-component';
 
-export type AndroidProps = ViewAndroidProps & {
+export interface WebViewAndroidProps extends ViewAndroidProps {
   /**
    * Gets/sets over-scroll mode for this view.
    *
@@ -84,7 +84,7 @@ export type AndroidProps = ViewAndroidProps & {
    */
   clearFormData(): void;
   /**
-   * Tells this WebView to clear its internal back/forward list.
+   * Tells this WebView to clear its internal back and forward list.
    *
    * @method clearHistory
    * @android
@@ -101,9 +101,9 @@ export type AndroidProps = ViewAndroidProps & {
    * @since 4.0.6
    */
   setWebContentsDebuggingEnabled(enabled: boolean): void;
-};
+}
 
-export type iOSProps = ViewIOSProps & {
+export interface WebViewIOSProps extends ViewIOSProps {
   /**
    * Sets/Gets the bounce effect when scrolling.
    *
@@ -154,7 +154,7 @@ export type iOSProps = ViewIOSProps & {
     validateCertificateChain: boolean;
     validateHost: boolean;
   }[];
-};
+}
 
 /**
  * @class UI.WebView
@@ -189,7 +189,7 @@ export type iOSProps = ViewIOSProps & {
  *
  */
 
-export interface IWebView<TEvent extends string = WebViewEvents, TMobile extends MobileOSProps<iOSProps, AndroidProps> = MobileOSProps<iOSProps, AndroidProps>>
+export interface IWebView<TEvent extends string = WebViewEvents, TMobile extends MobileOSProps<WebViewIOSProps, WebViewAndroidProps> = MobileOSProps<WebViewIOSProps, WebViewAndroidProps>>
   extends IView<TEvent | WebViewEvents, any, TMobile> {
   /**
    * Indicates whether the links clicked on the webview will be rendered inside the webview or not.
@@ -504,7 +504,7 @@ export interface IWebView<TEvent extends string = WebViewEvents, TMobile extends
   off(eventName: 'show', callback: (e: { url: string }) => void): void;
   off(eventName: WebViewEvents, callback: (...args: any[]) => void): void;
 
-  emit(eventName: 'backButtonPressed', ): void;
+  emit(eventName: 'backButtonPressed'): void;
   emit(eventName: 'changedURL', e: { url: string }): void;
   emit(eventName: 'consoleMessage', params: { sourceId: number; message: string; lineNumber: number; messageLevel: string }): void;
   emit(eventName: 'error', e: { url: string; code: number; message: string }): void;

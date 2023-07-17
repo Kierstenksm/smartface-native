@@ -92,6 +92,7 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
   private _clearButtonEnabled: boolean;
   private _keyboardLayout: IFlexLayout | undefined;
   private keyboardanimationdelegate: KeyboardAnimationDelegate;
+  private _maxLength?: number;
   private _inputView: {
     height: number;
     view: ViewIOS;
@@ -135,7 +136,6 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
           location: method.range,
           insertedText: method.replacementString
         });
-        return true;
       }
     };
 
@@ -278,6 +278,15 @@ export default class TextBoxIOS<TEvent extends string = TextBoxEvents, TNative =
         self.nativeObject.setValueForKey(self._inputViewMain.nativeObject, 'inputView');
       }
     };
+  }
+
+  get maxLength(): number {
+    return this._maxLength || 0;
+  }
+
+  set maxLength(value: number){
+    this._maxLength = value
+    this.nativeObject.maxLength = this._maxLength
   }
 
   get font(): IFont {

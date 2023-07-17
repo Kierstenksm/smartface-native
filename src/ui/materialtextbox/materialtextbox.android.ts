@@ -48,7 +48,7 @@ export default class MaterialTextBoxAndroid<TEvent extends string = TextBoxEvent
   private _lineColorObj: { normal: IColor | null; selected: IColor | null };
   private _errorColor: IColor | null;
   private _characterRestrictionColor: IColor;
-  private __font: IFont;
+  private __font: IFont | null;
   private _rightLayout: FlexLayoutAndroid | null;
   private _rightLayoutWidth: number;
   private _enableCounterMaxLength: number;
@@ -56,7 +56,7 @@ export default class MaterialTextBoxAndroid<TEvent extends string = TextBoxEvent
   private _enableErrorMessage: boolean;
   private _enableCharacterRestriction: boolean;
   private _touchEnable: boolean;
-  get font(): IFont {
+  get font(): IFont | null {
     return this.sfTextBox.font;
   }
   set font(value) {
@@ -310,13 +310,13 @@ export default class MaterialTextBoxAndroid<TEvent extends string = TextBoxEvent
     }
   }
 
-  get labelsFont(): IFont {
+  get labelsFont(): IFont | null {
     return this.__font;
   }
-  set labelsFont(value: IFont) {
+  set labelsFont(value: IFont | null) {
     this.__font = value;
-    this.nativeObject.setTypeface(value.nativeObject);
-    this.nativeObject.setExpandedHintTextSize(AndroidUnitConverter.dpToPixel(value.size));
+    this.nativeObject.setTypeface(value?.nativeObject);
+    this.nativeObject.setExpandedHintTextSize(AndroidUnitConverter.dpToPixel(value?.size || 0));
   }
 
   get testId(): any {
@@ -438,6 +438,13 @@ export default class MaterialTextBoxAndroid<TEvent extends string = TextBoxEvent
 
     const counterView = this.nativeObject.getReCreatedCounterView();
     counterView.setTextColor(this._characterRestrictionColor.nativeObject);
+  }
+
+  get maxLength(): number {
+    return this.sfTextBox.maxLength;
+  }
+  set maxLength(value: number) {
+    this.sfTextBox.maxLength = value;
   }
 
   on(eventName: TextBoxEvents, callback: EventListenerCallback) {

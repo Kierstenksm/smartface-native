@@ -75,4 +75,13 @@ export interface IBottomTabBar extends INativeMobileComponent<any, MobileOSProps
    * @since 3.2.0
    */
   items: TabBarItem[] | null;
+  
+  /**
+   * Gets/sets size of the tab bar item icon.
+   *
+   * @android
+   * @ios
+   * @since 5.0.5
+   */
+  iconSize: number;
 }

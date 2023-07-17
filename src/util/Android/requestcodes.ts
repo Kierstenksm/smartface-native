@@ -16,7 +16,6 @@ export enum Sound {
 export const Multimedia = Object.freeze({
   CAMERA_REQUEST: 1002,
   PICK_FROM_GALLERY: 1003,
-  PICK_MULTIPLE_FROM_GALLERY: 1006,
   CropImage: {
     CROP_CAMERA_DATA_REQUEST_CODE: 203,
     CROP_GALLERY_DATA_REQUEST_CODE: 205
@@ -34,4 +33,8 @@ export enum DocumentPicker {
 
 export enum Location {
   CHECK_SETTINGS_CODE = SFLocationCallback.REQUEST_CHECK_SETTINGS
+}
+
+export enum Share {
+  CREATE_DOCUMENT_CODE = 1300
 }

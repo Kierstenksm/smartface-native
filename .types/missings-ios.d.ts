@@ -49,6 +49,13 @@ declare class __SF_UIImageView extends __SF_UIView {
   tintColor: __SF_UIColor;
   loadFromURL(url: any, placeholder: __SF_UIImage, headers: any, onSuccess: (innerFade: boolean, image: __SF_UIImage, error: any, cache: any /**TODO: ImageCacheType */, url: any) => void): void;
 }
+
+declare class __SF_SVGImage extends __SF_UIImage { }
+
+declare class __SF_SVGImageView extends __SF_UIImageView {
+  static createFromFile(path: string, callback: (image?: __SF_SVGImage) => void)
+}
+
 declare class __SF_NSInvocation extends __SF_NSOBject {
   static createInvocationWithSelectorInstance(name: string, obj: any): __SF_NSInvocation;
   static createClassInvocationWithSelectorInstance(name: string, obj: any): __SF_NSInvocation;
@@ -83,7 +90,7 @@ declare class __SF_UIScreen extends __SF_NSOBject {
   static mainScreen: () => { bounds: __SF_NSRect; scale: number };
 }
 
-declare class __SF_UIApplicationDidChangeStatusBarOrientationNotification {}
+declare class __SF_UIApplicationDidChangeStatusBarOrientationNotification { }
 
 declare class __SF_GCRect {
   width?: number;
@@ -102,7 +109,7 @@ declare class __SF_CNContactPickerViewController {
   static new(): any;
 }
 
-declare class __SF_NSRect extends __SF_GCRect {}
+declare class __SF_NSRect extends __SF_GCRect { }
 
 declare class __SF_UIView extends __SF_NSOBject {
   static setViewAppearanceSemanticContentAttribute(param?: number);
@@ -152,6 +159,8 @@ declare class __SF_UIView extends __SF_NSOBject {
   layer: any;
   uuid: string;
 }
+
+declare class __SF_UScrollLayout extends __SF_UIView { }
 declare class __SF_NSUserDefaults extends __SF_NSOBject {
   setObjectForKey(value: any, key: string): any;
   synchronize(): any;
@@ -337,7 +346,7 @@ declare class __SF_UICollectionView extends __SF_UIScrollView {
   superview: any;
 }
 
-declare class __SF_UICollectionReusableView extends __SF_UIView {}
+declare class __SF_UICollectionReusableView extends __SF_UIView { }
 
 declare class __SF_UICollectionViewCell extends __SF_UICollectionReusableView {
   contentView: __SF_UIView;
@@ -360,7 +369,7 @@ declare class __SF_UIBarButtonItem extends __SF_UIView {
   setTitleTextAttributesForState(font: { NSFont: __SF_UIFont }, uiControlState: number /**TODO: Add after UIControlState is there */): any;
 }
 
-declare class __SF_UICollectionViewLayout extends __SF_NSOBject {}
+declare class __SF_UICollectionViewLayout extends __SF_NSOBject { }
 
 declare class __SF_UICollectionViewFlowLayout extends __SF_UICollectionViewLayout {
   prepareLayoutCallback: () => void;
@@ -424,6 +433,7 @@ declare class __SF_UIApplication extends __SF_NSOBject {
   static dataCounters(): { WiFiSent: number; WWANSent: number; WWANReceived: number; WiFiReceived: number };
   static call(uriScheme: string, data: Record<string, any>, onSuccess?: (...args: any[]) => void, onFailure?: (...args: any[]) => void): void;
   static isEmulator(): boolean;
+  static appearance: number;
 }
 
 declare class __SF_CMMotionManager {
@@ -478,9 +488,9 @@ declare class __SF_CNLabeledValue {
 declare class __SF_CNLabelParent {
   constructor();
 }
-declare class __SF_CNLabelPhoneNumberMain extends __SF_CNLabelParent {}
-declare class __SF_CNLabelHome extends __SF_CNLabelParent {}
-declare class __SF_CNLabelURLAddressHomePage extends __SF_CNLabelParent {}
+declare class __SF_CNLabelPhoneNumberMain extends __SF_CNLabelParent { }
+declare class __SF_CNLabelHome extends __SF_CNLabelParent { }
+declare class __SF_CNLabelURLAddressHomePage extends __SF_CNLabelParent { }
 
 declare class __SF_CNContactPickerDelegate<TContact = __SF_CNMutableContact> {
   contactPickerDidSelectContact: (contact: TContact) => void;
@@ -520,6 +530,10 @@ declare class __SF_UIDocumentPickerViewController {
   delegate?: __SF_UIDocumentPickerViewControllerDelegate;
 }
 
+declare class __SF_CalenderEvent {
+  presentEventCreatingDialog(title?: string, description?: string, location?: string, startDate?: string, endDate?: string, allDay?: boolean)
+}
+
 declare class __SF_UIDocumentPickerViewControllerDelegate {
   constructor();
   didPickDocumentsAtURLs(urls: { path: string }[]): void;
@@ -538,7 +552,7 @@ declare class __SF_UIAlertController extends __SF_NSOBject {
   static createAlertController(style: number): __SF_UIAlertController;
   static present(view: __SF_UIAlertControllerView): any;
   static dismissAlert(view: __SF_UIAlertControllerView, delegate: any /* TODO: Add delegate type */): any;
-  static addTextFieldArea(view: __SF_UIAlertControllerView, text: string, hint: string, isPassword: boolean): any;
+  static addTextFieldArea(view: __SF_UIAlertControllerView, text: string, hint: string, isPassword: boolean, keyboardType?: number): any;
   title: string;
   addAction(action: __SF_UIAlertAction): void;
 }
@@ -669,9 +683,9 @@ declare class __SF_UIGesture {
   handle: (e: any) => void;
 }
 
-declare class __SF_UITapGestureRecognizer extends __SF_UIGesture {}
+declare class __SF_UITapGestureRecognizer extends __SF_UIGesture { }
 
-declare class __SF_UILongPressGestureRecognizer extends __SF_UIGesture {}
+declare class __SF_UILongPressGestureRecognizer extends __SF_UIGesture { }
 
 declare class __SF_Cluster {
   static createCluster(): __SF_Cluster;
@@ -710,7 +724,7 @@ declare class __SF_MDCMultilineTextField extends __SF_UITextField {
   textView: __SF_UITextField;
 }
 
-declare class __SF_MDCTextField extends __SF_UITextField {}
+declare class __SF_MDCTextField extends __SF_UITextField { }
 
 declare class __SF_MDCTextInputControllerUnderline {
   constructor(nativeObject: any);
@@ -746,7 +760,7 @@ declare class __SF_UINavigationBarAppearance {
   titleTextAttributes: { NSColor: __SF_UIColor; NSFont: __SF_UIFont };
   backgroundColor: __SF_UIColor;
   barTintColor: __SF_UIColor;
-  backgroundImage: __SF_UIImage;
+  backgroundImage?: __SF_UIImage;
   shadowColor: __SF_UIColor;
 }
 
@@ -801,6 +815,8 @@ declare class __SF_UIViewController extends __SF_NSOBject {
   statusBarHidden: boolean;
   statusBarStyle: any;
   tabBarController: __SF_UITabBarController;
+  static setAppearance(appearance: number)
+  static appearancePreference: number
 }
 
 declare class __SF_UINavigationItem {
@@ -839,7 +855,7 @@ declare class __SF_UITabBarController extends __SF_UINavigationController {
     frame: __SF_NSRect;
   };
 }
-declare class __SF_UITabBarControllerDelegate {}
+declare class __SF_UITabBarControllerDelegate { }
 
 declare interface iOSCurrentDevice {
   UUID: string;
@@ -855,6 +871,7 @@ declare interface iOSCurrentDevice {
 
 declare class __SF_UIDevice {
   static currentDevice(): iOSCurrentDevice;
+  static systemAppearance(): number
   static modelName(): string;
   static currentReachabilityStatus(): number;
   static getIFAddresses(): string[];
@@ -881,7 +898,7 @@ declare class __SF_UIActivityViewController extends __SF_NSOBject {
   static new(): __SF_UIActivityViewController;
 }
 
-declare class __SF_UIActivityViewControllerDelegate {}
+declare class __SF_UIActivityViewControllerDelegate { }
 
 declare class __SF_UIPickerView extends __SF_UIView {
   items: any[];
@@ -981,7 +998,7 @@ declare class __SF_SMFUISearchBar extends __SF_UIView {
   delegate: __SF_UISearchBarDelegate;
 }
 
-declare class __SF_UIControlStateNormal {}
+declare class __SF_UIControlStateNormal { }
 
 declare class __SF_UISearchBarDelegate {
   cancelButtonClicked: (e: any) => void;
@@ -1044,7 +1061,7 @@ declare class __SF_UIPageViewControllerDelegate {
   didFinishAnimating(e: any): void;
 }
 
-declare class __SF_UIControl extends __SF_UIView {}
+declare class __SF_UIControl extends __SF_UIView { }
 
 declare class __SF_UISwitch extends __SF_UIControl {
   setEnabled: boolean;
@@ -1155,6 +1172,19 @@ declare class __SF_AVAudioSession extends __SF_NSOBject {
   setActiveWithOptions(active: boolean, option: number, callback: (e) => void): void;
 }
 
+declare class __SF_Permission extends __SF_NSOBject {
+  static authorizationStatusForVideo(): number
+  static requestAuthorizationForCamera(callback: (response: boolean) => void)
+  static requestAuthorizationPhotoLibrary(callback: (response: number) => void)
+  static authorizationStatusPhotoLibrary(): number
+  static requestAuthorizationPhotoLibraryFor(accessLevel: number, callback: (response: number) => void)
+  static authorizationStatusPhotoLibraryFor(accessLevel: number): number
+  static authorizationStatusForLocation(): number
+  static authorizationStatusForRecord(): number
+  static authorizationStatusForCalenderEvent(): number
+  static requestAuthorizationForCalenderEvent(callBack: (response: boolean) => void)
+}
+
 declare class __SF_CLLocationManager {
   static locationServicesEnabled(): boolean;
   delegate?: __SF_CLLocationManagerDelegate;
@@ -1162,6 +1192,7 @@ declare class __SF_CLLocationManager {
   stopUpdatingLocation(): void;
   lastKnownLocation(): any;
   requestWhenInUseAuthorization(): void;
+  static getAuthorizationPhotoLibrary(): number
 }
 
 declare class __SF_CLLocationManagerDelegate {
@@ -1288,6 +1319,9 @@ declare class __SF_XMLHttpRequest {
   dataToJSON(data: any);
   getHeaderField(response: any, headerField: string): string;
   getAllHeaderFields(response: any): [String: String];
+  serverTrustPolicies?: __SF_SMFServerTrustPolicy[]
+  static disableCertificateVerification: boolean
+  disableCertificateVerification: boolean
 }
 
 declare class __SF_URLSessionTask {
@@ -1326,7 +1360,7 @@ declare class __SF_AVPlayerItem {
   static createFromURL(url: __SF_NSURL): __SF_AVPlayerItem;
 }
 
-declare class __SF_NodePlayer {}
+declare class __SF_NodePlayer { }
 
 declare class __SF_NSError extends __SF_NSOBject {
   code: number;
@@ -1396,11 +1430,11 @@ declare class __SF_UIUserNotificationSettings {
   static settingsForTypesCategories(type: number, param?: any): __SF_UIUserNotificationSettings;
 }
 
-declare class __SF_UIUserNotificationTypeSound {}
+declare class __SF_UIUserNotificationTypeSound { }
 
-declare class __SF_UIUserNotificationTypeBadge {}
+declare class __SF_UIUserNotificationTypeBadge { }
 
-declare class __SF_UIUserNotificationTypeAlert {}
+declare class __SF_UIUserNotificationTypeAlert { }
 
 declare class __SF_SearchBarContainerView {
   static createWithSearchBar(nativeObject: any): any;
@@ -1418,9 +1452,9 @@ declare class __SF_KeychainPasswordItem {
   savePasswordWithBlock(value: any, callback: (e: any) => void): void;
 }
 
-declare class __SF_UIApplicationWillResignActiveNotification {}
+declare class __SF_UIApplicationWillResignActiveNotification { }
 
-declare class __SF_UIDeviceOrientationDidChangeNotification {}
+declare class __SF_UIDeviceOrientationDidChangeNotification { }
 
 declare const __SF_UIScrollViewDecelerationRateNormal: number;
 declare const __SF_UIScrollViewDecelerationRateFast: number;

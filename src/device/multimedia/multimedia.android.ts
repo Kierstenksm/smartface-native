@@ -1,13 +1,13 @@
 import { ConvertToMp4Params, LaunchCropperParams, MultimediaBase, MultimediaParams, PickMultipleFromGalleryParams, RecordVideoParams } from './multimedia';
 import FileAndroid from '../../io/file/file.android';
 import ImageAndroid from '../../ui/image/image.android';
-import Page from '../../ui/page';
 
 import AndroidConfig from '../../util/Android/androidconfig';
 import * as RequestCodes from '../../util/Android/requestcodes';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
 import TypeUtil from '../../util/type';
 import { IPage } from '../../ui/page/page';
+import PageAndroid from '../../ui/page/page.android';
 
 /* global requireClass */
 const NativeMediaStore = requireClass('android.provider.MediaStore');
@@ -15,6 +15,7 @@ const NativeIntent = requireClass('android.content.Intent');
 const NativeUCrop = requireClass('com.yalantis.ucrop.UCrop');
 const NativeSFUCropOptions = requireClass('io.smartface.android.sfcore.device.multimedia.crop.SFUCropOptions');
 const NativeSFMultimedia = requireClass('io.smartface.android.sfcore.device.multimedia.SFMultimedia');
+const NativeActivityResultContracts = requireClass('androidx.activity.result.contract.ActivityResultContracts');
 
 const Type = {
   IMAGE: NativeSFMultimedia.TYPE_IMAGE,
@@ -79,7 +80,6 @@ class MultimediaAndroid implements MultimediaBase {
   VideoQuality = VideoQuality;
   CAMERA_REQUEST = RequestCodes.Multimedia.CAMERA_REQUEST;
   PICK_FROM_GALLERY = RequestCodes.Multimedia.PICK_FROM_GALLERY;
-  PICK_MULTIPLE_FROM_GALLERY = RequestCodes.Multimedia.PICK_MULTIPLE_FROM_GALLERY;
   CropImage = RequestCodes.Multimedia.CropImage;
   private _captureParams: { page?: IPage } = {};
   private _pickParams = {};
@@ -99,7 +99,7 @@ class MultimediaAndroid implements MultimediaBase {
   }
   //Deprecated since 4.3.0
   startCamera(params: MultimediaParams) {
-    if (!(params.page instanceof Page)) throw new TypeError('Page parameter required');
+    if (!(params.page instanceof PageAndroid)) throw new TypeError('Page parameter required');
 
     if (params.action !== undefined) {
       this._action = params.action;
@@ -116,7 +116,7 @@ class MultimediaAndroid implements MultimediaBase {
     } else this.startRecordVideoWithExtraField({ _captureParams: this._captureParams });
   }
   recordVideo(params: RecordVideoParams) {
-    if (!(params.page instanceof Page)) throw new TypeError('Page parameter required');
+    if (!(params.page instanceof PageAndroid)) throw new TypeError('Page parameter required');
 
     this._pickParams = {};
     this._captureParams = params;
@@ -124,7 +124,7 @@ class MultimediaAndroid implements MultimediaBase {
     this.startRecordVideoWithExtraField({ _captureParams: this._captureParams });
   }
   capturePhoto(params: MultimediaParams) {
-    if (!(params.page instanceof Page)) throw new TypeError('Page parameter required');
+    if (!(params.page instanceof PageAndroid)) throw new TypeError('Page parameter required');
 
     this._pickParams = {};
     this._captureParams = params;
@@ -136,20 +136,30 @@ class MultimediaAndroid implements MultimediaBase {
     page.nativeObject.startActivityForResult(takePictureIntent, this.CAMERA_REQUEST);
   }
   pickFromGallery(params: MultimediaParams) {
-    if (!(params.page instanceof Page)) {
+    if (!(params.page instanceof PageAndroid)) {
       throw new TypeError('Page parameter required');
     }
     this._captureParams = {};
     this._pickParams = params;
-    const intent = new NativeIntent();
-    let type = Type.IMAGE;
-    if (params.type !== undefined) type = params.type;
-    intent.setType(_types[type]);
-    intent.setAction(NativeIntent.ACTION_PICK);
-    /** @todo
-     * An error occured
-     */
-    params.page.nativeObject.startActivityForResult(intent, this.PICK_FROM_GALLERY);
+    if (NativeActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable()) {
+      const visualMediaType = params.type === Type.IMAGE ?
+        NativeActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE :
+        NativeActivityResultContracts.PickVisualMedia.VideoOnly.INSTANCE;
+      params.page.nativeObject.launchPhotoPickerForSingleSelection(visualMediaType);
+      (params.page as PageAndroid).onPickVisualMedia = (uri) => {
+        this.pickFromGalleryHelper(params, uri);
+      };
+    } else {
+      const intent = new NativeIntent();
+      let type = Type.IMAGE;
+      if (params.type !== undefined) type = params.type;
+      intent.setType(_types[type]);
+      intent.setAction(NativeIntent.ACTION_PICK);
+      /** @todo
+       * An error occured
+       */
+      params.page.nativeObject.startActivityForResult(intent, this.PICK_FROM_GALLERY);
+    }
   }
   convertToMp4(params: ConvertToMp4Params) {
     const { videoFile, outputFileName, onCompleted, onFailure } = params;
@@ -201,30 +211,28 @@ class MultimediaAndroid implements MultimediaBase {
     this.startCropActivityHelper(startCropActivityParams);
   }
   pickMultipleFromGallery(params: PickMultipleFromGalleryParams) {
-    if (!(params.page instanceof Page)) {
+    if (!(params.page instanceof PageAndroid)) {
       throw new TypeError('Page parameter required');
     }
     this._captureParams = {};
     this._pickParams = params;
-    const intent = new NativeIntent();
-    const type = params.type !== undefined ? params.type : Type.IMAGE;
-    intent.setType(_types[type]);
-    intent.setAction(NativeIntent.ACTION_GET_CONTENT);
-    intent.putExtra(NativeIntent.EXTRA_ALLOW_MULTIPLE, true);
-
-    params.page.nativeObject.startActivityForResult(NativeIntent.createChooser(intent, null), this.PICK_MULTIPLE_FROM_GALLERY);
+    const visualMediaType = params.type === Type.IMAGE ?
+      NativeActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE :
+      NativeActivityResultContracts.PickVisualMedia.VideoOnly.INSTANCE;
+    params.page.nativeObject.launchPhotoPickerForMultipleSelection(visualMediaType);
+    (params.page as PageAndroid).onPickMultipleVisualMedia = (uris) => {
+      this.pickMultipleFromGalleryHelper(params, toJSArray(uris));
+    };
   }
   onActivityResult(requestCode: number, resultCode: number, data: any) {
     if (requestCode === this.CAMERA_REQUEST) {
       this.getCameraDataHelper(this._captureParams, resultCode, data);
     } else if (requestCode === this.PICK_FROM_GALLERY) {
-      this.pickFromGalleryHelper(this._pickParams, resultCode, data);
+      this.pickFromGalleryActivityResultHelper(this._pickParams, resultCode, data);
     } else if (requestCode === this.CropImage.CROP_CAMERA_DATA_REQUEST_CODE) {
       this.cropCameraDataHelper(this._captureParams, resultCode, data);
     } else if (requestCode === this.CropImage.CROP_GALLERY_DATA_REQUEST_CODE) {
       this.cropGalleryDataHelper(this._pickParams, resultCode, data);
-    } else if (requestCode === this.PICK_MULTIPLE_FROM_GALLERY) {
-      this.pickMultipleFromGalleryHelper(this._pickParams, resultCode, data);
     }
   }
   startRecordVideoWithExtraField(params: { _captureParams }) {
@@ -324,76 +332,34 @@ class MultimediaAndroid implements MultimediaBase {
       });
     else NativeSFMultimedia.startCropActivity(asset, activity, page.nativeObject, uCropOptions, requestCode);
   }
-  pickMultipleFromGalleryHelper(_pickParams, resultCode, data) {
-    const { onFailure, onSuccess, onCancel, type = this.Type.IMAGE, android: { fixOrientation: fixOrientation = false, maxImageSize: maxImageSize = -1 } = {}, page } = _pickParams;
-
+  pickFromGalleryActivityResultHelper(_pickParams, resultCode, data) {
+    const {
+      onFailure,
+      onSuccess,
+      onCancel
+    } = _pickParams;
     if (resultCode === MULTIMEDIA_ACTIVITY_RESULT_OK) {
       try {
-        const uris: any[] = [];
-        const clipData = data.getClipData();
-        if (!clipData) {
-          uris.push(data.getData());
-        } else {
-          const count = clipData.getItemCount();
-          for (let i = 0; i < count; i++) {
-            uris.push(clipData.getItemAt(i).getUri());
-          }
-        }
-
-        if (onSuccess) {
-          NativeSFMultimedia.getMultimediaAssetsFromUrisAsync(activity, array(uris, 'android.net.Uri'), type, maxImageSize, fixOrientation, {
-            onCompleted: (mAssets) => {
-              const assets = toJSArray(mAssets).map((asset) => {
-                if (type === this.Type.IMAGE) {
-                  return {
-                    image: new ImageAndroid({
-                      bitmap: asset.bitmap
-                    }),
-                    file: new FileAndroid({
-                      path: asset.realPath
-                    })
-                  };
-                } else {
-                  return {
-                    file: new FileAndroid({
-                      path: asset.realPath
-                    })
-                  };
-                }
-              });
-
-              onSuccess({
-                assets
-              });
-            },
-            onFailure: (errors) => {
-              const errorObject = toJSArray(errors).map((error) => {
-                return {
-                  message: error.message,
-                  fileName: error.fileName,
-                  uri: error.uri
-                };
-              });
-              onFailure?.(errorObject);
-            }
-          });
-        }
+        const uri = data.getData();
+        this.pickFromGalleryHelper(_pickParams, uri);
       } catch (err) {
-        onFailure?.({
-          message: err
-        });
+        onFailure &&
+          onFailure({
+            message: err
+          });
         return;
       }
     } else {
       onCancel && onCancel();
     }
   }
-  pickFromGalleryHelper(_pickParams, resultCode, data) {
+
+  pickFromGalleryHelper(_pickParams: MultimediaParams, uri: any) {
     const {
       onFailure,
       onSuccess,
       onCancel,
-      type,
+      type = this.Type.IMAGE,
       allowsEditing,
       page,
       aspectRatio = {},
@@ -410,63 +376,115 @@ class MultimediaAndroid implements MultimediaBase {
         maxImageSize: maxImageSize = -1
       } = {}
     } = _pickParams;
-    if (resultCode === MULTIMEDIA_ACTIVITY_RESULT_OK) {
-      try {
-        const uri = data.getData();
-        const realPath = getRealPathFromURI(uri);
-
-        if (onSuccess) {
-          if (type === this.Type.IMAGE) {
-            if (!allowsEditing) {
-              NativeSFMultimedia.getBitmapFromUriAsync(activity, uri, maxImageSize, fixOrientation, {
-                onCompleted: (bitmap) => {
-                  const image = new ImageAndroid({
-                    bitmap
-                  });
-                  onSuccess({
-                    image
-                  });
-                },
-                onFailure: (err) => {
-                  onFailure &&
-                    onFailure({
-                      message: err
-                    });
-                }
-              });
-            } else {
-              this.startCropActivityHelper({
-                requestCode: this.CropImage.CROP_GALLERY_DATA_REQUEST_CODE,
-                asset: uri,
-                page,
-                cropShape,
-                aspectRatio,
-                rotateText,
-                scaleText,
-                cropText,
-                headerBarTitle,
-                maxResultSize,
-                hideBottomControls,
-                enableFreeStyleCrop
-              });
-            }
-          } else {
-            onSuccess({
-              video: new FileAndroid({
-                path: realPath
-              })
-            });
-          }
-        }
-      } catch (err) {
-        onFailure &&
-          onFailure({
-            message: err
-          });
+    try {
+      if (uri === undefined) {
+        onCancel?.();
         return;
       }
-    } else {
-      onCancel && onCancel();
+
+      const realPath = NativeSFMultimedia.getUriAsset(activity, uri).realPath;
+
+      if (onSuccess) {
+        if (type === this.Type.IMAGE) {
+          if (!allowsEditing) {
+            NativeSFMultimedia.getBitmapFromUriAsync(activity, uri, maxImageSize, fixOrientation, {
+              onCompleted: (bitmap) => {
+                const image = new ImageAndroid({
+                  bitmap
+                });
+                onSuccess({
+                  image
+                });
+              },
+              onFailure: (err) => {
+                onFailure &&
+                  onFailure({
+                    message: err
+                  });
+              }
+            });
+          } else {
+            this.startCropActivityHelper({
+              requestCode: this.CropImage.CROP_GALLERY_DATA_REQUEST_CODE,
+              asset: uri,
+              page,
+              cropShape,
+              aspectRatio,
+              rotateText,
+              scaleText,
+              cropText,
+              headerBarTitle,
+              maxResultSize,
+              hideBottomControls,
+              enableFreeStyleCrop
+            });
+          }
+        } else {
+          onSuccess({
+            video: new FileAndroid({
+              path: realPath
+            })
+          });
+        }
+      }
+    } catch (err) {
+      onFailure &&
+        onFailure({
+          message: err
+        });
+      return;
+    }
+  }
+
+  pickMultipleFromGalleryHelper(_pickParams, uris) {
+    const { onFailure, onSuccess, onCancel, type = this.Type.IMAGE, android: { fixOrientation: fixOrientation = false, maxImageSize: maxImageSize = -1 } = {}, page } = _pickParams;
+    try {
+      if (uris.length === 0) {
+        onCancel?.();
+        return;
+      }
+      if (onSuccess) {
+        NativeSFMultimedia.getMultimediaAssetsFromUrisAsync(activity, array(uris, 'android.net.Uri'), type, maxImageSize, fixOrientation, {
+          onCompleted: (mAssets) => {
+            const assets = toJSArray(mAssets).map((asset) => {
+              if (type === this.Type.IMAGE) {
+                return {
+                  image: new ImageAndroid({
+                    bitmap: asset.bitmap
+                  }),
+                  file: new FileAndroid({
+                    path: asset.realPath
+                  })
+                };
+              } else {
+                return {
+                  file: new FileAndroid({
+                    path: asset.realPath
+                  })
+                };
+              }
+            });
+            onSuccess({
+              assets
+            });
+          },
+          onFailure: (errors) => {
+            const errorObject = toJSArray(errors).map((error) => {
+              return {
+                message: error.message,
+                fileName: error.fileName,
+                uri: error.uri
+              };
+            });
+            onFailure?.(errorObject);
+          }
+        });
+      }
+    } catch (err) {
+      onFailure?.({
+        message: err
+      });
+      return;
     }
   }
   getCameraDataHelper(_captureParams, resultCode, data) {

@@ -1,6 +1,6 @@
-import { IEventEmitter } from '../../core/eventemitter';
-import { INativeComponent } from '../../core/inative-component';
+import { EventListenerCallback, IEventEmitter } from '../../core/eventemitter';
 import { XHREvents } from './xhr-events';
+
 
 export enum XMLHttpRequestResponseType {
   empty = '',
@@ -95,7 +95,7 @@ export interface IXHRMethods {
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
  */
-export interface IXHR extends IEventEmitter<XHREvents>, INativeComponent, IXHRMethods, XMLHttpRequestEventTarget {
+export interface IXHR extends IEventEmitter<XHREvents>, IXHRMethods, XMLHttpRequestEventTarget {
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
    */
@@ -132,6 +132,55 @@ export interface IXHR extends IEventEmitter<XHREvents>, INativeComponent, IXHRMe
    * @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/timeout
    */
   timeout: number;
+}
+
+export declare class AbstractXHR implements IXHR {
+  readyState: number;
+  response: string | object | null;
+  responseText: string;
+  responseURL?: string | undefined;
+  status: number;
+  statusText: string;
+  responseType: XMLHttpRequestResponseType;
+  upload: XMLHttpRequestEventTarget;
+  timeout: number;
+  on(eventName: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', callback: EventListenerCallback): () => void;
+  once(eventName: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', callback: EventListenerCallback): () => void;
+  off(eventName: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', callback?: EventListenerCallback | undefined): void;
+  emit(event: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', ...args: any[]): void;
+  prependListener(eventName: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', callback: EventListenerCallback): void;
+  prependOnceListener(eventName: 'abort' | 'error' | 'load' | 'loadend' | 'loadstart' | 'progress' | 'readystatechange' | 'timeout', callback: EventListenerCallback): void;
+  abort(): void;
+  getAllResponseHeaders(): string;
+  getResponseHeader(header: string): string | null;
+  open(method: HTTPRequestMethods, url: string, async?: boolean | undefined, user?: string | undefined, password?: string | undefined): void;
+  send(data?: string | FormData | undefined): void;
+  setRequestHeader(header: string, value: string): void;
+  onabort: (...args: any[]) => void;
+  onerror: (...args: any[]) => void;
+  onload: (...args: any[]) => void;
+  onloadend: (...args: any[]) => void;
+  onloadstart: (...args: any[]) => void;
+  onprogress: (...args: any[]) => void;
+  onreadystatechange: (...args: any[]) => void;
+  ontimeout: (...args: any[]) => void;
+  addEventListener(eventName: string, handler: (...args: any[]) => void): void;
+  removeEventListener(eventName: string, toDetach: (...args: any[]) => void): void;
+  /**
+   * Disable certificate verification across all components that use HTTP.
+   * It can be used to bypass self-signed certificate.
+   * This property must be assigned when the application is started and cannot be changed dynamically.
+   *
+   * @property {Boolean} [disableCertificateVerification = false]  
+   * @android
+   * @ios
+   * @static
+   * @since 5.1.1
+   */
+  static disableCertificateVerification?: boolean;
+  static ios: {
+    sslPinning?: { host: string; certificates: string[]; validateCertificateChain?: boolean; validateHost?: boolean }[];
+  };
 }
 
 export const statuses = {

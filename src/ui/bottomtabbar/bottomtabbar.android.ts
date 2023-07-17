@@ -5,6 +5,7 @@ import AndroidUnitConverter from '../../util/Android/unitconverter';
 import { NativeMobileComponent } from '../../core/native-mobile-component';
 import { ITabbarItem } from '../tabbaritem/tabbaritem';
 import { IColor } from '../color/color';
+import TabbarItemAndroid from '../tabbaritem/tabbaritem.android';
 
 const NativeBottomNavigationView = requireClass('com.google.android.material.bottomnavigation.BottomNavigationView');
 const NativeContextThemeWrapper = requireClass('android.view.ContextThemeWrapper');
@@ -88,6 +89,12 @@ export default class BottomTabBarAndroid extends NativeMobileComponent<any, IBot
       this.nativeObject.setBackgroundColor(color.nativeObject);
     }
   }
+  get iconSize() {
+    return AndroidUnitConverter.pixelToDp(this.nativeObject.getItemIconSize());
+  }
+  set iconSize(size: number) {
+    this.nativeObject.setItemIconSize(AndroidUnitConverter.dpToPixel(size));
+  }
   toString() {
     return 'Tab';
   }
@@ -95,12 +102,13 @@ export default class BottomTabBarAndroid extends NativeMobileComponent<any, IBot
     const btbMenu = this.nativeObject.getMenu();
     btbMenu.clear();
     tabBarItems.forEach((tabbarItem, index) => {
+      const tabbarItemAndroid = tabbarItem as TabbarItemAndroid;
       tabbarItem.tabBarItemParent = this;
       let title: string;
-      if (tabbarItem.android.attributedTitleBuilder !== undefined) {
-        title = tabbarItem.android.attributedTitleBuilder;
+      if (tabbarItemAndroid._attributedTitleBuilder !== undefined) {
+        title = tabbarItemAndroid._attributedTitleBuilder;
       } else {
-        title = tabbarItem.title || `Title ${index}`;
+        title = tabbarItem.title;
       }
 
       tabbarItem.nativeObject = btbMenu.add(0, index, 0, title);

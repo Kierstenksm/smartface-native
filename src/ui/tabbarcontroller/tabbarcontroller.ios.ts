@@ -1,5 +1,4 @@
 import { BarTextTransform, ITabBarController } from './tabbarcontroller';
-import OverScrollMode from '../shared/android/overscrollmode';
 import Color from '../color';
 import PageIOS from '../page/page.ios';
 import { ITabbarItem } from '../tabbaritem/tabbaritem';
@@ -99,7 +98,6 @@ export default class TabBarControllerIOS<TEvent extends string = TabBarControlle
     }
   }
 
-  overScrollMode: OverScrollMode;
 
   get barColor(): Color {
     return new Color({

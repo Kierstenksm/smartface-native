@@ -315,11 +315,18 @@ export default class MaterialTextBoxIOS<TEvent extends string = TextBoxEvents> e
     this._lineCount = value;
   }
 
-  get isPassword(): boolean {
-    return this.nativeObject.isSecureTextEntry;
+  get isPassword(): boolean {    
+    return this.nativeObject.getSecureTextEntry();
   }
   set isPassword(value: boolean) {
     this.nativeObject.secureTextEntry = value;
+  }
+
+  get maxLength(): number {
+    return this.nativeObject.maxCharacterLength;
+  }
+  set maxLength(value: number) {
+     this.nativeObject.maxCharacterLength = value;
   }
 
   get characterRestriction(): number | undefined {

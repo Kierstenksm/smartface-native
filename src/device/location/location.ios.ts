@@ -19,18 +19,36 @@ class LocationIOS extends NativeEventEmitterComponent<LocationEvents, any, ILoca
   }
   getCurrentLocation(): ReturnType<ILocation['getCurrentLocation']> {
     return new Promise((resolve, reject) => {
-      PermissionIOS.ios
-        .requestAuthorization?.(Permissions.IOS.LOCATION)
-        .then(() => {
-          this.start();
-          this.once('locationChanged', (location) => {
-            this.stop();
+      const locationStatus = PermissionIOS.ios?.getAuthorizationStatus?.(Permissions.location);
+      if (locationStatus === PermissionIOSAuthorizationStatus.NOT_DETERMINED) {
+        this.start();
+        this.once('locationChanged', (location) => {
+          this.stop();
+
+          /*
+            * If there isn't found a location object, users may deny the location request. 
+            * So handling denied situation by checking location.
+          */
+          if (!location) {
+            reject({ type: 'precise', result: PermissionResult.DENIED });
+          } else {
             resolve({ ...location, type: 'precise', result: PermissionResult.GRANTED }); // For iOS, location type doesn't matter at all.
-          });
-        })
-        .catch(() => {
-          reject({ type: 'precise', result: PermissionResult.DENIED });
+          }
+
         });
+      } else {
+        PermissionIOS.requestPermission('LOCATION')
+          .then(() => {
+            this.start();
+            this.once('locationChanged', (location) => {
+              this.stop();
+              resolve({ ...location, type: 'precise', result: PermissionResult.GRANTED }); // For iOS, location type doesn't matter at all.
+            });
+          })
+          .catch(() => {
+            reject({ type: 'precise', result: PermissionResult.DENIED });
+          });
+      }
     });
   }
   preConstruct() {
@@ -47,31 +65,16 @@ class LocationIOS extends NativeEventEmitterComponent<LocationEvents, any, ILoca
       native: { authorizationStatus: IOS_NATIVE_AUTHORIZATION_STATUS },
       locationServicesEnabled: () => {
         return __SF_CLLocationManager.locationServicesEnabled();
-      },
-      getAuthorizationStatus: () => {
-        const authorizationStatus = Invocation.invokeClassMethod('CLLocationManager', 'authorizationStatus', [], 'int') as unknown as number;
-        let status;
-        switch (authorizationStatus) {
-          case this.ios.native.authorizationStatus.AuthorizedAlways:
-          case this.ios.native.authorizationStatus.AuthorizedWhenInUse:
-            status = this.ios.authorizationStatus.Authorized;
-            break;
-          case this.ios.native.authorizationStatus.NotDetermined:
-            status = this.ios.authorizationStatus.NotDetermined;
-            break;
-          case this.ios.native.authorizationStatus.Restricted:
-            status = this.ios.authorizationStatus.Restricted;
-            break;
-          case this.ios.native.authorizationStatus.Denied:
-            status = this.ios.authorizationStatus.Denied;
-            break;
-          default:
-            break;
-        }
-        return status;
       }
     };
   }
+
+  getAuthorizationStatus = (): PermissionIOSAuthorizationStatus => {
+    const authorizationStatus = Invocation.invokeClassMethod('CLLocationManager', 'authorizationStatus', [], 'int') as unknown as number;
+
+    return authorizationStatus;
+  }
+
   start() {
     this.stop();
 
@@ -84,8 +87,20 @@ class LocationIOS extends NativeEventEmitterComponent<LocationEvents, any, ILoca
         this.emit('locationChanged', e);
       };
       this.delegate.didChangeAuthorizationStatus = () => {
-        const authStatus = this.ios.getAuthorizationStatus();
+        const authStatus = this.getAuthorizationStatus();
+
+        /* 
+          * Notify locationChanged event if user deny the location permission
+          * Because getCurrentLocation() returns promise.
+          * So, basically reject the promise due to denied permission
+        */
+        if (authStatus === PermissionIOSAuthorizationStatus.DENIED) {
+          this.onLocationChanged?.();
+          this.emit('locationChanged');
+        }
+
         if (typeof this.ios.onChangeAuthorizationStatus === 'function' && this._authorizationStatus !== authStatus) {
+
           this._authorizationStatus = authStatus;
           this.ios.onChangeAuthorizationStatus(authStatus === this.ios.authorizationStatus.Authorized);
         }

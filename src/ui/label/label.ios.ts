@@ -39,7 +39,7 @@ export default class LabelIOS<TEvent extends string = ViewEvents, TNative = any,
   }
   set minimumFontSize(value: ILabel['minimumFontSize']) {
     this._minimumFontSize = value;
-    this.nativeObject.minimumScaleFactor = this._minimumFontSize / this.font.size;
+    this.nativeObject.minimumScaleFactor = this._minimumFontSize / (this.font as any).size;
   }
   get ellipsizeMode() {
     return NSLineBreakMode.nsLineBreakModeToEllipsizeMode(this.nativeObject.lineBreakMode);
@@ -51,14 +51,7 @@ export default class LabelIOS<TEvent extends string = ViewEvents, TNative = any,
     return this.nativeObject.numberOfLines;
   }
   set maxLines(value: ILabel['maxLines']) {
-    this.nativeObject.numberOfLines = value;
-  }
-  get multiline() {
-    return this.nativeObject.numberOfLines === 0 && this.nativeObject.numberOfLines === 0;
-  }
-  set multiline(value: ILabel['multiline']) {
-    this.nativeObject.numberOfLines = value ? 0 : 1;
-    this.nativeObject.lineBreakMode = value ? 0 : 4;
+    this.nativeObject.numberOfLines = Number(value) || value === 0 ? value : 1; 
   }
   get text() {
     return this.nativeObject.text;

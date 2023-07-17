@@ -1,14 +1,19 @@
-import { AbstractSystem, BiometryType, OSType } from './system';
+import { AbstractSystem, BiometryType, ClipboardData, OSType } from './system';
 import Application from '../../application';
 import Invocation from '../../util/iOS/invocation';
+import { Appearance } from '../../application/application';
 
+const mapToAppearance = {
+  1: Appearance.LIGHT,
+  2: Appearance.DARK
+};
 class SystemIOS implements AbstractSystem {
   OSVersion = __SF_UIDevice.currentDevice().systemVersion;
   OS = OSType.IOS;
   OSType = OSType;
   BiometryType = BiometryType;
   android = {
-    isApplicationInstalled() {}
+    isApplicationInstalled() { }
   };
   private _ios = {};
   constructor() {
@@ -19,6 +24,10 @@ class SystemIOS implements AbstractSystem {
       }
     };
     Object.assign(this._ios, ios);
+  }
+
+  get appearance() {
+    return mapToAppearance[__SF_UIDevice.systemAppearance()] ?? Appearance.LIGHT
   }
   get region() {
     const argCountryCode = new Invocation.Argument({
@@ -89,6 +98,14 @@ class SystemIOS implements AbstractSystem {
     } else {
       return false;
     }
+  }
+  getClipboard(): ClipboardData {
+    return {
+      text: __SF_UIPasteboard.generalPasteboard().string,
+    }
+  }
+  setClipboard(clipboardData: ClipboardData) {
+    __SF_UIPasteboard.generalPasteboard().string = clipboardData.text;
   }
 }
 

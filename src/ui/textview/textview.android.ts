@@ -5,6 +5,7 @@ import TextAlignment from '../shared/textalignment';
 import { TextViewEvents } from './textview-events';
 import * as TextViewSizeCalculator from '../../util/Android/textviewsizecalculator';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
+import { IFont } from '../font/font';
 
 const NativeHtml = requireClass('android.text.Html');
 const NativeBuild = requireClass('android.os.Build');
@@ -26,7 +27,7 @@ const TextAlignmentDic = {
 };
 
 const MAX_INT_VALUE = 2147483647;
-const SPAN_EXCLUSIVE_EXCLUSIVE = 33;
+const DEFAULT_MAX_LINES = 0; // 0 indicates that maxLines will be as much as given content
 
 export default class TextViewAndroid<TEvent extends string = TextViewEvents, TProps extends ITextView = ITextView> extends LabelAndroid<TEvent | TextViewEvents, any, TProps> implements ITextView {
   private _attributedStringBuilder: any;
@@ -64,9 +65,10 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     return mMaxLines === MAX_INT_VALUE ? 0 : mMaxLines;
   }
   set maxLines(value: ITextView['maxLines']) {
-    this.dirty();
+    if(this.yogaNode) {
+      this.dirty();
+    }
     this.nativeObject.setMaxLines(value === 0 ? MAX_INT_VALUE : value);
-    // This one is added to match same behavior of multiline.
     this.scrollEnabled = this._scrollEnabled;
   }
   get selectable(): boolean {
@@ -97,7 +99,6 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     this.lineSpacing = this._lineSpacing;
     this.dirty();
     this.nativeObject.setText(this._attributedStringBuilder);
-    this.multiline = this.multiline;
     this.scrollEnabled = this._scrollEnabled;
     this.nativeObject.setHighlightColor(0); //TRANSPARENT COLOR
   }
@@ -123,7 +124,8 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
     this._letterSpacing = value;
     if (NativeBuild.VERSION.SDK_INT >= 21) {
       this.dirty();
-      this.nativeObject.setLetterSpacing(value);
+      // Convert dp to em to achieve the same result as on iOS
+      this.nativeObject.setLetterSpacing(value / AndroidUnitConverter.pixelToDp(this.nativeObject.getTextSize()));
     }
   }
   get lineSpacing(): ITextView['lineSpacing'] {
@@ -131,17 +133,8 @@ export default class TextViewAndroid<TEvent extends string = TextViewEvents, TPr
   }
   set lineSpacing(value: ITextView['lineSpacing']) {
     this._lineSpacing = value;
-    if (!this._attributedStringBuilder) {
-      return;
-    }
-    const lineSpan = NativeLineHeightSpan.implement({
-      chooseHeight: (text, start, end, spanstartv, v, fm) => {
-        fm.ascent -= AndroidUnitConverter.dpToPixel(this._lineSpacing);
-        fm.descent += AndroidUnitConverter.dpToPixel(this._lineSpacing);
-      }
-    });
     this.dirty();
-    this._attributedStringBuilder.setSpan(lineSpan, 0, this._attributedStringBuilder.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+    this.nativeObject.setLineSpacing(AndroidUnitConverter.dpToPixel(this._lineSpacing), 1);
   }
   get textAlignment(): ITextView['textAlignment'] {
     return this._textAlignment;
@@ -183,5 +176,21 @@ To prevent, we need to customize BaseMovementMethod
       this.scrollableMovementMethodCreated = false;
       this.nativeObject.setMovementMethod(null);
     }
+  }
+
+  protected override updateText(value: string) {
+    super.updateText(value);
+    this.scrollEnabled = this._scrollEnabled;
+  }
+
+  protected override updateFont(value: IFont | null) {
+    if (this._attributedStringArray?.length) {
+      return;
+    }
+    super.updateFont(value);
+  }
+
+  protected override getDefaultMaxLine() {
+    return DEFAULT_MAX_LINES;
   }
 }

@@ -5,13 +5,15 @@ import AndroidUnitConverter from '../../util/Android/unitconverter';
 import LayoutParams from '../../util/Android/layoutparams';
 import TextBoxAndroid from '../textbox/textbox.android';
 import { ITextBox } from '../textbox/textbox';
+import KeyboardType from '../shared/keyboardtype';
+import AndroidNativeTheme from '../../util/Android/nativeTheme';
 
 const NativeAlertDialog = requireClass('io.smartface.android.sfcore.ui.alertview.SFAlertView');
 const NativeDialogInterface = requireClass('android.content.DialogInterface');
 
 export default class AlertViewAndroid extends NativeMobileComponent<any, IAlertView> implements IAlertView {
   protected createNativeObject() {
-    return new NativeAlertDialog(AndroidConfig.activity);
+    return new NativeAlertDialog(AndroidConfig.activity, AndroidNativeTheme.getAlertViewNativeThemeID());
   }
   private __didSetOnDismissListener: boolean;
   private __buttonCallbacks: { [key: number]: () => void };
@@ -90,14 +92,15 @@ export default class AlertViewAndroid extends NativeMobileComponent<any, IAlertV
     );
   }
   addTextBox(params: Partial<Parameters<IAlertView['addTextBox']>['0']>): void {
-    const { hint = '', text = '', isPassword = false, android: { viewSpacings: viewSpacings = {}, height, width } = {} } = params;
+    const { hint = '', text = '', isPassword = false, keyboardType = KeyboardType.DEFAULT, android: { viewSpacings: viewSpacings = {}, height, width } = {} } = params;
     const mTextBox = new TextBoxAndroid({
       hint,
-      text
+      text,
+      keyboardType
     });
     if (isPassword) {
       mTextBox.isPassword = isPassword;
-      mTextBox.android.cursorPosition = {
+      mTextBox.cursorPosition = {
         start: text.length,
         end: text.length
       };

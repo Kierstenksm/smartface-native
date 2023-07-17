@@ -1,7 +1,7 @@
 import { Point2D } from '../../primitive/point2d';
 import { Rectangle } from '../../primitive/rectangle';
 import { ViewEvents } from './view-events';
-import { IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import OverScrollMode from '../shared/android/overscrollmode';
 import { ScrollViewAlign } from '../scrollview/scrollview';
 import { getRippleMask } from '../../helper/getrippleeffect';
@@ -89,6 +89,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   nativeInner: any;
   uniqueId: string;
   protected _maskedBorders: number[];
+  protected _borderRadiusEdges: BorderRadiusEdges;
   protected _masksToBounds: boolean;
   protected _onTouch: IView['onTouch'];
   protected _onTouchEnded: IView['onTouchEnded'];
@@ -120,7 +121,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
   private _rippleEnabled: boolean;
   private _rippleColor?: IColor;
   private _useForeground: boolean;
-  protected _bitwiseBorders: number = 0;
+  protected _bitwiseBorders: number;
   private _isRTL: boolean;
   yogaNode: any;
   // as { updateRippleEffectIfNeeded: () => void; rippleColor: Color | null; [key: string]: any } & TNative;
@@ -128,11 +129,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return new NativeView(AndroidConfig.activity);
   }
   protected preConstruct(params?: Partial<TProps>): void {
-    if (this.nativeObject?.toString().indexOf('YogaLayout') !== -1) {
-      this.yogaNode = this.nativeObject.getYogaNode();
-    } else {
-      this.yogaNode = NativeYogaNodeFactory.create();
-    }
+    this.createYogaNode();
     this._borderColor = ColorAndroid.BLACK;
     this._borderWidth = 0;
     this._borderRadius = 0;
@@ -156,6 +153,7 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this._scale = { x: 1.0, y: 1.0 };
     this._masksToBounds = true;
     this._maskedBorders = [ViewAndroid.Border.TOP_LEFT, ViewAndroid.Border.TOP_RIGHT, ViewAndroid.Border.BOTTOM_RIGHT, ViewAndroid.Border.BOTTOM_LEFT];
+    this._bitwiseBorders = this._maskedBorders.reduce((acc, cValue) => acc | cValue, 0);
     this._isRTL = AndroidConfig.activity.getResources().getConfiguration().getLayoutDirection() === 1;
     super.preConstruct(params);
 
@@ -163,6 +161,15 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this.nativeObject.setId(NativeView.generateViewId());
     this._sfOnTouchViewManager = new SFOnTouchViewManager();
   }
+
+  protected createYogaNode(): void {
+    if (this.nativeObject?.toString().indexOf('YogaLayout') !== -1) {
+      this.yogaNode = this.nativeObject.getYogaNode();
+    } else {
+      this.yogaNode = NativeYogaNodeFactory.create();
+    }
+  }
+
   constructor(params?: Partial<TProps>) {
     super(params);
   }
@@ -213,6 +220,86 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
       },
       set overScrollMode(mode) {
         self.overScrollMode = mode;
+      },
+      get borderBottomLeftRadius() {
+        return self._borderBottomLeftRadius;
+      },
+      set borderBottomLeftRadius(value) {
+        self._borderBottomLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomStartRadius() {
+        return self._borderBottomStartRadius;
+      },
+      set borderBottomStartRadius(value) {
+        self._borderBottomStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_LEFT : ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomRightRadius() {
+        return self._borderBottomRightRadius;
+      },
+      set borderBottomRightRadius(value) {
+        self._borderBottomRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.BOTTOM_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderBottomEndRadius() {
+        return self._borderBottomEndRadius;
+      },
+      set borderBottomEndRadius(value) {
+        self._borderBottomEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.BOTTOM_RIGHT : ViewAndroid.Border.BOTTOM_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopLeftRadius() {
+        return self._borderTopLeftRadius;
+      },
+      set borderTopLeftRadius(value) {
+        self._borderTopLeftRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopStartRadius() {
+        return self._borderTopStartRadius;
+      },
+      set borderTopStartRadius(value) {
+        self._borderTopStartRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_LEFT : ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopRightRadius() {
+        return self._borderTopRightRadius;
+      },
+      set borderTopRightRadius(value) {
+        self._borderTopRightRadius = value;
+        self._bitwiseBorders |= ViewAndroid.Border.TOP_RIGHT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
+      },
+      get borderTopEndRadius() {
+        return self._borderTopEndRadius;
+      },
+      set borderTopEndRadius(value) {
+        self._borderTopEndRadius = value;
+        self._bitwiseBorders |= !self._isRTL ? ViewAndroid.Border.TOP_RIGHT : ViewAndroid.Border.TOP_LEFT;
+    
+        self._resetBackground();
+        self.android.updateRippleEffectIfNeeded?.();
       }
     };
   }
@@ -421,7 +508,6 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this._borderTopStartRadius = -1;
     this._borderTopRightRadius = value;
     this._borderTopEndRadius = -1;
-    this._bitwiseBorders = ViewAndroid.Border.ALL;
 
     this._resetBackground();
     this.android.updateRippleEffectIfNeeded?.();
@@ -523,12 +609,45 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     this.android.updateRippleEffectIfNeeded?.();
   }
 
+  private adjustBorderEnumForAndroid(borders: number[]): number[] {
+    return borders.map(border => {
+      if (border === Border.BOTTOM_LEFT) {
+        return Border.BOTTOM_RIGHT;
+      }
+      if (border === Border.BOTTOM_RIGHT) {
+        return Border.BOTTOM_LEFT;
+      }
+      return border;
+    });
+  }
+
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    const maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT);
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT);
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT);
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT);
+    }
+    this.maskedBorders = maskedCorners;
+  }
+
   get maskedBorders() {
     return this._maskedBorders;
   }
   set maskedBorders(value) {
-    this._maskedBorders = value;
-    this._bitwiseBorders = value.reduce((acc, cValue) => acc | cValue, 0);
+    this._maskedBorders = this.adjustBorderEnumForAndroid(value);
+    this._bitwiseBorders = this._maskedBorders.reduce((acc, cValue) => acc | cValue, 0);
 
     this._resetBackground();
     this.android.updateRippleEffectIfNeeded?.();
@@ -815,6 +934,9 @@ export default class ViewAndroid<TEvent extends string = ViewEvents, TNative ext
     return PixelToDp(this.yogaNode.getMinHeight().value);
   }
   set minHeight(minHeight) {
+    this.setMinHeight(minHeight);
+  }
+  protected setMinHeight(minHeight) {
     this.yogaNode.setMinHeight(DpToPixel(minHeight));
     this.requestLayout();
   }

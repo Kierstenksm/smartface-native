@@ -10,7 +10,7 @@ const NativeScrollDirection = {
   HORIZONTAL: 1
 };
 
-const ScrollDirectionMapping = {
+export const ScrollDirectionMapping = {
   [ScrollDirection.VERTICAL]: NativeScrollDirection.VERTICAL,
   [ScrollDirection.HORIZONTAL]: NativeScrollDirection.HORIZONTAL
 };
@@ -68,22 +68,6 @@ export default class LayoutManagerIOS extends AbstractLayoutManager<__SF_UIColle
         });
         Invocation.invokeInstanceMethod(this.nativeObject, 'setItemSize:', [argumentSize]);
       }
-    };
-    nativeObject.targetContentOffsetForProposedContentOffsetWithScrollingVelocityCallback = (proposedContentOffset, velocity) => {
-      const proposedContentOffsetWithInset = {
-        x: proposedContentOffset.x + (this.contentInset.left || 0),
-        y: proposedContentOffset.y + (this.contentInset.top || 0)
-      };
-      if (this.ios.targetContentOffset) {
-        const returnValue = this.ios.targetContentOffset(proposedContentOffsetWithInset, velocity);
-        if (isNotEmpty(this.contentInset.left) && isNotEmpty(returnValue.x)) returnValue.x -= this.contentInset.left;
-        if (isNotEmpty(this.contentInset.top) && isNotEmpty(returnValue.y)) returnValue.y -= this.contentInset.top;
-        return {
-          x: returnValue.x || 0,
-          y: returnValue.y || 0
-        };
-      }
-      return proposedContentOffset;
     };
     return nativeObject;
   }
@@ -165,6 +149,10 @@ export default class LayoutManagerIOS extends AbstractLayoutManager<__SF_UIColle
         const calculatedSizes = this.calculateSize(this.collectionView.frame.width, spanCount);
         retval.width = calculatedSizes.cellSize;
         retval.height = this.onItemLength(retval.width);
+        // Include contentInset values to calculation
+        // ContentInset refers to margin based on left, right
+        calculatedSizes.insetSize -= this._contentInset.left ?? 0
+        calculatedSizes.insetSize -= this._contentInset.right ?? 0
         insetSize = calculatedSizes.insetSize / 2;
         this.sectionInset = {
           top: 0,
@@ -178,6 +166,10 @@ export default class LayoutManagerIOS extends AbstractLayoutManager<__SF_UIColle
         const calculatedSizes = this.calculateSize(this.collectionView.frame.height, spanCount);
         retval.height = calculatedSizes.cellSize;
         retval.width = this.onItemLength(retval.height);
+        // Include contentInset values to calculation
+        // ContentInset refers to margin based on top,bottom
+        calculatedSizes.insetSize -= this._contentInset.top ?? 0
+        calculatedSizes.insetSize -= this._contentInset.bottom ?? 0
         insetSize = calculatedSizes.insetSize / 2;
         this.sectionInset = {
           top: insetSize,

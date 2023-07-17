@@ -20,9 +20,12 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
   private _font: ITabbarItem['ios']['font'];
   private _badgeProps: Partial<IBadge>;
   private _badge: IBadge;
+  private _iconSize: number
 
   constructor(params: Partial<ITabbarItem> = {}) {
     super(params);
+
+    this._iconSize = 17
     this.addIOSProps(this.getIOSProps());
   }
   index: number | null;
@@ -59,7 +62,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
       }
     };
   }
-  setProperties(params): void {}
+  setProperties(params): void { }
   get route(): string {
     return this._route;
   }
@@ -76,6 +79,7 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
         value: 'view'
       });
       const view = Invocation.invokeInstanceMethod(this.nativeObject, 'valueForKey:', [key], 'id');
+      if (!view) return
       this._nativeView = new FlexLayoutIOS({
         nativeObject: view
       });
@@ -120,13 +124,26 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
       if (typeof value.selected === 'string') {
         const image = ImageIOS.createFromFile(value.selected);
         if (image) {
-          this.nativeObject.image = image.nativeObject;
+          this.nativeObject.selectedImage = image.nativeObject;
         }
       } else {
         this.nativeObject.image = value.selected?.nativeObject || undefined;
       }
     }
+    this.resizeTabBarIconIfNeeded()
   }
+
+  // Resizing handled internally inside framework-ios based on
+  // the actually size of image and device scale factor (1x, 2x 3x)
+  private resizeTabBarIconIfNeeded() {
+    if (this && this.nativeObject && this.nativeObject.image) {
+      this.nativeObject.image = this.nativeObject.image.resize(this._iconSize, this._iconSize)
+    }
+    if (this && this.nativeObject && this.nativeObject.selectedImage) {
+      this.nativeObject.selectedImage = this.nativeObject.selectedImage.resize(this._iconSize, this._iconSize)
+    }
+  }
+
   get badge(): IBadge {
     // This is done this way because nativeObject is always changing. Always create another badge object.
     // This might reduce performance a bit, but this will stay like this until there's a better solution.
@@ -144,12 +161,19 @@ export default class TabbarItemIOS extends NativeMobileComponent<any, ITabbarIte
     return this.layout.getScreenLocation();
   }
   private setBadgeProps(props: Partial<IBadge>) {
-    this._badgeProps.backgroundColor = props.backgroundColor;
     this._badgeProps.text = props.text;
+    this._badgeProps.backgroundColor = props.backgroundColor;
     this._badgeProps.borderColor = props.borderColor;
     this._badgeProps.borderWidth = props.borderWidth;
     this._badgeProps.font = props.font;
     this._badgeProps.textColor = props.textColor;
     this._badgeProps.visible = props.visible;
+    this._badgeProps.moveX = props.moveX;
+    this._badgeProps.moveY = props.moveY;
+  }
+
+  set iconSize(value: number) {
+    this._iconSize = value
+    this.resizeTabBarIconIfNeeded()
   }
 }

@@ -51,7 +51,7 @@ export default class MapViewIOS<TEvent extends string = MapViewEvents> extends V
     this._zoomLevel = DEFAULT_ZOOM_LEVEL;
     this._cluster = [];
     this._pinArray = {};
-    this._isFirstRender = false;
+    this._isFirstRender = true;
     super.preConstruct(params);
     this.addIOSProps(this.getIOSProps());
     this.addAndroidProps(this.getAndroidProps());
@@ -88,7 +88,7 @@ export default class MapViewIOS<TEvent extends string = MapViewEvents> extends V
     if (pin instanceof Pin) {
       const uuid = pin.nativeObject.uuid;
       delete this._pinArray[uuid];
-      this.nativeObject.removeAnnotation(this.nativeObject);
+      this.nativeObject.removeAnnotation(pin.nativeObject);
     }
   }
   removeAllPins(): void {

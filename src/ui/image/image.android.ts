@@ -1,8 +1,7 @@
 import BlobAndroid from '../../global/blob/blob.android';
-import { IImage, AbstractImage, Format, ImageAndroidProps, ImageIOSProps, ImageParams } from './image';
+import { IImage, AbstractImage, Format, ImageAndroidProps, ImageIOSProps, ImageParams, RenderingMode } from './image';
 import AndroidConfig from '../../util/Android/androidconfig';
 import FileAndroid from '../../io/file/file.android';
-import PathAndroid from '../../io/path/path.android';
 import { MobileOSProps, WithMobileOSProps } from '../../core/native-mobile-component';
 import { PathFileType } from '../../io/path/path';
 
@@ -26,24 +25,45 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
   constructor(params?: Partial<ImageParams>) {
     //Should be ImageParams
     super(params as any);
-    this.addAndroidProps(this.getAndroidProps());
-    this.addIOSProps(this.getIOSProps());
     if (typeof params !== 'object') {
       throw new Error('Constructor parameters needed for Image!');
     }
+
+    if (params.android?.systemIcon) {
+      this.android.systemIcon = params.android?.systemIcon;
+    }
   }
+
+  protected preConstruct(params?: Partial<Record<string, any>>): void {
+    super.preConstruct(params);
+    this.addAndroidProps(this.getAndroidProps());
+    this.addIOSProps(this.getIOSProps());
+  }
+
   protected createNativeObject(): any {
     return null;
   }
+
+  // Some image types, such as system icon, do not support bitmap.
+  // See android.graphics.drawable.NinePatchDrawable
+  protected checkCanGetBitmapAndMaybeThrowError() {
+    if (typeof this.nativeObject.getBitmap !== "function") {
+      throw new Error("This property/method doesn't work with this image!");
+    }
+  }
+
   get height(): number {
+    this.checkCanGetBitmapAndMaybeThrowError();
     return this.nativeObject.getBitmap().getHeight();
   }
 
   get width(): number {
+    this.checkCanGetBitmapAndMaybeThrowError();
     return this.nativeObject.getBitmap().getWidth();
   }
 
   toBlob(): BlobAndroid {
+    this.checkCanGetBitmapAndMaybeThrowError();
     const bitmap = this.nativeObject.getBitmap();
     const stream = new NativeByteArrayOutputStream();
     bitmap.compress(CompressFormat[1], 100, stream);
@@ -53,11 +73,12 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
   }
 
   resize(width: number, height: number, onSuccess?: (e: { image: IImage }) => void, onFailure?: (e?: { message: string }) => void) {
+    this.checkCanGetBitmapAndMaybeThrowError();
     let success = true;
     let newBitmap: any;
     try {
       const originalBitmap = this.nativeObject.getBitmap();
-      newBitmap = NativeBitmap.createScaledBitmap(originalBitmap, width, height, false);
+      newBitmap = NativeBitmap.createScaledBitmap(originalBitmap, Math.round(width), Math.round(height), false);
     } catch (err) {
       success = false;
       if (onFailure)
@@ -81,11 +102,12 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
   }
 
   crop(x: number, y: number, width: number, height: number, onSuccess: (e: { image: IImage }) => void, onFailure: (e?: { message: string }) => void) {
+    this.checkCanGetBitmapAndMaybeThrowError();
     let success = true;
     let newBitmap: any;
     try {
       const originalBitmap = this.nativeObject.getBitmap();
-      newBitmap = NativeBitmap.createBitmap(originalBitmap, x, y, width, height);
+      newBitmap = NativeBitmap.createBitmap(originalBitmap, Math.round(x), Math.round(y), Math.round(width), Math.round(height));
     } catch (err) {
       success = false;
       if (onFailure)
@@ -111,6 +133,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
   }
 
   rotate(angle: number, onSuccess: (e: { image: IImage }) => void, onFailure: (e?: { message: string }) => void) {
+    this.checkCanGetBitmapAndMaybeThrowError();
     let success = true;
     let newBitmap: any;
     try {
@@ -143,12 +166,13 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
   }
 
   compress(format: Format, quality: number, onSuccess: (e: { blob: BlobAndroid }) => void, onFailure: (e?: { message: string }) => void) {
+    this.checkCanGetBitmapAndMaybeThrowError();
     let success = true;
     let byteArray;
     try {
       const out = new NativeByteArrayOutputStream();
       const bitmap = this.nativeObject.getBitmap();
-      bitmap.compress(CompressFormat[format], quality, out);
+      bitmap.compress(CompressFormat[format], Math.round(quality), out);
       byteArray = out.toByteArray();
     } catch (err) {
       success = false;
@@ -201,6 +225,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
     const self = this;
     return {
       round(radius: number) {
+        self.checkCanGetBitmapAndMaybeThrowError();
         if (typeof radius !== 'number') throw new Error('radius value must be a number.');
 
         const roundedBitmapDrawable = ImageAndroid.getRoundedBitmapDrawable(self.nativeObject.getBitmap(), radius);
@@ -212,8 +237,8 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
         return self._systemIcon;
       },
       set systemIcon(systemIcon) {
-        this._systemIcon = systemIcon;
-        self.nativeObject = NativeContextCompat.getDrawable(AndroidConfig.activity, ImageAndroid.systemDrawableId(this._systemIcon));
+        self._systemIcon = systemIcon;
+        self.nativeObject = NativeContextCompat.getDrawable(AndroidConfig.activity, ImageAndroid.systemDrawableId(self._systemIcon));
       }
     };
   }
@@ -230,10 +255,10 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
         return self as ImageAndroid;
       },
       get renderingMode() {
-        return self.nativeObject.valueForKey('renderingMode');
+        return RenderingMode.AUTOMATIC;
       },
       get flipsForRightToLeftLayoutDirection() {
-        return self.nativeObject.valueForKey('flipsForRightToLeftLayoutDirection');
+        return false;
       }
     };
   }
@@ -247,7 +272,7 @@ export default class ImageAndroid<TNative = any, TProps extends MobileOSProps<Im
         bitmap = imageFile.nativeObject;
       } else {
         if (width && height) {
-          bitmap = ImageAndroid.decodeSampledBitmapFromResource(imageFile.fullPath, width, height);
+          bitmap = ImageAndroid.decodeSampledBitmapFromResource(imageFile.fullPath, Math.round(width), Math.round(height));
         } else {
           bitmap = NativeBitmapFactory.decodeFile(imageFile.fullPath);
         }

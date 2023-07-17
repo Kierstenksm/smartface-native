@@ -1,4 +1,12 @@
 namespace TypeUtil {
+  export function isUnitNumeric(param: any) {
+    if (param < 0 || param === 0 || param > 0) {
+      return true
+    }
+
+    return false
+  }
+
   export function isNumeric(param: any) {
     return typeof param === 'number';
   }

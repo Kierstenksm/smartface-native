@@ -9,7 +9,7 @@ import SliderDrawerAndroid from '../ui/sliderdrawer/sliderdrawer.android';
 import StatusBar from './statusbar';
 import NavigationBar from './android/navigationbar';
 import { IBottomTabBar } from '../ui/bottomtabbar//bottomtabbar';
-import { ApplicationAndroidPermissions, IApplication, KeyboardMode } from './application';
+import { ApplicationAndroidPermissions, IApplication, KeyboardMode, Appearance } from './application';
 import SystemServices from '../util/Android/systemservices';
 import * as RequestCodes from '../util/Android/requestcodes';
 import ViewController from '../util/Android/transition/viewcontroller';
@@ -63,7 +63,7 @@ const Permissions = {
   WRITE_APN_SETTINGS: 'android.permission.WRITE_APN_SETTINGS'
 } as const;
 
-//InputMethodManager to close softinput keyboard
+//InputMethodManager to close softinput keyboard.
 
 // Intent.ACTION_VIEW
 const ACTION_VIEW = 'android.intent.action.VIEW';
@@ -81,6 +81,7 @@ class ApplicationAndroidClass extends NativeEventEmitterComponent<ApplicationEve
     this._secureWindowContent = false;
     this._keepScreenAwake = false;
     this.statusBar = StatusBar;
+    this.appearance = Appearance.LIGHT;
     super.preConstruct(params);
   }
   statusBar: typeof StatusBar;
@@ -178,9 +179,9 @@ class ApplicationAndroidClass extends NativeEventEmitterComponent<ApplicationEve
   onAppShortcutReceived: (e: { data: { [key: string]: any } }) => void;
   onMaximize: () => void;
   onMinimize: () => void;
-  setAppTheme: (theme: string) => void;
   Events = ApplicationEvents;
   tabBar?: IBottomTabBar;
+  appearance: Appearance;
 
   attachSliderDrawer(sliderDrawer: SliderDrawerAndroid) {
     if (sliderDrawer) {

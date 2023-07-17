@@ -1,7 +1,6 @@
 import { ISwipeView, SwipeViewState } from './swipeview';
 import { IPage, PageOrientation } from '../page/page';
 import PageIOS from '../page/page.ios';
-import OverScrollMode from '../shared/android/overscrollmode';
 import ViewIOS from '../view/view.ios';
 import { SwipeViewEvents } from './swipeview-events';
 import Invocation from '../../util/iOS/invocation';
@@ -42,7 +41,6 @@ export default class SwipeViewIOS<TEvent extends string = SwipeViewEvents, TNati
   private _pagingEnabled: boolean;
   private _isPageTransaction: boolean;
   private pageControllerDelegate: __SF_UIPageViewControllerDelegate;
-  overScrollMode: OverScrollMode;
   createNativeObject() {
     return super.createNativeObject();
   }

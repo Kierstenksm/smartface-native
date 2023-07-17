@@ -2,7 +2,7 @@ import { GridViewSnapAlignment, IGridView, ScrollEventHandler } from './gridview
 import { Point2D } from '../../primitive/point2d';
 import UIControlEvents from '../../util/iOS/uicontrolevents';
 import GridViewItemIOS from '../gridviewitem/gridviewitem.ios';
-import LayoutManagerIOS from '../layoutmanager/layoutmanager.ios';
+import LayoutManagerIOS, { ScrollDirectionMapping } from '../layoutmanager/layoutmanager.ios';
 import ViewIOS from '../view/view.ios';
 import { GridViewEvents } from './gridview-events';
 import { IColor } from '../color/color';
@@ -36,8 +36,8 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     return nativeObject;
   }
   preConstruct(params?: Partial<IGridView>) {
-    this.scrollBarEnabled = true;
-    this._refreshEnabled = false;
+    this.scrollBarEnabled = false;
+    this._refreshEnabled = true;
 
     this.collectionViewItems = {};
     this.registeredIndentifier = [];
@@ -49,14 +49,15 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     this.setNativeParams();
     this.setScrollEvents();
     super.preConstruct(params);
+    this.refreshEnabled = true;
   }
   constructor(params?: Partial<IGridView>) {
     super(params);
   }
   private getAndroidProps() {
     return {
-      saveInstanceState: () => {},
-      restoreInstanceState: () => {}
+      saveInstanceState: () => { },
+      restoreInstanceState: () => { }
     };
   }
   private getIOSProps() {
@@ -154,6 +155,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
         cell.contentView.addSubview(this.collectionViewItems[cell.uuid].nativeObject);
         this.onItemBind?.(this.collectionViewItems[cell.uuid], indexPath.row);
       }
+      this.collectionViewItems[cell.uuid].applyLayout();
       return cell;
     };
     this.nativeObject.didSelectItemAtIndexPathCallback = (collectionView, indexPath) => {
@@ -212,7 +214,7 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     if (!this._layoutManager) {
       return;
     }
-    const direction = this._layoutManager.scrollDirection === LayoutManagerIOS.ScrollDirection.VERTICAL ? 0 : 3; // 1 << 0 means UICollectionViewScrollPositionTop
+    const direction = this._layoutManager.scrollDirection === ScrollDirectionMapping[LayoutManagerIOS.ScrollDirection.VERTICAL] ? 0 : 3; // 1 << 0 means UICollectionViewScrollPositionTop
     this.nativeObject.scrollToItemAtIndexPathAtScrollPositionAnimated(indexPath, 1 << direction, animated !== false);
   }
   stopRefresh(): void {
@@ -264,8 +266,10 @@ export default class GridViewIOS<TEvent extends string = GridViewEvents> extends
     this._refreshEnabled = value;
     if (value) {
       this.nativeObject.addSubview(this.refreshControl);
+      this.nativeObject.alwaysBounceVertical = true;
     } else {
       this.refreshControl.removeFromSuperview();
+      this.nativeObject.alwaysBounceVertical = false;
     }
   }
   get paginationEnabled(): boolean {

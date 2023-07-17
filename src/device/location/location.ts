@@ -44,7 +44,7 @@ export enum LocationAndroidPriority {
    * @readonly
    * @since 3.1.1
    */
-  HIGH_ACCURACY,
+  HIGH_ACCURACY = 'HIGH_ACCURACY',
 
   /**
    * Block level accuracy is considered to be about 100 meter accuracy.
@@ -55,7 +55,7 @@ export enum LocationAndroidPriority {
    * @readonly
    * @since 3.1.1
    */
-  BALANCED,
+  BALANCED = 'BALANCED',
   /**
    * City level accuracy is considered to be about 10km accuracy.
    * Using a coarse accuracy such as this often consumes less power
@@ -65,7 +65,7 @@ export enum LocationAndroidPriority {
    * @readonly
    * @since 3.1.1
    */
-  LOW_POWER,
+  LOW_POWER = 'LOW_POWER',
   /**
    * No locations will be returned unless a different client has requested location updates in which case this request will act as a passive listener to those locations.
    *
@@ -74,7 +74,7 @@ export enum LocationAndroidPriority {
    * @readonly
    * @since 3.1.1
    */
-  NO_POWER
+  NO_POWER = 'NO_POWER'
 }
 
 export enum LocationAndroidSettingsStatusCodes {
@@ -151,7 +151,7 @@ export interface ILocationIOSProps {
  * @class Device.Location
  * @since 0.1
  *
- * Device.Location allows capturing location change events on the device. In Android, ACCESS_FINE_LOCATION permission must be taken on run time for 23 api level and above.
+ * Device.Location allows capturing location change events on the device. In Android, Permissions#location permission must be taken on run time for 23 api level and above.
  *
  *     @example
  *     import Timer    from '@smartface/native/timer';
@@ -284,5 +284,6 @@ export interface ILocation<TEvent extends string = LocationEvents, TMobile exten
   };
   Android: {
     Priority: typeof LocationAndroidPriority;
+    SettingsStatusCodes: typeof LocationAndroidSettingsStatusCodes;
   };
 }

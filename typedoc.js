@@ -5,12 +5,15 @@ const OUTPUT_DIR = 'docs';
 const BASE_PATH = 'src';
 
 /**
- * We need to define all modules under primitive here for typedoc
+ * Give the directory as parameter, will return every ts folders in it.
+ * @param {string} basePath a directory
+ * @returns
  */
-const primitiveModules = ['boundary', 'iflexlayout', 'point2d', 'position', 'rectangle', 'size'];
-
-function primitiveModuleFinder(basePath) {
-  const paths = primitiveModules.map((p) => basePath + p + '.ts');
+function getAllModuleNamesInPath(basePath) {
+  const files = fs.readdirSync(basePath, {
+    withFileTypes: true
+  });
+  const paths = files.map((file) => basePath + file.name);
   return paths.filter((p) => fs.existsSync(p));
 }
 
@@ -55,8 +58,19 @@ function getModuleNamesWithPath(basePath) {
         allPossibleEntryPoints.push(eventsNamed);
       }
       if (lastPath === 'primitive') {
-        const primitiveEntryPoints = primitiveModuleFinder(directory + path.sep);
+        const primitiveEntryPoints = getAllModuleNamesInPath(directory + path.sep);
         allPossibleEntryPoints = allPossibleEntryPoints.concat(primitiveEntryPoints);
+      } else if (lastPath === 'shared') {
+        const sharedEntryPoints = getAllModuleNamesInPath(directory + path.sep);
+        allPossibleEntryPoints = allPossibleEntryPoints.concat(sharedEntryPoints);
+      } else if (separated[separated.length - 2] === 'shared') {
+        if (lastPath === 'ios') {
+          const iOSEntryPoints = getAllModuleNamesInPath(directory + path.sep);
+          allPossibleEntryPoints = allPossibleEntryPoints.concat(iOSEntryPoints);
+        } else if (lastPath === 'android') {
+          const androidEntryPoints = getAllModuleNamesInPath(directory + path.sep);
+          allPossibleEntryPoints = allPossibleEntryPoints.concat(androidEntryPoints);
+        }
       }
       if (fs.existsSync(moduleNamed)) {
         allPossibleEntryPoints.push(moduleNamed);
@@ -97,6 +111,7 @@ async function main() {
     entryPoints: fileNames,
     sort: ['source-order', 'visibility'],
     excludePrivate: true,
+    entryPointStrategy: 'Expand',
     excludeNotDocumented: false,
     excludeInternal: true,
     pretty: true,

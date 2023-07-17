@@ -333,7 +333,7 @@ export default class MapViewAndroid<TEvent extends string = MapViewEvents> exten
     this._nativeClusterManager.setOnClusterItemClickListener(
       NativeClusterManager.OnClusterItemClickListener.implement({
         onClusterItemClick: (item) => {
-          this._pinArray[item]?.onPress();
+          this._pinArray[item]?.onPress?.();
           this._pinArray[item].emit('press');
           return false;
         }
@@ -343,7 +343,7 @@ export default class MapViewAndroid<TEvent extends string = MapViewEvents> exten
     this._nativeClusterManager.setOnClusterItemInfoWindowClickListener(
       NativeClusterManager.OnClusterItemInfoWindowClickListener.implement({
         onClusterItemInfoWindowClick: (item) => {
-          this._pinArray[item]?.onInfoWindowPress();
+          this._pinArray[item]?.onInfoWindowPress?.();
           this._pinArray[item].emit('infoWindowPress');
         }
       })

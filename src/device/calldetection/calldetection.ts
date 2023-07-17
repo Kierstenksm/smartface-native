@@ -74,7 +74,7 @@ export enum State {
  * @since 4.3.1
  *
  * Helps to detect call states.
- * Required {@link Application.Android.Permissions-static-property-READ_PHONE_STATE READ_PHONE_STATE} permission for Android.
+ * Required {@link Permissions.android#phone} permission for Android.
  *
  *     @example
  *     import CallDetection from '@smartface/native/device/calldetection';

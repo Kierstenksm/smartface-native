@@ -30,9 +30,15 @@ class ShareIOSClass extends NativeMobileComponent implements IShare {
   constructor(params?: any) {
     super(params);
     this.addIOSProps(this.getIOSProps());
+    this.addAndroidProps(this.getAndroidProps());
   }
   protected createNativeObject(params?: Partial<Record<string, any>>) {
     return null;
+  }
+  private getAndroidProps(): Partial<{ [key: string]: any; }> {
+    return {
+      saveToFiles(file: File, page: IPage) { }
+    };
   }
   shareText(text: string, page: IPage, blacklist: string[]) {
     const activity = this.createActivity([text]) as __SF_NSOBject;

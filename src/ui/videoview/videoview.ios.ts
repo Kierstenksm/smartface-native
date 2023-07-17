@@ -161,7 +161,7 @@ export default class VideoViewIOS<TEvent extends string = VideoViewEvents> exten
     }
   }
   isPlaying() {
-    return this.avPlayer?.rate !== 0;
+    return this.avPlayer?.rate as number > 0;
   }
   get page(): Page | null {
     return this._page;

@@ -49,7 +49,7 @@ export default class BottomTabbarControllerAndroid extends NativeEventEmitterCom
     super(params);
 
     const listener = NativeBottomNavigationView.OnNavigationItemSelectedListener;
-    this.tabBar.nativeObject.setOnNavigationItemSelectedListener(
+    this.tabBar.nativeObject.setOnItemSelectedListener(
       listener.implement({
         onNavigationItemSelected: (item: any) => {
           const index = item.getItemId();
@@ -246,13 +246,11 @@ export default class BottomTabbarControllerAndroid extends NativeEventEmitterCom
 
     const normalColorNO = tabBar.itemColor.normal.nativeObject;
     const tabBarItems = tabBar.items;
-    for (let i = tabBarItems.length; i--; ) {
-      if (i === this.selectedIndex) return;
-
+    for (let i = 0; i < tabBarItems.length; i++ ) {
       const tabBarItem = tabBarItems[i];
       if (!tabBarItem._attributedTitleBuilder) return;
       const nativeStringBuilder = this.attributedItemBuilder(tabBarItem, normalColorNO);
-      tabBarItem.__setTitle(nativeStringBuilder);
+      tabBarItem.titleSetter(nativeStringBuilder);
     }
   }
   /*
@@ -266,7 +264,7 @@ export default class BottomTabbarControllerAndroid extends NativeEventEmitterCom
     if (tabBarItem._attributedTitleBuilder) {
       const selectedColorNO = tabBar.itemColor.selected.nativeObject;
       nativeStringBuilder = this.attributedItem(tabBarItem, selectedColorNO);
-      tabBarItem.__setTitle(nativeStringBuilder);
+      tabBarItem.titleSetter(nativeStringBuilder);
     }
     if (cache.prevSelectedAttributedItem !== undefined && cache.prevSelectedAttributedItem !== index) {
       const i = cache.prevSelectedAttributedItem;
@@ -274,7 +272,7 @@ export default class BottomTabbarControllerAndroid extends NativeEventEmitterCom
       if (prevTabBarItem._attributedTitleBuilder) {
         const normalColorNO = tabBar.itemColor.normal.nativeObject;
         nativeStringBuilder = this.attributedItem(prevTabBarItem, normalColorNO);
-        prevTabBarItem.__setTitle(nativeStringBuilder);
+        prevTabBarItem.titleSetter(nativeStringBuilder);
       }
     }
     cache.prevSelectedAttributedItem = index;

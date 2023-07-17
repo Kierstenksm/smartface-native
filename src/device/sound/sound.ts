@@ -149,7 +149,7 @@ export interface ISound extends INativeComponent, IEventEmitter<SoundEvents> {
    */
   play(): void;
   /**
-   * Loads the source. {@link Application.Android.Permissions#READ_EXTERNAL_STORAGE} permission is required to load local files.
+   * Loads the source. {@link Permissions#storage} permission is required to load local files.
    *
    * @method loadFile
    * @param {IO.File} file

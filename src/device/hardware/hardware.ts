@@ -8,7 +8,7 @@ export enum DeviceType {
 
 export interface HardwareAndroidProps {
   /**
-   * Returns 'International Mobile Equipment Identity' of the device. Requires the {@link Application.Android.Permissions#READ_PHONE_STATE} 
+   * Returns 'International Mobile Equipment Identity' of the device. Requires the {@link Permissions.android#phone} 
    * If your app runs on Android 10 (API level 29) or above, a SecurityException occurs.
    * You cannot get IMEI programmatiocally on iOS.
    * @property {String} IMEI
@@ -20,7 +20,7 @@ export interface HardwareAndroidProps {
    */
   readonly IMEI: string;
   /**
-   * Returns the vendor id of the device. Requires the {@link Application.Android.Permissions#READ_PHONE_STATE} 
+   * Returns the vendor id of the device. Requires the {@link Permissions.android#phone} 
    * If your app runs on Android 10 (API level 29) or above, a SecurityException occurs.
    * @property {Number} vendorID
    * @deprecated
@@ -36,7 +36,7 @@ export interface HardwareIOSProps {
   /**
    *
    * Microphone related properties
-   *
+   * @deprecated Use Permission.requestPermission(Permissions.microphone) instead
    * @ios
    * @readonly
    * @static

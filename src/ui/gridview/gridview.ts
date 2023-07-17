@@ -218,6 +218,16 @@ export interface IGridViewAndroid extends ViewAndroidProps {
    * @since 4.0.2
    */
   onDetachedFromWindow: () => void;
+  /**
+   * Gets/sets the nested scrolling enable for this view.
+   * 
+   * This property should be set to false when this view is inside the bottomsheet for better scrolling experience.
+   *
+   * @property {boolean} [nestedScrollingEnabled = true]
+   * @android
+   * @since 5.0.4
+   */
+  nestedScrollingEnabled: boolean;
 }
 
 export interface IGridView<TEvent extends string = GridViewEvents, TMobile extends MobileOSProps<IGridViewIOS, IGridViewAndroid> = MobileOSProps<IGridViewIOS, IGridViewAndroid>>

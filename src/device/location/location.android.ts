@@ -2,7 +2,7 @@ import NativeEventEmitterComponent from '../../core/native-event-emitter-compone
 import * as RequestCodes from '../../util/Android/requestcodes';
 import { PermissionIOSAuthorizationStatus, PermissionResult, Permissions } from '../permission/permission';
 import PermissionAndroid from '../permission/permission.android';
-import { ILocation, LocationAndroidPriority } from './location';
+import { ILocation, LocationAndroidPriority, LocationAndroidSettingsStatusCodes } from './location';
 import { LocationEvents } from './location-events';
 const PROVIDER = {
   AUTO: 'auto'
@@ -14,8 +14,8 @@ const PriorityAndroidMapping = {
   NO_POWER: 105 // PRIORITY_NO_POWER
 };
 const SETTINGS_STATUS_CODES = {
-  DENIED: 'DENIED',
-  OTHER: 'SETTINGS_CHANGE_UNAVAILABLE'
+  DENIED: LocationAndroidSettingsStatusCodes.DENIED,
+  SETTINGS_CHANGE_UNAVAILABLE: LocationAndroidSettingsStatusCodes.OTHER,
 };
 const SFLocationCallback = requireClass('io.smartface.android.sfcore.device.location.SFLocationCallback');
 
@@ -25,7 +25,7 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
   }
   readonly Android = {
     Priority: LocationAndroidPriority,
-    SettingsStatusCodes: SETTINGS_STATUS_CODES
+    SettingsStatusCodes: LocationAndroidSettingsStatusCodes
   };
   iOS = {
     AuthorizationStatus: PermissionIOSAuthorizationStatus
@@ -38,8 +38,8 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
   constructor() {
     super();
     this.addIOSProps({
-      locationServicesEnabled() {},
-      getAuthorizationStatus() {},
+      locationServicesEnabled() { },
+      getAuthorizationStatus() { },
       authorizationStatus: {}
     });
     this.addAndroidProps(this.getAndroidProps());
@@ -69,8 +69,8 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
                 resolve({ ...location, type: permissionType, result: PermissionResult.GRANTED });
               });
             },
-            onFailure: (e: { statusCode: string }) => {
-              const isFailureReasonDeny = e.statusCode === this.Android.SettingsStatusCodes.DENIED;
+            onFailure: (e: { statusCode: LocationAndroidSettingsStatusCodes }) => {
+              const isFailureReasonDeny = e.statusCode === LocationAndroidSettingsStatusCodes.DENIED;
               reject({ type: isFailureReasonDeny ? PermissionResult.DENIED : PermissionResult.NEVER_ASK_AGAIN });
             }
           });
@@ -85,7 +85,7 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
     const self = this;
     return {
       Provider: PROVIDER,
-      checkSettings: (params: { onSuccess: () => void; onFailure: (e: { statusCode }) => void }) => {
+      checkSettings: (params: { onSuccess: () => void; onFailure: (e: { statusCode: LocationAndroidSettingsStatusCodes }) => void }) => {
         params.onSuccess && (self._onSuccessCallback = params.onSuccess);
         params.onFailure && (self._onFailureCallback = params.onFailure);
 
@@ -93,10 +93,10 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
           onSuccess: function () {
             self._onSuccessCallback && self._onSuccessCallback();
           },
-          onFailure: function (reason) {
+          onFailure: function (reason: string) {
             self._onFailureCallback &&
               self._onFailureCallback({
-                statusCode: reason
+                statusCode: SETTINGS_STATUS_CODES[reason]
               });
           }
         });
@@ -109,7 +109,7 @@ class LocationAndroid extends NativeEventEmitterComponent<LocationEvents> implem
       this._onSuccessCallback?.();
     } else {
       this._onFailureCallback?.({
-        statusCode: 'DENIED'
+        statusCode: LocationAndroidSettingsStatusCodes.DENIED
       });
     }
   }

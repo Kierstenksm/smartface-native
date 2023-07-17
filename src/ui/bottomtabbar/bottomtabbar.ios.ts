@@ -13,6 +13,8 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
   private _borderVisibility: boolean;
   private _itemColor: IBottomTabBar['itemColor']; // Do not remove. COR-1931 describes what happening.
   private _selectionIndicatorImage: ImageIOS;
+  private _iconSize: number
+
   constructor(params?: Partial<IBottomTabBar> & Partial<NativeComponent>) {
     super(params);
     this.addIOSProps(this.getIOSParams());
@@ -56,7 +58,12 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
         item.route = item.route;
         item.ios.font = item.ios.font;
         item.badge = item.badge;
+        item.iconSize = this._iconSize
+        if(item.ios.font && parseInt(SystemIOS.OSVersion) >= 15){
+          this.appearance.tabbarItemFont = item.ios.font;
+        }
       });
+     this.refreshAppearance()
     }
   }
   getIOSParams(): IBottomTabBar['ios'] {
@@ -72,6 +79,14 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
       }
     };
   }
+
+  private refreshAppearance(){
+    if(parseInt(SystemIOS.OSVersion) >= 15){
+      this.nativeObject.standardAppearance = this.appearance;
+      this.nativeObject.scrollEdgeAppearance = this.appearance;
+    }
+  }
+  
   get itemColor() {
     return this._itemColor;
   }
@@ -90,9 +105,7 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
     // Xcode 13.1 background bug fixes [NTVE-398]
     if (parseInt(SystemIOS.OSVersion) >= 15) {
       this.appearance.backgroundColor = value.nativeObject;
-
-      this.nativeObject.standardAppearance = this.appearance;
-      this.nativeObject.scrollEdgeAppearance = this.appearance;
+      this.refreshAppearance()
     } else {
       this.nativeObject.barTintColor = value.nativeObject;
     }
@@ -129,7 +142,14 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
     });
   }
   set unselectedItemColor(value: IColor) {
-    this.nativeObject.unselectedItemTintColor = value.nativeObject;
+    if (parseInt(SystemIOS.OSVersion) >= 15) {
+      this.appearance.normalStateColor = value.nativeObject;
+
+      this.nativeObject.standardAppearance = this.appearance;
+      this.nativeObject.scrollEdgeAppearance = this.appearance;
+    } else {
+      this.nativeObject.unselectedItemTintColor = value.nativeObject;
+    }
   }
   get backgroundImage() {
     return ImageIOS.createFromImage(this.nativeObject.backgroundImage);
@@ -159,5 +179,13 @@ export default class BottomTabBarIOS extends NativeMobileComponent<any, WithMobi
       this._selectionIndicatorImage = value;
       this.nativeObject.selectionIndicatorImage = this._selectionIndicatorImage.nativeObject;
     }
+  }
+
+  get iconSize(): number {
+    return this._iconSize
+  }
+
+  set iconSize(value: number) {
+    this._iconSize = value
   }
 }

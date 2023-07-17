@@ -1,16 +1,15 @@
 import { Point2D } from '../../primitive/point2d';
 import { IColor } from '../color/color';
 import { ViewEvents } from './view-events';
-import { IView, IViewProps, ViewBase } from './view';
+import { Border, BorderRadiusEdges, IView, IViewProps, ViewBase } from './view';
 import { Size } from '../../primitive/size';
 import { YGUnit } from '../shared/ios/yogaenums';
 import Invocation from '../../util/iOS/invocation';
 import Exception from '../../util/exception';
 import ColorIOS from '../color/color.ios';
 import { IViewGroup } from '../viewgroup/viewgroup';
-import TimerIOS from '../../global/timer/timer.ios';
 
-export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, TProps extends IViewProps = IViewProps>
+export default class ViewIOS<TEvent extends string = ViewEvents, TNative extends { [key: string]: any; } = any, TProps extends IViewProps = IViewProps>
   extends ViewBase<TEvent, TNative, TProps>
   implements IView<TEvent, TNative, TProps>
 {
@@ -22,6 +21,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
   private _rotation: number;
   private _rotationX: number;
   private _rotationY: number;
+  private _shadowOpacity: number;
   private _scale: Point2D;
   private _width: number;
   private _height: number;
@@ -32,6 +32,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   private _isLTR: boolean;
 
+  private _borderRadiusEdges: BorderRadiusEdges = { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }
   private _borderTopLeftRadius: number;
   private _borderTopRightRadius: number;
   private _borderBottomLeftRadius: number;
@@ -59,8 +60,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         x: e.point.x ?? null,
         y: e.point.y ?? null
       };
-      this.onTouch?.(point);
+      const result = this.onTouch?.(point);
       this.emit('touch', point);
+
+      return !!result;
     };
 
     this.nativeObject.onTouchCancelled = (e?: { point: Point2D }) => {
@@ -68,8 +71,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         x: e?.point.x ?? null,
         y: e?.point.y ?? null
       };
-      this.onTouchCancelled?.(point);
+      const result = this.onTouchCancelled?.(point);
       this.emit('touchCancelled', point);
+
+      return !!result;
     };
     this.nativeObject.onTouchMoved = (e?: { point: Point2D }) => {
       const inside = this.isInside(this.nativeObject.frame, e?.point);
@@ -78,8 +83,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         y: e?.point.y ?? null,
         isInside: inside
       };
-      this.onTouchMoved?.(inside, event);
+      const result = this.onTouchMoved?.(inside, event);
       this.emit('touchMoved', event);
+
+      return !!result;
     };
     this.nativeObject.onTouchEnded = (e?: { point: Point2D }) => {
       const inside = this.isInside(this.nativeObject.frame, e?.point);
@@ -88,8 +95,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         y: e?.point.y ?? null,
         isInside: inside
       };
-      this.onTouchEnded?.(inside, event);
+      const result = this.onTouchEnded?.(inside, event);
       this.emit('touchEnded', event);
+
+      return !!result;
     };
 
     this.addIOSProps(this.getIOSProperties());
@@ -148,6 +157,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         return Invocation.invokeInstanceMethod(self.nativeObject.layer, 'shadowRadius', [], 'CGFloat') as number;
       },
       set shadowRadius(shadowRadius: number) {
+        if (!shadowRadius) {
+          return;
+        }
+
         const argShadowRadius = new Invocation.Argument({
           type: 'CGFloat',
           value: shadowRadius
@@ -155,7 +168,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowRadius:', [argShadowRadius]);
       },
       get shadowOpacity() {
-        return Invocation.invokeInstanceMethod(self.nativeObject.layer, 'shadowOpacity', [], 'CGFloat');
+        return self._shadowOpacity;
       },
       set shadowOpacity(shadowOpacity: number) {
         const argShadowOpacity = new Invocation.Argument({
@@ -163,6 +176,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
           value: shadowOpacity
         });
         Invocation.invokeInstanceMethod(self.nativeObject.layer, 'setShadowOpacity:', [argShadowOpacity]);
+        self._shadowOpacity = shadowOpacity;
         self.backgroundColor = self.backgroundColor;
       },
       get shadowColor() {
@@ -292,11 +306,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopLeftRadius(value) {
     this._borderTopLeftRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
-
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderTopRightRadius() {
@@ -305,10 +316,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopRightRadius(value) {
     this._borderTopRightRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderBottomLeftRadius() {
@@ -317,10 +326,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomLeftRadius(value) {
     this._borderBottomLeftRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderBottomRightRadius() {
@@ -329,10 +336,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomRightRadius(value) {
     this._borderBottomRightRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderTopStartRadius() {
@@ -341,10 +346,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopStartRadius(value) {
     this._borderTopStartRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderTopEndRadius() {
@@ -353,10 +356,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderTopEndRadius(value) {
     this._borderTopEndRadius = value;
+    this.borderRadius = value
     this.calculateTopRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderBottomStartRadius() {
@@ -365,10 +366,8 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomStartRadius(value) {
     this._borderBottomStartRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
   }
 
   get borderBottomEndRadius() {
@@ -377,10 +376,29 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   set borderBottomEndRadius(value) {
     this._borderBottomEndRadius = value;
+    this.borderRadius = value
     this.calculateBottomRadius();
-    // Android provide individiaul radius assignment. iOS does not provide the feature.
-    // So every individual assignment will effect the general border radius.
-    this.borderRadius = value;
+  }
+
+  private applyMaskedCorners() {
+    // Android support individual corner radius assignment. On the other hand, ios does not.
+    // iOS only suppors corner selection to apply borderRadius property. 
+    // After,borderRadius assignment we calculate corners based on the corner values.
+    // borderRadius value get latest topLeft, topRight, bottomLeft, bottomRight respecting in order
+    // For example; topLeft: 30, topRight: 40, bottomLeft: 50, borderRadius would get '50' because of order above
+    const masks: Border[] = [];
+    if (this.nativeObject.borderTopLeftRadius !== -1) {
+      masks.push(Border.TOP_LEFT);
+    } if (this.nativeObject.borderTopRightRadius !== -1) {
+      masks.push(Border.TOP_RIGHT);
+    } if (this.nativeObject.borderBottomLeftRadius !== -1) {
+      masks.push(Border.BOTTOM_LEFT);
+    }
+    if (this.nativeObject.borderBottomRightRadius !== -1) {
+      masks.push(Border.BOTTOM_RIGHT);
+    }
+
+    this.maskedBorders = masks;
   }
 
   private calculateTopRadius() {
@@ -402,7 +420,10 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
     this.nativeObject.borderTopLeftRadius = topLeft;
     this.nativeObject.borderTopRightRadius = topRight;
-    this.backgroundColor = this.backgroundColor;
+
+    // property call matters between individual radius and borderRadius
+    // so we are forcing to recalculate masks in order to apply given individual corner radiuses
+    this.applyMaskedCorners();
   }
 
   private calculateBottomRadius() {
@@ -423,7 +444,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
     this.nativeObject.borderBottomLeftRadius = bottomLeft;
     this.nativeObject.borderBottomRightRadius = bottomRight;
-    this.backgroundColor = this.backgroundColor;
+    this.applyMaskedCorners();
   }
 
   get maskedBorders() {
@@ -438,6 +459,28 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
     this.nativeObject.layer.maskedCorners = corners;
   }
 
+  get borderRadiusEdges() {
+    return this._borderRadiusEdges
+  }
+
+  set borderRadiusEdges(value: BorderRadiusEdges) {
+    let maskedCorners: Border[] = [];
+    if (value.topLeft !== false) {
+      maskedCorners.push(Border.TOP_LEFT)
+    }
+    if (value.topRight !== false) {
+      maskedCorners.push(Border.TOP_RIGHT)
+    }
+    if (value.bottomLeft !== false) {
+      maskedCorners.push(Border.BOTTOM_LEFT)
+    }
+    if (value.bottomRight !== false) {
+      maskedCorners.push(Border.BOTTOM_RIGHT)
+    }
+
+    this.maskedBorders = maskedCorners;
+  }
+
   get backgroundColor(): IView['backgroundColor'] {
     return new ColorIOS({
       color: this.nativeObject.backgroundColor
@@ -446,7 +489,7 @@ export default class ViewIOS<TEvent extends string = ViewEvents, TNative = any, 
 
   _backgroundForShadow: ColorIOS;
   set backgroundColor(value) {
-    if (value instanceof ColorIOS) {
+    if (value instanceof ColorIOS && value.nativeObject) {
       if (value.nativeObject.constructor.name === 'CAGradientLayer') {
         if (!this.gradientColor) {
           this.nativeObject.addFrameObserver();

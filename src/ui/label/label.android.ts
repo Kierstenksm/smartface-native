@@ -35,6 +35,7 @@ const NativeEllipsizeMode = {
 const MAX_INT_VALUE = 2147483647;
 const AUTO_SIZE_TEXT_TYPE_NONE = 0;
 const MINIMUM_FONT_SIZE = 7;
+const DEFAULT_MAX_LINES = 1;
 
 export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = LabelAndroidProps, TProps extends ILabel = ILabel>
   extends ViewAndroid<TEvent, TNative, TProps>
@@ -59,7 +60,6 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     super(params);
   }
   protected preConstruct(params?: Partial<TProps>): void {
-    super.preConstruct(params);
     this._adjustFontSizeToFit = false;
     this._minimumFontSize = MINIMUM_FONT_SIZE;
     this._adjustableFontSizeStep = 1;
@@ -67,6 +67,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     this._textColor = ColorAndroid.BLUE;
     this.viewNativeDefaultTextAlignment = TextAlignmentDic[TextAlignment.MIDLEFT];
     this.textAlignment = TextAlignment.MIDLEFT;
+    this.maxLines = this.getDefaultMaxLine();
     super.preConstruct(params);
     this.initAndroidProps();
   }
@@ -97,6 +98,12 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
         if (value) {
           self.setAutoSizeTextTypeUniformWithConfiguration();
         }
+      },
+      get includeFontPadding(): boolean {
+        return self.nativeObject.getIncludeFontPadding();
+      },
+      set includeFontPadding(value: boolean) {
+        self.nativeObject.setIncludeFontPadding(value);
       }
     });
   }
@@ -144,26 +151,17 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     });
   }
   set font(value: ILabel['font']) {
-    this.fontInitial = value;
-    this.dirty();
-    this.nativeObject.setTypeface(value.nativeObject);
-    if (value.size && typeof value.size === 'number') {
-      this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
-    }
-  }
-  get multiline(): ILabel['multiline'] {
-    return this.nativeObject.getMaxLines() !== 1;
-  }
-  set multiline(value: ILabel['multiline']) {
-    this.nativeObject.setSingleLine(!value);
+    this.updateFont(value);
   }
   get maxLines(): ILabel['maxLines'] {
     const mMaxLines = this.nativeObject.getMaxLines();
     return mMaxLines === MAX_INT_VALUE ? 0 : mMaxLines;
   }
   set maxLines(value: ILabel['maxLines']) {
-    const valueInt = isNaN(value) ? 0 : value;
-    this.dirty();
+    const valueInt = isNaN(value) || value === null ? DEFAULT_MAX_LINES : value;
+    if(this.yogaNode) {
+      this.dirty();
+    }
     this.nativeObject.setMaxLines(valueInt === 0 ? MAX_INT_VALUE : valueInt);
   }
   get ellipsizeMode(): ILabel['ellipsizeMode'] {
@@ -177,8 +175,7 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
     return this.nativeObject.getText().toString();
   }
   set text(value: ILabel['text']) {
-    this.dirty();
-    this.nativeObject.setText(String(value));
+    this.updateText(value);
   }
   get textAlignment(): ILabel['textAlignment'] {
     return this._textAlignment;
@@ -297,5 +294,23 @@ export default class LabelAndroid<TEvent extends string = ViewEvents, TNative = 
       AndroidUnitConverter.dpToPixel(paddingRight),
       AndroidUnitConverter.dpToPixel(value)
     );
+  }
+
+  protected updateText(value: string) {
+    this.dirty();
+    this.nativeObject.setText(String(value));
+  }
+
+  protected updateFont(value: IFont | null) {
+    this.fontInitial = value;
+    this.dirty();
+    this.nativeObject.setTypeface(value?.nativeObject);
+    if (value?.size && typeof value.size === 'number') {
+      this.nativeObject.setTextSize(TypeValue.COMPLEX_UNIT_DIP, value.size);
+    }
+  }
+
+  protected getDefaultMaxLine() {
+    return DEFAULT_MAX_LINES;
   }
 }

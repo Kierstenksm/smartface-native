@@ -8,8 +8,23 @@ import NativeEventEmitterComponent from '../../core/native-event-emitter-compone
 import ViewState from '../shared/viewState';
 import { IViewGroup } from '../viewgroup/viewgroup';
 import { IColor } from '../color/color';
+
+export type BorderRadiusEdges = {
+  topLeft?: Boolean
+  topRight?: Boolean
+  bottomLeft?: Boolean
+  bottomRight?: Boolean
+}
+
 export interface ViewAndroidProps {
   readonly yogaNode: any;
+  /**
+   * Gets/sets over-scroll mode for this view.
+   *
+   * @property {UI.Android.OverScrollMode} [overScrollMode = UI.Android.OverScrollMode.ALWAYS]
+   * @android
+   * @since 3.0.2
+   */
   overScrollMode: number;
   /**
    * Gets/sets foreground of the view for ripple effect. This property should be set before rippleColor.
@@ -65,6 +80,70 @@ export interface ViewAndroidProps {
    * @since 2.0.8
    */
   zIndex: number;
+  /**
+   * Sets/gets top-left corner radius of a view.
+   *
+   * @property {Number} [borderTopLeftRadius = 0]
+   * @android
+   * @since 5.1.1
+   */
+  borderTopLeftRadius: number;
+  /**
+   * Sets/gets top-right corner radius of a view.
+   *
+   * @property {Number} [borderTopRightRadius = 0]
+   * @android
+   * @since 5.1.1
+   */
+  borderTopRightRadius: number;
+  /**
+   * Sets/gets top-start corner radius of a view.
+   *
+   * @property {Number} [borderTopStartRadius = -1]
+   * @android
+   * @since 5.1.1
+   */
+  borderTopStartRadius: number;
+  /**
+   * Sets/gets top-end corner radius of a view.
+   *
+   * @property {Number} [borderTopEndRadius = -1]
+   * @android
+   * @since 5.1.1
+   */
+  borderTopEndRadius: number;
+  /**
+   * Sets/gets bottom-left corner radius of a view.
+   *
+   * @property {Number} [borderBottomLeftRadius = 0]
+   * @android
+   * @since 5.1.1
+   */
+  borderBottomLeftRadius: number;
+  /**
+   * Sets/gets bottom-right corner radius of a view.
+   *
+   * @property {Number} [borderBottomRightRadius = 0]
+   * @android
+   * @since 5.1.1
+   */
+  borderBottomRightRadius: number;
+  /**
+   * Sets/gets bottom-start corner radius of a view.
+   *
+   * @property {Number} [borderBottomStartRadius = -1]
+   * @android
+   * @since 5.1.1
+   */
+  borderBottomStartRadius: number;
+  /**
+   * Sets/gets bottom-end corner radius of a view.
+   *
+   * @property {Number} [borderBottomEndRadius = -1]
+   * @android
+   * @since 5.1.1
+   */
+  borderBottomEndRadius: number;
   updateRippleEffectIfNeeded: () => void;
 }
 
@@ -245,6 +324,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopLeftRadius is available on Android.
    */
   borderTopLeftRadius: number;
   /**
@@ -254,6 +334,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopRightRadius is available on Android.
    */
   borderTopRightRadius: number;
   /**
@@ -263,6 +344,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopStartRadius is available on Android.
    */
   borderTopStartRadius: number;
   /**
@@ -272,6 +354,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderTopEndRadius is available on Android.
    */
   borderTopEndRadius: number;
   /**
@@ -281,6 +364,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomLeftRadius is available on Android.
    */
   borderBottomLeftRadius: number;
   /**
@@ -290,6 +374,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomRightRadius is available on Android.
    */
   borderBottomRightRadius: number;
 
@@ -300,6 +385,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomStartRadius is available on Android.
    */
   borderBottomStartRadius: number;
 
@@ -310,6 +396,7 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    * @android
    * @ios
    * @since 5.0.3
+   * @deprecated since 5.1.1 Use the borderRadiusEdges property instead. Also android.borderBottomEndRadius is available on Android.
    */
   borderBottomEndRadius: number;
 
@@ -652,13 +739,23 @@ export interface IViewProps<TProps extends MobileOSProps<ViewIOSProps, ViewAndro
    */
   masksToBounds: boolean;
   /**
+   * A Boolean indicating whether sublayers are clipped to the layer’s bounds. Android sublayers still overlaps the border's width and
+   * as known issue,if {@link UI.View#borderRadiusEdges borderRadiusEdges} is used then sublayer won't be clipped.
+   *
+   * @property {UI.View.BorderRadiusEdges[]} [BorderRadiusEdges = {topLeft: true, topRight: true, bottomLeft: true, bottomRight: true}]
+   * @ios
+   * @android
+   * @since 5.1.1
+   */
+  borderRadiusEdges: BorderRadiusEdges;
+  /**
    * Specified enums indicates that which corner of View will have radius.
    *
    * @property {UI.View.Border[]} [maskedBorders = [View.Border.TOP_LEFT, View.Border.TOP_RIGHT, View.Border.BOTTOM_RIGHT, View.Border.BOTTOM_LEFT]]
    * @ios
    * @android
    * @since 4.1.4
-   * @deprecated since 5.0.3 Use the borderBottomRightRadius, borderBottomLeftRadius, borderTopRightRadius, borderTopLeftRadius properties instead.
+   * @deprecated since 5.0.3 Use the borderRadiusEdges properties instead.
    */
   maskedBorders: Border[];
   /**
@@ -697,8 +794,8 @@ export interface IView<
   TNative extends { [key: string]: any } = { [key: string]: any },
   TMobileProps extends MobileOSProps<ViewIOSProps, ViewAndroidProps> = MobileOSProps<ViewIOSProps, ViewAndroidProps>
 > extends Omit<IViewProps<TMobileProps>, 'nativeObject'>,
-    IEventEmitter<TEvent | ViewEvents>,
-    INativeComponent<TNative> {
+  IEventEmitter<TEvent | ViewEvents>,
+  INativeComponent<TNative> {
   parent: IView | undefined;
   readonly uniqueId: string;
   /**
@@ -1185,6 +1282,7 @@ export declare class AbstractView<TEvent extends string = ViewEvents, TNative = 
   alignSelf: Flex.AlignSelf;
   masksToBounds: boolean;
   maskedBorders: Border[];
+  borderRadiusEdges: BorderRadiusEdges;
   static readonly Border: typeof Border;
 
   on(eventName: 'touch', callback: (e: Point2D) => void): () => void;

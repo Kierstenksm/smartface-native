@@ -5,7 +5,7 @@ import Color from '../../ui/color';
 import ImageAndroid from '../../ui/image/image.android';
 import AndroidConfig from '../../util/Android/androidconfig';
 import TypeUtil from '../../util/type';
-import { AuthorizationStatus, NotificationPresentationOptions, NotificationsBase, Priority } from './notifications';
+import { AuthorizationStatus, NotificationChannelAndroid, NotificationPresentationOptions, NotificationsBase, Priority } from './notifications';
 import { NotificationEvents } from './notifications-events';
 
 // android.content.Context.NOTIFICATION_SERVICE;
@@ -23,6 +23,16 @@ const NativeFCMRegisterUtil = requireClass('io.smartface.android.utils.FCMRegist
 const NativeIntent = requireClass('android.content.Intent');
 const NativePendingIntent = requireClass('android.app.PendingIntent');
 const nativeNotificationReceiverClass = requireClass('io.smartface.android.notifications.LocalNotificationReceiver');
+
+const NativeNotificationManager = requireClass('android.app.NotificationManager');
+const NativeNotificationChannel = requireClass('android.app.NotificationChannel');
+const NativeNotification = requireClass('android.app.Notification');
+const NativeContext = requireClass('android.content.Context');
+const NativeUri = requireClass('android.net.Uri');
+
+const DEFAULT_NOTIFICATION_CHANNEL_ID = "654321";
+const DEFAULT_NOTIFICATION_CHANNEL_NAME = "Default Channel";
+const DEFAULT_NOTIFICATION_CHANNEL_DESCRIPTION = "Default Channel";
 
 const selectedNotificationIds: any[] = [];
 // Generate unique random number
@@ -77,7 +87,8 @@ function cancelNotificationIntent(self) {
 
 class LocalNotification extends NativeMobileComponent {
   protected createNativeObject() {
-    const nativeObject = new NativeNotificationCompat.Builder(AndroidConfig.activity);
+    this.createDefaultNotificationChannel();
+    const nativeObject = new NativeNotificationCompat.Builder(AndroidConfig.activity, DEFAULT_NOTIFICATION_CHANNEL_ID);
     return nativeObject.setSmallIcon(NativeR.drawable.icon);
   }
   private _id: number;
@@ -204,6 +215,15 @@ class LocalNotification extends NativeMobileComponent {
       }
     };
   }
+
+  private createDefaultNotificationChannel() {
+    this.android.createNotificationChannel({
+      id: DEFAULT_NOTIFICATION_CHANNEL_ID, 
+      name: DEFAULT_NOTIFICATION_CHANNEL_NAME, 
+      description: DEFAULT_NOTIFICATION_CHANNEL_DESCRIPTION
+    });
+  }
+
   get alertBody() {
     return this._alertBody;
   }
@@ -299,7 +319,7 @@ class NotificationsAndroidClass extends NativeEventEmitterComponent<Notification
     return null;
   }
   get ios() {
-    return { authorizationStatus: {}, getAuthorizationStatus() {} };
+    return { authorizationStatus: {}, getAuthorizationStatus() { } };
   }
   iOS = {
     AuthorizationStatus,
@@ -322,7 +342,24 @@ class NotificationsAndroidClass extends NativeEventEmitterComponent<Notification
     this._onNotificationReceive = callback;
   }
   get android() {
-    return {};
+    const self = this;
+    return {
+      createNotificationChannel(notificationChannel: NotificationChannelAndroid) {
+        const { id, name, description, sound } = notificationChannel;
+        const channel = new NativeNotificationChannel(id, name, NativeNotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(description);
+        if (sound) {
+          const soundPath = "android.resource://" + AndroidConfig.activity.getPackageName() + "/" + NativeR.raw[sound];
+          channel.setSound(NativeUri.parse(soundPath), NativeNotification.AUDIO_ATTRIBUTES_DEFAULT);
+        }
+        const notificationManager = AndroidConfig.activity.getSystemService(NativeContext.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+      },
+      deleteNotificationChannel(notificationChannelId : string) {
+        const notificationManager = AndroidConfig.activity.getSystemService(NativeContext.NOTIFICATION_SERVICE);
+        notificationManager.deleteNotificationChannel(notificationChannelId);
+      }
+    };
   }
   cancelAllLocalNotifications() {
     removeAllNotifications();

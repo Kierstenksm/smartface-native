@@ -31,6 +31,8 @@ import LayoutParams from '../../util/Android/layoutparams';
 import AndroidUnitConverter from '../../util/Android/unitconverter';
 import copyObjectPropertiesWithDescriptors from '../../util/copyObjectPropertiesWithDescriptors';
 import SystemServices from '../../util/Android/systemservices';
+import ShareAndroid from '../../global/share/share.android';
+
 
 const PorterDuff = requireClass('android.graphics.PorterDuff');
 const NativeView = requireClass('android.view.View');
@@ -44,6 +46,8 @@ const ToolbarLayoutParams = requireClass('androidx.appcompat.widget.Toolbar$Layo
 const NativeImageButton = requireClass('android.widget.ImageButton');
 const NativeTextButton = requireClass('android.widget.Button');
 const NativeRelativeLayout = requireClass('android.widget.RelativeLayout');
+const NativeYogaLayout = requireClass('com.facebook.yoga.android.YogaLayout');
+
 
 enum PageOrientationAndroid {
   PORTRAIT = 1,
@@ -106,6 +110,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
   private _headerBarColor: IColor;
   private _headerBarImage: IImage;
   private _titleLayout?: HeaderBar['titleLayout'];
+  private _layout?: HeaderBar['layout'];
   private _onBackButtonPressed: IPage['android']['onBackButtonPressed'];
   private _transitionViewsCallback: IPage['android']['transitionViewsCallback'];
   private _borderVisibility: HeaderBar['borderVisibility'];
@@ -134,6 +139,8 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
   onHide: () => void;
   onShow: () => void;
   onOrientationChange: (e: { orientation: PageOrientation }) => void;
+  onPickVisualMedia: (uri) => void;
+  onPickMultipleVisualMedia: (uris) => void;
   constructor(params?: Partial<TProps>) {
     super(params);
     this.pageLayoutContainer = AndroidConfig.activity.getLayoutInflater().inflate(NativeSFR.layout.page_container_layout, null);
@@ -328,7 +335,10 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           default:
             tempOrientation = PageAndroid.Orientation.PORTRAIT;
         }
-        this.onOrientationChange?.({ orientation: tempOrientation as any });
+        if(this._orientation !== tempOrientation) {
+          this.onOrientationChange?.({ orientation: tempOrientation as any });
+          this._orientation = tempOrientation;
+        }
       },
       onCreateContextMenu: (menu: any) => {
         const items = this.contextMenu.items;
@@ -363,8 +373,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           requestCode === RequestCodes.Multimedia.PICK_FROM_GALLERY ||
           requestCode === RequestCodes.Multimedia.CAMERA_REQUEST ||
           requestCode === RequestCodes.Multimedia.CropImage.CROP_CAMERA_DATA_REQUEST_CODE ||
-          requestCode === RequestCodes.Multimedia.CropImage.CROP_GALLERY_DATA_REQUEST_CODE ||
-          requestCode === RequestCodes.Multimedia.PICK_MULTIPLE_FROM_GALLERY
+          requestCode === RequestCodes.Multimedia.CropImage.CROP_GALLERY_DATA_REQUEST_CODE
         ) {
           MultimediaAndroid.onActivityResult(requestCode, resultCode, data);
         } else if (requestCode === RequestCodes.Sound.PICK_SOUND) {
@@ -375,7 +384,15 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           EmailComposerAndroid.onActivityResult(requestCode, resultCode, data);
         } else if (requestCode === RequestCodes.DocumentPicker.PICK_DOCUMENT_CODE) {
           DocumentPickerAndroid.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode === RequestCodes.Share.CREATE_DOCUMENT_CODE) {
+          ShareAndroid.onActivityResult(requestCode, resultCode, data);
         }
+      },
+      onPickVisualMedia: (uri) => {
+        this.onPickVisualMedia?.(uri);
+      },
+      onPickMultipleVisualMedia: (uris) => {
+        this.onPickMultipleVisualMedia?.(uris);
       }
     });
   }
@@ -390,6 +407,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
       this.headerBar.visible = true;
       this.headerBar.android.padding = { top: 0, bottom: 0, left: 0, right: 4 };
       this.headerBar.android.contentInsetStartWithNavigation = 0;
+      this.headerBar.title = "";
     }
   }
 
@@ -460,6 +478,19 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
           self._titleLayout = value;
         }
       },
+      get layout(): HeaderBar['layout']{
+        return self._layout;
+      },
+      set layout(view: HeaderBar['layout']) {
+        if (self._layout) {
+            self.toolbar.removeView(self._layout.nativeObject);
+        }
+        self._layout = view;
+        if(self._layout){
+            self.headerBar.android.padding = {left: 0, right: 16 };
+            self.toolbar.addView(self._layout.nativeObject, new NativeYogaLayout.LayoutParams(-1, -1));
+        }
+      },
       get borderVisibility(): HeaderBar['borderVisibility'] {
         return self._borderVisibility;
       },
@@ -499,7 +530,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
         if (TypeUtil.isBoolean(value)) {
           self._leftItemEnabled = value;
           self.actionBar.setDisplayHomeAsUpEnabled(self._leftItemEnabled);
-        }
+        } 
       },
       get height(): number {
         const resources = AndroidConfig.activityResources;
@@ -597,7 +628,10 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
             itemView = item.searchView.nativeObject;
           } else {
             const badgeButtonLayoutParams = new NativeRelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            const nativeBadgeContainer = new NativeRelativeLayout(AndroidConfig.activity);
+            const nativeBadgeContainer = item.nativeBadgeContainer || new NativeRelativeLayout(AndroidConfig.activity);
+            if(nativeBadgeContainer) {
+              nativeBadgeContainer.removeAllViews();
+            }
             nativeBadgeContainer.setLayoutParams(badgeButtonLayoutParams);
             if (item.customView) {
               const customViewContainer = new FlexLayoutAndroid();
@@ -607,9 +641,7 @@ export default class PageAndroid<TEvent extends string = PageEvents, TNative = a
               }
               customViewContainer.addChild(item.customView as FlexLayoutAndroid);
               item.nativeObject = customViewContainer.nativeObject;
-            } else if (item.image instanceof ImageAndroid && (item.image?.nativeObject || (item.android as any).systemIcon)) {
-              item.nativeObject = new NativeImageButton(AndroidConfig.activity);
-            } else {
+            } else if(!item.nativeObject){ //create text button as default.
               item.nativeObject = new NativeTextButton(AndroidConfig.activity);
             }
 

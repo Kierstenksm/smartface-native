@@ -1,8 +1,14 @@
 import NativeEventEmitterComponent from '../../core/native-event-emitter-component';
 import { MobileOSProps } from '../../core/native-mobile-component';
+import FileIOS from '../../io/file/file.ios';
 import FormData from '../formdata';
 import { statuses, IXHR, XMLHttpRequestResponseType } from './xhr';
 import { XHREvents } from './xhr-events';
+
+type TSSLPinning = {
+  host: string; certificates: string[]; validateCertificateChain?: boolean; validateHost?: boolean
+}
+
 
 class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = MobileOSProps> extends NativeEventEmitterComponent<TEvent | XHREvents, any, TProps> implements IXHR {
   static UNSENT = 0;
@@ -11,14 +17,14 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
   static LOADING = 3;
   static DONE = 4;
 
-  onabort: (...args: any[]) => void = () => {};
-  onerror: (...args: any[]) => void = () => {};
-  onload: (...args: any[]) => void = () => {};
-  onloadend: (...args: any[]) => void = () => {};
-  onloadstart: (...args: any[]) => void = () => {};
-  onprogress: (...args: any[]) => void = () => {};
-  onreadystatechange: (...args: any[]) => void = () => {};
-  ontimeout: (...args: any[]) => void = () => {};
+  onabort: (...args: any[]) => void = () => { };
+  onerror: (...args: any[]) => void = () => { };
+  onload: (...args: any[]) => void = () => { };
+  onloadend: (...args: any[]) => void = () => { };
+  onloadstart: (...args: any[]) => void = () => { };
+  onprogress: (...args: any[]) => void = () => { };
+  onreadystatechange: (...args: any[]) => void = () => { };
+  ontimeout: (...args: any[]) => void = () => { };
 
   private _requestID?: number;
   private _options: HttpRequestOptions;
@@ -31,6 +37,10 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
   private _responseURL?: string;
   private _status: number;
 
+  static ios: { sslPinning: TSSLPinning[] } = {
+    sslPinning: []
+  }
+  static disableCertificateVerification: boolean = false
   private _listeners: Map<string, Array<Function>> = new Map<string, Array<Function>>();
 
   constructor() {
@@ -40,7 +50,30 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
   }
 
   protected createNativeObject() {
-    return new __SF_XMLHttpRequest();
+    const nativeObject = new __SF_XMLHttpRequest();
+    nativeObject.disableCertificateVerification = XHRIOS.disableCertificateVerification
+    __SF_XMLHttpRequest.disableCertificateVerification = XHRIOS.disableCertificateVerification
+
+
+    if (XHRIOS.ios.sslPinning) {
+      let trustPolicies: __SF_SMFServerTrustPolicy[] | undefined = undefined;
+      if (Array.isArray(XHRIOS.ios.sslPinning) && XHRIOS.ios.sslPinning.length > 0) {
+        trustPolicies = XHRIOS.ios.sslPinning.map((value) => {
+          const { certificates, host, validateCertificateChain = true, validateHost = true } = value;
+          const nSURLCertificates = certificates.map((path) => {
+            const certFile = new FileIOS({
+              path: path
+            });
+            return certFile.ios.getNSURL?.();
+          });
+          return __SF_SMFServerTrustPolicy.createServerTrustPolicyWithHostCertificateURLsValidateCertificateChainValidateHost(host, nSURLCertificates, validateCertificateChain, validateHost);
+        });
+      }
+
+      nativeObject.serverTrustPolicies = trustPolicies;
+    }
+
+    return nativeObject;
   }
 
   get upload() {
@@ -344,7 +377,7 @@ class XHRIOS<TEvent extends string = XHREvents, TProps extends MobileOSProps = M
     // If eventName is error, an error occurs in the events dependency used by the event emitter.
     try {
       this.emit(eventName);
-    } catch (error) {}
+    } catch (error) { }
 
     if (typeof this['on' + eventName] === 'function') {
       this['on' + eventName](...args);

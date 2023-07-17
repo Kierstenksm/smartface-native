@@ -1,6 +1,5 @@
-import { IImageView, ImageFillType, ImageViewFillTypeIOS } from './imageview';
+import { IImageView, ImageFillType } from './imageview';
 import FileAndroid from '../../io/file/file.android';
-import PathAndroid from '../../io/path/path.android';
 import AndroidConfig from '../../util/Android/androidconfig';
 import ColorAndroid from '../color/color.android';
 import ImageAndroid from '../image/image.android';
@@ -11,7 +10,7 @@ import { MobileOSProps } from '../../core/native-mobile-component';
 import { IViewProps, ViewIOSProps, ViewAndroidProps } from '../view/view';
 import { PathFileType } from '../../io/path/path';
 
-const NativeImageView = requireClass('android.widget.ImageView');
+const NativeSFImageView = requireClass('io.smartface.android.sfcore.ui.imageview.SFImageView');
 const SFGlide = requireClass('io.smartface.android.sfcore.ui.imageview.SFGlide');
 const LoadFromUrlParameters = requireClass('io.smartface.android.sfcore.ui.imageview.models.LoadFromUrlParameters');
 const FetchFromUrlParameters = requireClass('io.smartface.android.sfcore.ui.imageview.models.FetchFromUrlParameters');
@@ -22,16 +21,15 @@ const GlideRequestListener = requireClass('io.smartface.android.sfcore.ui.imagev
 const GlideTarget = requireClass('io.smartface.android.sfcore.ui.imageview.listeners.GlideTarget');
 
 const ImageFillTypeDic = {
-  [ImageFillType.NORMAL]: NativeImageView.ScaleType.CENTER,
-  [ImageFillType.STRETCH]: NativeImageView.ScaleType.FIT_XY,
-  [ImageFillType.ASPECTFIT]: NativeImageView.ScaleType.FIT_CENTER, // should be fit().centerInside()
-  [ImageFillType.ASPECTFILL]: NativeImageView.ScaleType.CENTER_CROP //should be centerCrop
+  [ImageFillType.NORMAL]: NativeSFImageView.ScaleType.CENTER,
+  [ImageFillType.STRETCH]: NativeSFImageView.ScaleType.FIT_XY,
+  [ImageFillType.ASPECTFIT]: NativeSFImageView.ScaleType.FIT_CENTER, // should be fit().centerInside()
+  [ImageFillType.ASPECTFILL]: NativeSFImageView.ScaleType.CENTER_CROP //should be centerCrop
 };
 
 export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> extends ViewAndroid<TEvent | ImageViewEvents> implements IImageView {
   private _fillType: ImageFillType;
   private _image: ImageAndroid | null;
-  private _adjustViewBounds: boolean;
   private _tintColor: ColorAndroid;
   private _newImageLoaded: boolean;
   constructor(params?: Partial<IImageView>) {
@@ -39,18 +37,21 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
   }
 
   protected createNativeObject() {
-    return new NativeImageView(AndroidConfig.activity);
+    return new NativeSFImageView(AndroidConfig.activity);
   }
   protected preConstruct(params?: Partial<IViewProps<MobileOSProps<ViewIOSProps, ViewAndroidProps>>>): void {
     this._newImageLoaded = false;
-    this._adjustViewBounds = false;
     super.preConstruct(params);
+  }
+
+  protected override createYogaNode() {
+    super.createYogaNode();
+    this.nativeObject.setYogaNode(this.yogaNode);
   }
   get image(): ImageAndroid | null {
     if (!this._image || this._newImageLoaded) {
       this._newImageLoaded = false;
-      const drawable = !!this.nativeObject.getDrawable();
-      // TODO Recheck after build
+      const drawable = this.nativeObject.getDrawable();
       this._image = drawable ? new ImageAndroid({ drawable }) : null;
     }
     return this._image;
@@ -61,8 +62,12 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       this._image = value;
       this.nativeObject.setImageDrawable(value.nativeObject);
     } else if (typeof value === 'string') {
-      const imageFile = new FileAndroid({ path: value });
-      this.loadFromFile({ file: imageFile as any });
+      if (value.startsWith("http")) {
+        this.loadFromUrl({ url: value });
+      } else {
+        const imageFile = new FileAndroid({ path: value });
+        this.loadFromFile({ file: imageFile as any });
+      }
     } else {
       this._image = null;
       this.nativeObject.setImageDrawable(null);
@@ -86,10 +91,6 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       value = ImageFillType.NORMAL;
     }
     this._fillType = value;
-    if (value === ImageFillType.ASPECTFILL && !this._adjustViewBounds) {
-      this.nativeObject.setAdjustViewBounds(true);
-      this._adjustViewBounds = true;
-    }
     this.nativeObject.setScaleType(ImageFillTypeDic[this._fillType]);
   }
 
@@ -108,6 +109,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       onFailure?.();
       return;
     }
+    this._newImageLoaded = true;
     let glideRequestListener = null;
     if (onFailure || onSuccess) {
       glideRequestListener = GlideRequestListener.implement({
@@ -149,6 +151,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
     if (!(file instanceof FileAndroid)) {
       return;
     }
+    this._newImageLoaded = true;
     const parameters = new LoadFromFileParameters(
       AndroidConfig.activity,
       this.nativeObject,
@@ -185,7 +188,7 @@ export default class ImageViewAndroid<TEvent extends string = ImageViewEvents> e
       useHTTPCacheControl = false,
       android = { useMemoryCache: true, useDiskCache: true, cacheSignature: null }
     } = params;
-
+    this._newImageLoaded = true;
     if (!url) {
       onFailure?.();
       return;

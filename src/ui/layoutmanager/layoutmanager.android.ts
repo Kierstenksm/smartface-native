@@ -137,13 +137,15 @@ export default class LayoutManagerAndroid extends AbstractLayoutManager implemen
             const spacingStep = this._itemSpacing / this._spanCount;
             const spacingStart = Math.floor(spanPosition * spacingStep);
             const spacingEnd = Math.floor(spacingStep * (this._spanCount - spanPosition - 1));
-
+            const spacingStartInPixels = UnitConverter.dpToPixel(spacingStart);
+            const spacingEndInPixels = UnitConverter.dpToPixel(spacingEnd);
+            
             if (this._scrollDirection === ScrollDirection.HORIZONTAL) {
-              outRect.top = spacingStart;
-              outRect.bottom = spacingEnd;
+              outRect.top = spacingStartInPixels;
+              outRect.bottom = spacingEndInPixels;
             } else {
-              outRect.left = spacingStart;
-              outRect.right = spacingEnd;
+              outRect.left = spacingStartInPixels;
+              outRect.right = spacingEndInPixels;
             }
           }
         }
@@ -186,9 +188,9 @@ export default class LayoutManagerAndroid extends AbstractLayoutManager implemen
               }
             } else {
               if (this._scrollDirection === ScrollDirection.HORIZONTAL) {
-                outRect.left = this._lineSpacing;
+                outRect.left = UnitConverter.dpToPixel(this._lineSpacing);
               } else {
-                outRect.top = this._lineSpacing;
+                outRect.top = UnitConverter.dpToPixel(this._lineSpacing);
               }
             }
           }

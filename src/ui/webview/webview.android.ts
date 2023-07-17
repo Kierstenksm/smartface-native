@@ -296,7 +296,7 @@ export default class WebViewAndroid<TEvent extends string = WebViewEvents> exten
       },
       shouldOverrideUrlLoading: (url: string) => {
         const params = { url: url };
-        const callbackValue = this._onChangedURL?.(params) || true;
+        const callbackValue = this._onChangedURL?.(params) ?? true;
         this.emit('changedURL', params);
         if (!callbackValue) {
           return true;
